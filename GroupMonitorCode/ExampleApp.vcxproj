@@ -52,13 +52,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>../inculde;$(IncludePath)</IncludePath>
+    <IncludePath>..\inculde;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)全部生成</OutDir>
+    <LibraryPath>..\lib;lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)全部生成</OutDir>
     <IncludePath>..\include\CQ;..\include;$(IncludePath);</IncludePath>
+    <LibraryPath>..\lib;lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile />

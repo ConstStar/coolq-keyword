@@ -12,7 +12,7 @@
 
 #include <set>
 
-#include<boost/timer.hpp>
+#include <boost/timer.hpp>
 //using namespace std;
 
 // WAloneList 对话框
