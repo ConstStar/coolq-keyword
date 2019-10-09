@@ -1,0 +1,10 @@
+﻿// GroupMonitorWin.idl: GroupMonitorWin.dll 的类型库源
+// 此文件将由 MIDL 编译器处理以产生
+// 类型库(GroupMonitorWin.tlb)。
+
+[ uuid(91c64fb5-4be9-4766-b476-6bb31f66185c), version(1.0) ]
+library GroupMonitorWin
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+};

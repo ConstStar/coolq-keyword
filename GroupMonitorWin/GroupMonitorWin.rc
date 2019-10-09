@@ -1,0 +1,379 @@
+// Microsoft Visual C++ generated resource script.
+//
+#pragma code_page(65001)
+
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#include ""res\\GroupMonitorWin.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#endif\r\n"
+    "1 TYPELIB ""GroupMonitorWin.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404B0"
+        BEGIN
+            VALUE "CompanyName", "TODO:  <公司名>"
+            VALUE "FileDescription", "TODO:  <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "GroupMonitorWin.dll"
+            VALUE "LegalCopyright", "TODO:  (C) <公司名>。  保留所有权利。"
+            VALUE "OriginalFilename", "GroupMonitorWin.dll"
+            VALUE "ProductName", "TODO:  <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOGMAIN DIALOGEX 0, 0, 194, 247
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "群监控设置（关闭界面配置生效）"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,44,180,155
+    PUSHBUTTON      "全选",IDC_BUTTON1,11,226,43,14
+    PUSHBUTTON      "反选",IDC_BUTTON2,63,226,43,14
+    PUSHBUTTON      "全局设置",IDC_BUTTON3,68,7,53,23
+    PUSHBUTTON      "群单独设置",IDC_BUTTON4,128,7,53,23
+    LTEXT           "默认监控群",IDC_STATIC,8,36,44,8
+    PUSHBUTTON      "主要设置",IDC_BUTTON5,8,7,53,23
+    PUSHBUTTON      "手动添加",IDC_BUTTON9,134,203,48,14
+    EDITTEXT        IDC_EDIT1,44,203,83,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "群号码:",IDC_STATIC,12,206,30,8
+    LTEXT           "——————————————————————————",IDC_STATIC,15,217,165,8
+END
+
+IDD_DIALOGDEFCFG DIALOGEX 0, 0, 429, 150
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "默认设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "处理方式",IDC_STATIC,16,15,112,111,WS_GROUP
+    CONTROL         "不做处理",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP,22,36,50,10
+    CONTROL         "禁言",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,22,57,33,10
+    CONTROL         "踢出",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,22,79,33,10
+    CONTROL         "踢出并拉黑",IDC_RADIO4,"Button",BS_AUTORADIOBUTTON,22,99,59,10
+    EDITTEXT        IDC_EDIT1,55,55,37,14,ES_AUTOHSCROLL | ES_WANTRETURN | ES_NUMBER | WS_GROUP
+    LTEXT           "分钟",IDC_STATIC,96,59,18,8,NOT WS_GROUP
+    CONTROL         "群内关键词触发提醒",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,18,93,10
+    CONTROL         "强力检测",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,41,50,10
+    CONTROL         "使用网络关键词(开发中)",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,64,107,10
+    CONTROL         "消息撤回（需Pro）",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,87,87,10
+    PUSHBUTTON      "触发转发到群号码",IDC_BUTTON7,251,12,80,22
+    PUSHBUTTON      "转发到群消息格式",IDC_BUTTON8,251,42,80,22
+    CONTROL         "白名单QQ模式",IDC_RADIO7,"Button",BS_AUTORADIOBUTTON | WS_GROUP,252,75,69,10
+    CONTROL         "监控QQ模式",IDC_RADIO5,"Button",BS_AUTORADIOBUTTON,252,87,61,10
+    PUSHBUTTON      "监控QQ/白名单QQ",IDC_BUTTON3,251,99,80,22,WS_GROUP
+    PUSHBUTTON      "默认关键词",IDC_BUTTON1,338,12,80,22
+    PUSHBUTTON      "正则表达式关键词",IDC_BUTTON6,338,42,80,22
+    PUSHBUTTON      "白名单关键词",IDC_BUTTON2,338,71,80,22
+    PUSHBUTTON      "自定义触发提醒",IDC_BUTTON4,338,99,80,22
+    PUSHBUTTON      "保存",IDC_BUTTON5,137,106,103,33
+END
+
+IDD_DIALOGALONELIST DIALOGEX 0, 0, 203, 200
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "群单独设置列表"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,22,189,154
+    LTEXT           "单独设置群（双击编辑，勾选启用）",IDC_STATIC,8,9,138,8
+    PUSHBUTTON      "手动添加",IDC_BUTTON9,138,178,48,14
+    EDITTEXT        IDC_EDIT1,48,178,83,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "群号码:",IDC_STATIC,16,181,30,8
+END
+
+IDD_DIALOGMAINCFG DIALOGEX 0, 0, 291, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "主要设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "收到私聊消息转发给主人",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,160,40,110,10
+    EDITTEXT        IDC_EDIT1,19,28,124,129,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | ES_NUMBER | WS_VSCROLL
+    LTEXT           "主人QQ（每行一个）",IDC_STATIC,17,15,80,8
+    PUSHBUTTON      "绑定授权账号(待开发)",IDC_BUTTON1,160,60,106,34
+    PUSHBUTTON      "注册",IDC_BUTTON2,158,96,55,16
+    PUSHBUTTON      "忘记密码",IDC_BUTTON3,213,96,55,16
+    PUSHBUTTON      "保存",IDC_BUTTON4,160,126,105,30
+    LTEXT           "指令前缀：",IDC_STATIC,157,20,44,8
+    EDITTEXT        IDC_EDIT2,203,18,65,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOGALLWORD DIALOGEX 0, 0, 329, 212
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "编辑"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "保存",1,110,174,89,24
+    EDITTEXT        IDC_EDIT1,15,30,296,141,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "触发提醒可用变量",IDC_BUTTON1,146,10,76,16
+    PUSHBUTTON      "正则表达式测试",IDC_BUTTON2,233,10,76,16
+    LTEXT           "请输入内容，如需分割请用回行",IDC_STATIC,14,16,121,8
+END
+
+IDD_DIALOGWORDVALUE DIALOGEX 0, 0, 310, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "变量"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT1,7,7,296,163,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+END
+
+IDD_DIALOGREWORDTEST DIALOGEX 0, 0, 432, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "正则表达式测试"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT1,26,30,199,77,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "源文本",IDC_STATIC,17,16,27,8
+    EDITTEXT        IDC_EDIT2,252,30,157,77,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "正则表达式",IDC_STATIC,236,16,44,8
+    EDITTEXT        IDC_EDIT3,50,122,270,37,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "测试",IDC_BUTTON1,333,116,67,25
+END
+
+IDD_DIALOGFORWARDMSG DIALOGEX 0, 0, 311, 193
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "转发到群格式设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "保存",1,154,126,116,40
+    EDITTEXT        IDC_EDIT1,7,14,297,96,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_EDIT2,71,138,25,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_EDIT3,71,161,25,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "行",IDC_STATIC,100,142,10,8
+    LTEXT           "行",IDC_STATIC,100,165,10,8
+    PUSHBUTTON      "可用变量",IDC_BUTTON1,20,115,92,17
+    LTEXT           "删除消息前",IDC_STATIC,23,142,44,8
+    LTEXT           "删除消息后",IDC_STATIC,23,164,44,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOGMAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 187
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 240
+    END
+
+    IDD_DIALOGDEFCFG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 422
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 143
+    END
+
+    IDD_DIALOGALONELIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 196
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_DIALOGMAINCFG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 284
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOGALLWORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 322
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 205
+    END
+
+    IDD_DIALOGWORDVALUE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 303
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    IDD_DIALOGREWORDTEST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 425
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    IDD_DIALOGFORWARDMSG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 304
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 186
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOGMAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGDEFCFG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGALONELIST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGMAINCFG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGALLWORD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGWORDVALUE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGREWORDTEST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOGFORWARDMSG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#include "res\GroupMonitorWin.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+1 TYPELIB "GroupMonitorWin.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

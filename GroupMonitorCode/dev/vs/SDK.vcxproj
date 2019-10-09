@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\CQSDKCPP\CQAPI.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQAPI_EX.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQcode.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQEVE.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQMsgCode.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQstream.cpp" />
+    <ClCompile Include="..\CQSDKCPP\CQTools.cpp" />
+    <ClCompile Include="..\CQSDKCPP\debug.cpp" />
+    <ClCompile Include="..\CQSDKCPP\Unpack.cpp" />
+    <ClCompile Include="..\winSpeak\winSpeak.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inculde\bufstream.h" />
+    <ClInclude Include="..\..\inculde\CQAPI.h" />
+    <ClInclude Include="..\..\inculde\CQAPI_EX.h" />
+    <ClInclude Include="..\..\inculde\CQcode.h" />
+    <ClInclude Include="..\..\inculde\CQconstant.h" />
+    <ClInclude Include="..\..\inculde\cqdefine.h" />
+    <ClInclude Include="..\..\inculde\CQEVE.h" />
+    <ClInclude Include="..\..\inculde\CQEVEBasic.h" />
+    <ClInclude Include="..\..\inculde\CQEVEMsg.h" />
+    <ClInclude Include="..\..\inculde\CQEVERequest.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_ALL.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_DiscussMsg.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_FriendAdd.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_GroupMsg.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_PrivateMsg.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_RequestAddFriend.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_RequestAddGroup.h" />
+    <ClInclude Include="..\..\inculde\CQEVE_Status.h" />
+    <ClInclude Include="..\..\inculde\CQface.h" />
+    <ClInclude Include="..\..\inculde\CQLogger.h" />
+    <ClInclude Include="..\..\inculde\CQMsgCode.h" />
+    <ClInclude Include="..\..\inculde\CQMsgSend.h" />
+    <ClInclude Include="..\..\inculde\CQTools.h" />
+    <ClInclude Include="..\..\inculde\Unpack.h" />
+    <ClInclude Include="..\..\inculde\winSpeak.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\res\CQP.lib" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{2869DBD7-ECBE-462D-9A46-B604DD992C22}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SDK</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="通用_修改中间目录.props" />
+    <Import Project="输出到SDK的lib目录.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="通用_修改中间目录.props" />
+    <Import Project="输出到SDK的lib目录.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

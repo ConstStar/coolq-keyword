@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\事件">
+      <UniqueIdentifier>{c65ded25-5d0a-4943-9d75-a06adf709b00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\聊天">
+      <UniqueIdentifier>{2cc0f095-829e-4c3a-9674-ee5cd12f3336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="INItool">
+      <UniqueIdentifier>{00c8f569-2a36-4666-a2fa-62661568b14a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="winSpeak">
+      <UniqueIdentifier>{d798b845-c3a8-442c-a79a-5c6d0eb1e972}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\CQSDKCPP\CQstream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\debug.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\Unpack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQAPI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQAPI_EX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQEVE.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\winSpeak\winSpeak.cpp">
+      <Filter>winSpeak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQMsgCode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CQSDKCPP\CQcode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inculde\CQEVE_RequestAddFriend.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_RequestAddGroup.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_Status.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVEBasic.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVEMsg.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVERequest.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_ALL.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_DiscussMsg.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_FriendAdd.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_GroupMsg.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQEVE_PrivateMsg.h">
+      <Filter>头文件\事件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\cqdefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\bufstream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQAPI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQAPI_EX.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQconstant.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQLogger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQTools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\Unpack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\winSpeak.h">
+      <Filter>winSpeak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQcode.h">
+      <Filter>头文件\聊天</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQface.h">
+      <Filter>头文件\聊天</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQMsgCode.h">
+      <Filter>头文件\聊天</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inculde\CQMsgSend.h">
+      <Filter>头文件\聊天</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\res\CQP.lib" />
+  </ItemGroup>
+</Project>

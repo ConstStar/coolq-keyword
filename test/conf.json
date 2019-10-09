@@ -1,0 +1,71 @@
+{
+    "Main": {
+        "MsgRelay": "false",
+        "prefix": "",
+        "Root": "",
+        "AlGroupList": [
+            "437055241",
+            "453370241"
+        ],
+        "GroupList": [
+            "437055241",
+            "453370241",
+            "453374441",
+            "533066241"
+        ]
+    },
+    "GroupConf": {
+        "0": {
+            "GroupWarn": "true",
+            "Revoke": "true",
+            "Streng": "true",
+            "SendGroupMsg_FrontLine": "9",
+            "SendGroupMsg_AfterLine": "4",
+            "TypeQQList": "1",
+            "Way": "1",
+            "WayTime": "999",
+            "SendGroupMsg_Word": "6666",
+            "WordKeyWarn": "\u4F60\u731C",
+            "QQList": [
+                "6666",
+                "231"
+            ],
+            "KeyWordWhite": [
+                "\u53EF\u4EE5",
+                "dfasdf"
+            ],
+            "REKeyWord": [
+                "\u54C8\u54C8"
+            ],
+            "keyword": [
+                "456",
+                "\u6D4B\u8BD5",
+                "ceiling"
+            ],
+            "SendGroupList": [
+                "123123",
+                "12313",
+                "123"
+            ]
+        },
+        "437055241": {
+            "GroupWarn": "true",
+            "Revoke": "false",
+            "Streng": "true",
+            "SendGroupMsg_FrontLine": "0",
+            "SendGroupMsg_AfterLine": "0",
+            "TypeQQList": "1",
+            "Way": "2",
+            "WayTime": "56",
+            "SendGroupMsg_Word": "1231",
+            "WordKeyWarn": "",
+            "QQList": "",
+            "KeyWordWhite": "",
+            "REKeyWord": "",
+            "keyword": "",
+            "SendGroupList": [
+                "1321"
+            ]
+        }
+    }
+}
