@@ -37,4 +37,7 @@ public:
 	long long m_GroupId;
 //	afx_msg void OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+//	virtual HRESULT accDoDefaultAction(VARIANT varChild);
+	afx_msg BOOL OnQueryOpen();
 };

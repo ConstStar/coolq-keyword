@@ -29,7 +29,7 @@ EVE_PrivateMsg(SendMsg) {
 
 EVE_GroupMsg(GroupMsg)
 {
-	OperateMsg a(fromQQ, fromGroup, msgId, msg);
+	OperateMsg a(fromQQ, fromAnonymous, fromGroup, msgId, msg);
 
 	a.MsgFun();
 

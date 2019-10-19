@@ -54,8 +54,8 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
-    "#include ""res\\GroupMonitorWin.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
-    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#include ""res\\GroupMonitorWin.rc2""  // 闈?Microsoft Visual C++ 缂栬緫鐨勮祫婧?\n"
+    "#include ""l.CHS\\afxres.rc""      // 鏍囧噯缁勪欢\r\n"
     "#endif\r\n"
     "1 TYPELIB ""GroupMonitorWin.tlb""\r\n"
     "\0"
@@ -108,22 +108,23 @@ END
 // Dialog
 //
 
-IDD_DIALOGMAIN DIALOGEX 0, 0, 194, 247
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "群监控设置（关闭界面配置生效）"
+IDD_DIALOGMAIN DIALOGEX 0, 0, 195, 249
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "群监控设置"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,44,180,155
-    PUSHBUTTON      "全选",IDC_BUTTON1,11,226,43,14
-    PUSHBUTTON      "反选",IDC_BUTTON2,63,226,43,14
-    PUSHBUTTON      "全局设置",IDC_BUTTON3,68,7,53,23
-    PUSHBUTTON      "群单独设置",IDC_BUTTON4,128,7,53,23
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,44,181,155
+    PUSHBUTTON      "全选",IDC_BUTTON1,7,228,43,14
+    PUSHBUTTON      "反选",IDC_BUTTON2,53,228,43,14
+    PUSHBUTTON      "全局设置",IDC_BUTTON3,70,7,53,23
+    PUSHBUTTON      "群单独设置",IDC_BUTTON4,133,7,53,23
     LTEXT           "默认监控群",IDC_STATIC,8,36,44,8
-    PUSHBUTTON      "主要设置",IDC_BUTTON5,8,7,53,23
+    PUSHBUTTON      "主要设置",IDC_BUTTON5,7,7,53,23
     PUSHBUTTON      "手动添加",IDC_BUTTON9,134,203,48,14
     EDITTEXT        IDC_EDIT1,44,203,83,14,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "群号码:",IDC_STATIC,12,206,30,8
     LTEXT           "——————————————————————————",IDC_STATIC,15,217,165,8
+    LTEXT           "提醒:关闭界面配置生效",IDC_STATIC,99,231,90,8
 END
 
 IDD_DIALOGDEFCFG DIALOGEX 0, 0, 429, 150
@@ -243,9 +244,9 @@ BEGIN
     IDD_DIALOGMAIN, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 187
+        RIGHTMARGIN, 188
         TOPMARGIN, 7
-        BOTTOMMARGIN, 240
+        BOTTOMMARGIN, 242
     END
 
     IDD_DIALOGDEFCFG, DIALOG
@@ -369,8 +370,8 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
-#include "res\GroupMonitorWin.rc2"  // 非 Microsoft Visual C++ 编辑的资源
-#include "l.CHS\afxres.rc"      // 标准组件
+#include "res\GroupMonitorWin.rc2"  // 闈?Microsoft Visual C++ 缂栬緫鐨勮祫婧?
+#include "l.CHS\afxres.rc"      // 鏍囧噯缁勪欢
 #endif
 1 TYPELIB "GroupMonitorWin.tlb"
 

@@ -249,6 +249,7 @@ bool OperateFile::json_vector2json_longlong(const wchar_t* json_path, const wcha
 				continue;
 
 			child.put<long long>(L"", temp);
+
 			conf_json.get_child(all_path.c_str()).push_back(make_pair(L"", child));
 		}
 

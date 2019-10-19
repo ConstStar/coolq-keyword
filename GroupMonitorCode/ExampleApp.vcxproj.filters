@@ -38,11 +38,11 @@
     <ClInclude Include="src\APPINFO.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\fun.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\json\myJson.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fun.hpp">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

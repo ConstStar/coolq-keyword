@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(WMain, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON9, &WMain::OnBnClickedButton9)
 	//	ON_NOTIFY(NM_CLICK, IDC_LIST1, &WMain::OnNMClickList1)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &WMain::OnLvnItemchangedList1)
+	ON_WM_QUERYOPEN()
 END_MESSAGE_MAP()
 
 
@@ -64,7 +65,7 @@ BOOL WMain::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
+	// TODO:  在此添加额外的初始化 
 
 	//屏幕位置
 	int x, y;
@@ -75,11 +76,6 @@ BOOL WMain::OnInitDialog()
 
 
 	DWORD dwStyle = m_list.GetExtendedStyle();
-
-	//选中某行使整行高亮（只适用于报表风格的listctrl）
-	//dwStyle |= LVS_EX_FULLROWSELECT;
-	//dwStyle |= LVS_EX_GRIDLINES;//网格线（只适用与报表风格的listctrl）
-	//m_list.SetExtendedStyle(dwStyle); //设置扩展风格
 
 	m_list.SetExtendedStyle(m_list.GetExtendedStyle() | LVS_EX_CHECKBOXES | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
@@ -248,6 +244,9 @@ void WMain::OnBnClickedButton5()
 void WMain::OnBnClickedButton9()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	PostMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0);
+
+
 	UpdateData(TRUE);
 
 	if(m_GroupId)
@@ -292,4 +291,28 @@ void WMain::OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult)
 
 	InitData();
 	*pResult = 0;
+}
+
+
+BOOL WMain::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	return CDialogEx::OnCommand(wParam, lParam);
+}
+
+
+//HRESULT WMain::accDoDefaultAction(VARIANT varChild)
+//{
+//	// TODO: 在此添加专用代码和/或调用基类
+//
+//	return CDialogEx::accDoDefaultAction(varChild);
+//}
+
+
+BOOL WMain::OnQueryOpen()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	return CDialogEx::OnQueryOpen();
 }

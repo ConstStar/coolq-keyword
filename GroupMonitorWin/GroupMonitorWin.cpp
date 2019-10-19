@@ -16,9 +16,6 @@
 
 using namespace std;
 
-WMain a;
-
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -134,6 +131,7 @@ STDAPI DllUnregisterServer(void)
 	return S_OK;
 }
 
+WMain a;
 
 #ifdef __cplusplus         // if used by C++ code
 extern "C" {                  // we need to export the C interface
@@ -141,7 +139,7 @@ extern "C" {                  // we need to export the C interface
 	__declspec(dllexport) void winfun(const char* path, const char* GroupList)
 	{
 		AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
+		
 #ifdef DEBUG
 
 		MessageBox(NULL, CString(path), L"", MB_OK);
