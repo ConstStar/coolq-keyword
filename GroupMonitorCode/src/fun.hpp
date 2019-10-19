@@ -1403,7 +1403,7 @@ void CQ_getGroupList_charp(string& str)
 
 
 
-Pwinfun win;
+Pwinfun win;  //从dll中导入的打开界面函数
 
 EVE_Menu(__menu)
 {
