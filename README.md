@@ -5,12 +5,8 @@
 - 如果使用其他版本的编译器，则需要自己手动编译boost中的filesystem、regex两个静态库
 
 - 项目中解决方案
--- cn.xiaoxiaoge.GroupMonitor   插件
-
-
--- GroupMonitorWin  MFC编写的界面
-
-
--- test   方便测试 只能用来测试界面
+  - cn.xiaoxiaoge.GroupMonitor   插件
+  - GroupMonitorWin  MFC编写的界面
+  - test   方便测试 只能用来测试界面
 
 
