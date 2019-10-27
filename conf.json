@@ -5,5 +5,24 @@
         "Root": "",
         "AlGroupList": "",
         "GroupList": ""
+    },
+    "GroupConf": {
+        "0": {
+            "GroupWarn": "false",
+            "Revoke": "false",
+            "Streng": "false",
+            "SendGroupMsg_FrontLine": "0",
+            "SendGroupMsg_AfterLine": "0",
+            "TypeQQList": "0",
+            "Way": "0",
+            "WayTime": "0",
+            "SendGroupMsg_Word": "",
+            "WordKeyWarn": "",
+            "QQList": "",
+            "KeyWordWhite": "",
+            "REKeyWord": "",
+            "keyword": "",
+            "SendGroupList": ""
+        }
     }
 }

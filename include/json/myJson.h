@@ -83,17 +83,19 @@ extern string AppFile;
 #ifdef MFC
 
 extern map<long long, vector<string>> g_keyword;
+extern map<long long, vector<string>> g_KeyWordWhite;
+extern map<long long, vector<string>> g_REKeyWord;
 #else
 extern map<long long, vector<WKEYWORD>> g_keyword;
+extern map<long long, vector<WKEYWORD>> g_KeyWordWhite;
+extern map<long long, vector<WKEYWORD>> g_REKeyWord;
 
 #endif // MFC
 
-extern map<long long, vector<string>> g_REKeyWord;
 extern map<long long, vector<long long>> g_qqlist;
 extern map<long long, vector<long long>> g_sendGroupList;
 extern vector<long long> g_GroupList;
 extern vector<long long> g_AlGroupList;
-extern map<long long, vector<string>> g_KeyWordWhite;
 extern vector<long long> g_root;
 extern map<long long, CONF> g_conf;
 extern bool g_MsgRelay;//消息转发

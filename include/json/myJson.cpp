@@ -13,19 +13,20 @@ wptree conf_json;
 
 
 #ifdef MFC
-
 map<long long, vector<string>> g_keyword;
+map<long long, vector<string>> g_REKeyWord;
+map<long long, vector<string>> g_KeyWordWhite;
 #else
 map<long long, vector<WKEYWORD>> g_keyword;
-
+map<long long, vector<WKEYWORD>> g_REKeyWord;
+map<long long, vector<WKEYWORD>> g_KeyWordWhite;
 #endif // MFC
 
-map<long long, vector<string>> g_REKeyWord;
+
 map<long long, vector<long long>> g_qqlist;
 map<long long, vector<long long>> g_sendGroupList;
 vector<long long> g_GroupList;
 vector<long long> g_AlGroupList;
-map<long long, vector<string>> g_KeyWordWhite;
 vector<long long> g_root;
 map<long long, CONF> g_conf;
 bool g_MsgRelay;//消息转发
@@ -432,31 +433,107 @@ bool OperateFile::json2keyword()
 //从REkeyword变量存放到json变量中
 bool OperateFile::REkeyword2json()
 {
+
+#ifdef MFC
+
 	json_map2json_str(L"REKeyWord", g_REKeyWord);
 
+#else
+
+	map<long long, vector<string>> temp_keyword;
+
+	for (auto temp_key : g_REKeyWord)
+	{
+		for (auto temp_word : temp_key.second)
+		{
+			temp_keyword[temp_key.first].push_back(temp_word.keyWord);
+		}
+	}
+
+
+	json_map2json_str(L"REKeyWord", temp_keyword);
+
+#endif // MFC
 	return true;
 }
 
 //从json变量存放到REkeyword变量中
 bool OperateFile::json2REkeyword()
 {
+#ifdef MFC
 	json_json2map_str(L"REKeyWord", g_REKeyWord);
+#else
+	g_REKeyWord.clear();
+	map<long long, vector<string>> temp_keyword;
+	json_json2map_str(L"REKeyWord", temp_keyword);
 
+	for (auto temp_key : temp_keyword)
+	{
+
+		for (auto temp_word : temp_key.second)
+		{
+
+			WKEYWORD temp_wkeyword(temp_word);
+
+			g_REKeyWord[temp_key.first].push_back(temp_wkeyword);
+		}
+
+	}
+
+#endif // MFC
 	return true;
 }
 
 //从keywordWhite变量存放到json变量中
 bool OperateFile::keywordWhite2json()
 {
+#ifdef MFC
+
 	json_map2json_str(L"KeyWordWhite", g_KeyWordWhite);
+
+#else
+
+	map<long long, vector<string>> temp_keyword;
+
+	for (auto temp_key : g_KeyWordWhite)
+	{
+		for (auto temp_word : temp_key.second)
+		{
+			temp_keyword[temp_key.first].push_back(temp_word.keyWord);
+		}
+	}
+
+
+	json_map2json_str(L"KeyWordWhite", temp_keyword);
+
+#endif // MFC
 	return true;
 }
 
 //从json变量存放到keywordWhite变量中
 bool OperateFile::json2keywordWhite()
 {
+#ifdef MFC
 	json_json2map_str(L"KeyWordWhite", g_KeyWordWhite);
+#else
+	g_KeyWordWhite.clear();
+	map<long long, vector<string>> temp_keyword;
+	json_json2map_str(L"KeyWordWhite", temp_keyword);
 
+	for (auto temp_key : temp_keyword)
+	{
+
+		for (auto temp_word : temp_key.second)
+		{
+
+			WKEYWORD temp_wkeyword(temp_word);
+
+			g_KeyWordWhite[temp_key.first].push_back(temp_wkeyword);
+		}
+
+	}
+
+#endif // MFC
 	return true;
 }
 

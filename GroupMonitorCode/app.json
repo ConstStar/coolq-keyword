@@ -5,8 +5,8 @@
   "ret": 1, // 返回码，固定为1
   "apiver": 9, // Api版本，本SDK为9
   "name": "群关键词监控", // 应用名称
-  "version": "2.0.2", // 应用版本
-  "version_id": 15, // 应用顺序版本（每次发布时至少+1）
+  "version": "2.0.3", // 应用版本
+  "version_id": 16, // 应用顺序版本（每次发布时至少+1）
   "author": "小小哥", // 应用作者
   "description": "发送 群监控菜单 查看本插件命令\r\n欢迎加入插件内测群:839067703\r\n进群优先体验新功能", //一句话描述插件用途
   "event": [
@@ -96,7 +96,7 @@
     //127, //[敏感]置群退出		setGroupLeave
     //    128, //置群成员专属头衔	setGroupSpecialTitle
     130, //取群成员信息		getGroupMemberInfoV2 / getGroupMemberInfo
-    //131, //取陌生人信息		getStrangerInfo
+    131, //取陌生人信息		getStrangerInfo
     //140, //置讨论组退出		setDiscussLeave
     //150, //置好友添加请求		setFriendAddRequest
     151, //置群添加请求		setGroupAddRequest

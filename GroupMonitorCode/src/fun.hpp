@@ -93,7 +93,7 @@ public:
 			std::string SendMsg;
 
 			//获取QQ资料
-			CQ::StrangerInfo QQInf = CQ::getStrangerInfo(m_fromQQ);
+			CQ::StrangerInfo QQInf = CQ::getStrangerInfo(m_fromQQ, true);
 
 			//构造消息
 			SendMsg = "来自" + QQInf.nick + "(" + std::to_string(m_fromQQ) + ")的私聊消息:\n\n";
@@ -339,7 +339,9 @@ public:
 
 			for (auto temp_keyword : temp_vector)
 			{
-				g_KeyWordWhite[0].push_back(temp_keyword);
+				WKEYWORD temp_add(temp_keyword);
+				g_KeyWordWhite[0].push_back(temp_add);
+
 			}
 
 			//重新构造json 并写入文件
@@ -359,7 +361,7 @@ public:
 
 			while (it != g_KeyWordWhite[0].end())
 			{
-				if (*it == msg)
+				if (it->keyWord == msg)
 				{
 					auto del = it;
 
@@ -372,7 +374,6 @@ public:
 				}
 
 			}
-
 			//重新构造json 并写入文件
 			OperateFile::keywordWhite2json();
 			OperateFile::json2file();
@@ -394,9 +395,10 @@ public:
 
 			for (auto temp_keyword : temp_vector)
 			{
-				g_REKeyWord[0].push_back(temp_keyword);
-			}
+				WKEYWORD temp_add(temp_keyword);
+				g_REKeyWord[0].push_back(temp_add);
 
+			}
 			//重新构造json 并写入文件
 			OperateFile::REkeyword2json();
 			OperateFile::json2file();
@@ -414,7 +416,7 @@ public:
 
 			while (it != g_REKeyWord[0].end())
 			{
-				if (*it == msg)
+				if (it->keyWord == msg)
 				{
 					auto del = it;
 
@@ -427,7 +429,6 @@ public:
 				}
 
 			}
-
 			//重新构造json 并写入文件
 			OperateFile::REkeyword2json();
 			OperateFile::json2file();
@@ -521,11 +522,11 @@ public:
 		}
 
 		//功能菜单
-		if (!std::string(g_prefix + "功能").compare(msg) || 
+		if (!std::string(g_prefix + "功能").compare(msg) ||
 			!std::string(g_prefix + "菜单").compare(msg) ||
-			!strcmp(msg, "群监控菜单") || 
-			!strcmp(msg, "群监控功能") || 
-			!strcmp(msg, "查看群监控菜单") || 
+			!strcmp(msg, "群监控菜单") ||
+			!strcmp(msg, "群监控功能") ||
+			!strcmp(msg, "查看群监控菜单") ||
 			!strcmp(msg, "查看群监控功能")
 			)
 		{
@@ -633,7 +634,7 @@ public:
 			string SendMsg = "全局默认 白名单关键词：\n";
 
 			for (auto KeyWord : g_KeyWordWhite[0])
-				SendMsg += KeyWord + "\n";
+				SendMsg += KeyWord.keyWord + "\n";
 
 			CQ::sendPrivateMsg(m_fromQQ, SendMsg);
 			m_index = NONE;
@@ -649,7 +650,7 @@ public:
 
 			for (auto WKeyWord : g_KeyWordWhite[0])
 			{
-				SendMsg += WKeyWord + "\n";
+				SendMsg += WKeyWord.keyWord + "\n";
 			}
 
 			CQ::sendPrivateMsg(m_fromQQ, SendMsg);
@@ -664,7 +665,7 @@ public:
 			string SendMsg = "全局默认 正则表达式关键词：\n";
 
 			for (auto KeyWord : g_REKeyWord[0])
-				SendMsg += KeyWord + "\n";
+				SendMsg += KeyWord.keyWord + "\n";
 
 			CQ::sendPrivateMsg(m_fromQQ, SendMsg);
 			m_index = NONE;
@@ -680,7 +681,7 @@ public:
 
 			for (auto WKeyWord : g_REKeyWord[0])
 			{
-				SendMsg += WKeyWord + "\n";
+				SendMsg += WKeyWord.keyWord + "\n";
 			}
 
 			CQ::sendPrivateMsg(m_fromQQ, SendMsg);
@@ -867,7 +868,7 @@ public:
 
 		if (!REWord.empty())
 		{
-			SendMsg_root << "\n正则表达式:" << REWord;
+			SendMsg_root << "\n正则表达式:" << REWord << "\n";
 		}
 
 		SendMsg_root << "\n触发了关键词:" << KeyWord << "\n";
@@ -1086,6 +1087,21 @@ public:
 		//触发的关键词
 		str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
 
+		//触发的QQ号码
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ号码}", to_string(m_fromQQ));
+
+
+		auto QQInf = CQ::getGroupMemberInfo(m_fromGroup, m_fromQQ, true);
+		auto GroupInf = CQ::getGroupList();
+		//触发的QQ名称
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ名称}", QQInf.昵称);
+
+		//触发的QQ名片
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ名片}", QQInf.名片);
+
+		//触发的群名称
+		str = OperateStr::replace_all_distinct(str, "{触发的群名称}", GroupInf[m_fromGroup]);
+
 	}
 
 	//自定义触发关键词提醒
@@ -1162,18 +1178,33 @@ public:
 		//触发的关键词
 		str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
 
+		//触发的QQ号码
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ号码}", to_string(m_fromQQ));
+
+
+		auto QQInf = CQ::getGroupMemberInfo(m_fromGroup, m_fromQQ, true);
+		auto GroupInf = CQ::getGroupList();
+		//触发的QQ名称
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ名称}", QQInf.昵称);
+
+		//触发的QQ名片
+		str = OperateStr::replace_all_distinct(str, "{触发的QQ名片}", QQInf.名片);
+
+		//触发的群名称
+		str = OperateStr::replace_all_distinct(str, "{触发的群名称}", GroupInf[m_fromGroup]);
+
 	}
 
 	//白名单关键词检测
-	bool KeyWordWhiteFun(vector<string>& KeyWordWhite)
+	bool KeyWordWhiteFun(vector<WKEYWORD>& KeyWordWhite)
 	{
 		if (KeyWordWhite.empty())
 			return false;
 
 		//查找关键词 如果存在某一个 则返回true
-		for (auto KeyWord_one : KeyWordWhite)
+		for (WKEYWORD KeyWord_one : KeyWordWhite)
 		{
-			if (m_msg.find(KeyWord_one) != std::wstring::npos)
+			if (m_wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos)
 			{
 
 				return true;
@@ -1253,19 +1284,19 @@ public:
 	//正则表达式  REKeyWord 正则表达式关键词 REKeyWordWarn返回触发的内容 REWord返回触发的关键词
 	bool REKeyKordFun(int conf_index, string* REKeyWordWarn, string* REWord)
 	{
-		for (auto alone : g_REKeyWord[conf_index])
+		for (WKEYWORD alone : g_REKeyWord[conf_index])
 		{
 			try {
 
-				boost::regex re(alone);
-				boost::smatch RE;
+				boost::wregex re(alone.wkeyWrod);
+				boost::wsmatch RE;
 
-				bool rec = boost::regex_search(m_msg, RE, re);
+				bool rec = boost::regex_search(m_wmsg, RE, re);
 
 				if (rec)
 				{
-					*REKeyWordWarn = RE.str().c_str();
-					*REWord = alone;
+					*REKeyWordWarn = OperateStr::wstring2string(RE.str());
+					*REWord = alone.keyWord;
 
 					return true;
 				}
@@ -1276,7 +1307,7 @@ public:
 				string SendMsg;
 				SendMsg += "正则表达式崩溃\n";
 				SendMsg += "表达式:";
-				SendMsg += alone;
+				SendMsg += alone.keyWord;
 				SendMsg += "消息:\n\n";
 				SendMsg += m_msg;
 				SendMsg += "exception返回的错误消息:";

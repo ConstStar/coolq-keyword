@@ -53,9 +53,9 @@ void WREWordTest::OnBnClickedButton1()
 	{
 		// 保护代码
 
-		string str = CStringA(m_Word).GetBuffer();
-		boost::regex re(CStringA(m_REWord).GetBuffer());
-		boost::smatch REWord;
+		wstring str = m_Word.GetBuffer();
+		boost::wregex re(m_REWord.GetBuffer());
+		boost::wsmatch REWord;
 
 		bool rec = boost::regex_search(str, REWord, re);
 
