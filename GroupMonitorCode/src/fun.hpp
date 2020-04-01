@@ -1415,6 +1415,8 @@ private:
 
 };
 
+
+
 //ÈºÁĞ±í±àÂë
 void CQ_getGroupList_charp(string& str)
 {
