@@ -640,6 +640,7 @@ bool MyJson::json2aloneSwitch()
 			aloneTemp.keyWordGroupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
 			aloneTemp.deleteMsg = get<bool>({ "alone",temp_key, "deleteMsg" }, false);
 			aloneTemp.streng = get<bool>({ "alone",temp_key, "streng" }, false);
+			aloneTemp.use = get<bool>({ "alone",temp_key, "use" }, false);
 
 			aloneTemp.relayGroupMsg_trimFront = get<int>({ "alone",temp_key, "relayGroupMsg_trimFront" }, 0);
 			aloneTemp.relayGroupMsg_trimBack = get<int>({ "alone",temp_key, "relayGroupMsg_trimBack" }, 0);
@@ -685,6 +686,7 @@ bool MyJson::aloneSwitch2json()
 			put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.keyWordGroupWarn);
 			put<bool>({ "alone",temp_key,"deleteMsg" }, aloneTemp.deleteMsg);
 			put<bool>({ "alone",temp_key,"streng" }, aloneTemp.streng);
+			put<bool>({ "alone",temp_key,"use" }, aloneTemp.use);
 
 			put<int>({ "alone",temp_key,"relayGroupMsg_trimFront" }, aloneTemp.relayGroupMsg_trimFront);
 			put<int>({ "alone",temp_key,"relayGroupMsg_trimBack" }, aloneTemp.relayGroupMsg_trimBack);

@@ -48,6 +48,7 @@ struct WKEYWORD
 //具有单独设置的项目
 struct ConfAlone
 {
+	bool use;						//开关
 	int priority;					//优先级
 	string name;					//设置名称
 

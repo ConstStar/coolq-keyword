@@ -1454,6 +1454,19 @@ private:
 
 			list_aloneList.at(0).append({ to_string(tempAlone.first), to_string(tempAlone.second.priority),tempAlone.second.name ,groupListWord ,dealTypeList[tempAlone.second.dealType] });
 		}
+
+		//勾选已选的
+		auto size = list_aloneList.size_item(0);
+		for (int i = 0; i < size; i++)
+		{
+			string buf = list_aloneList.at(0).at(i).text(0);
+			int id = atoi(buf.c_str());
+
+			if (conf.alone[id].use)
+			{
+				list_aloneList.at(0).at(i).check(true);
+			}
+		}
 	}
 
 
@@ -1550,6 +1563,7 @@ private:
 
 
 			//点击菜单事件
+
 			//添加
 			auto handlerAdd = [=](menu::item_proxy& ip) {
 
@@ -1564,7 +1578,7 @@ private:
 					return;
 				}
 
-
+				conf.alone[add_index].use = true;
 				openAlone(add_index);
 
 				readConf();
