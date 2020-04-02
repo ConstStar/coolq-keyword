@@ -25,7 +25,7 @@
 
 //--------应用信息--------
 
-#define APP_ID "com.example.demo"
+#define APP_ID "cn.xiaoxiaoge.GroupMonitor"
 //----这是什么----
 //这是您的插件名称,一个独一无二的名称
 //----我应该按照什么原则命名----

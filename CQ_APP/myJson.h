@@ -61,7 +61,7 @@ struct ConfAlone
 	int QQListType;					//特殊名单类型  白名单||监控名单
 	bool groupWarn;					//触发后是否群内警告
 	bool streng;					//强力检测
-	bool revoke;					//消息撤回
+	bool deleteMsg;					//消息撤回
 
 	string relayGroupWord;			//发送到群 消息格式
 	int relayGroupMsg_frontLine;	//发送到群 消息前几行删除
@@ -157,17 +157,17 @@ public:
 	//从 json 存放到root中
 	bool json2admin();
 
-	//读取主要配置json到内存中
-	bool json2main();
+	//读取主要开关json到内存中
+	bool json2mainSwitch();
 
-	//从内存主要配置中放置的json
-	bool main2json();
+	//从内存主要开关中放置的json
+	bool mainSwitch2json();
 
 	//读取群配置json到内存中
-	bool json2groupConf();
+	bool json2aloneSwitch();
 
 	//从群配置中放置到json
-	bool groupConf2json();
+	bool aloneSwitch2json();
 
 
 
@@ -189,7 +189,7 @@ public:
 	map<int, ConfAlone> alone;		//单独设置
 	vector<long long> admin;		//主人QQ
 	string prefix;					//指令消息前缀
-	bool msgRelay;					//消息转发
+	bool relayPrivateMsg;			//消息转发
 
 	//Json
 	Json::Value conf_json;

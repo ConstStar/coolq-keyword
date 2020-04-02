@@ -535,18 +535,18 @@ bool MyJson::json2admin()
 }
 
 //读取主要配置json到内存中
-bool MyJson::json2main()
+bool MyJson::json2mainSwitch()
 {
-	msgRelay = get<bool>({ "main","msgRelay" });
+	relayPrivateMsg = get<bool>({ "main","relayPrivateMsg" });
 	prefix = get<string>({ "main","prefix" });
 
 	return true;
 }
 
 //从内存主要配置中放置到json
-bool MyJson::main2json()
+bool MyJson::mainSwitch2json()
 {
-	put<bool>({ "main","msgRelay" }, msgRelay);
+	put<bool>({ "main","relayPrivateMsg" }, relayPrivateMsg);
 
 	put<string>({ "main","prefix" }, prefix);
 
@@ -554,7 +554,7 @@ bool MyJson::main2json()
 }
 
 //读取群配置json到内存中
-bool MyJson::json2groupConf()
+bool MyJson::json2aloneSwitch()
 {
 	try
 	{
@@ -567,7 +567,7 @@ bool MyJson::json2groupConf()
 
 
 			aloneTemp.groupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
-			aloneTemp.revoke = get<bool>({ "alone",temp_key, "revoke" }, false);
+			aloneTemp.deleteMsg = get<bool>({ "alone",temp_key, "deleteMsg" }, false);
 			aloneTemp.streng = get<bool>({ "alone",temp_key, "streng" }, false);
 
 			aloneTemp.relayGroupMsg_afterLine = get<int>({ "alone",temp_key, "relayGroupMsg_afterLine" }, 0);
@@ -594,7 +594,7 @@ bool MyJson::json2groupConf()
 }
 
 //从群配置中放置到json
-bool MyJson::groupConf2json()
+bool MyJson::aloneSwitch2json()
 {
 	try
 	{
@@ -604,7 +604,7 @@ bool MyJson::groupConf2json()
 			auto& aloneTemp = alone[temp_alone.first];
 
 			put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.groupWarn);
-			put<bool>({ "alone",temp_key,"revoke" }, aloneTemp.revoke);
+			put<bool>({ "alone",temp_key,"deleteMsg" }, aloneTemp.deleteMsg);
 			put<bool>({ "alone",temp_key,"streng" }, aloneTemp.streng);
 
 			put<int>({ "alone",temp_key,"relayGroupMsg_afterLine" }, aloneTemp.relayGroupMsg_afterLine);
@@ -635,8 +635,7 @@ bool MyJson::groupConf2json()
 //把所有的存放到json中的
 void MyJson::all2json()
 {
-	//conf_json.clear();
-	main2json();
+	mainSwitch2json();
 	admin2json();
 	QQlist2json();
 	groupList2json();
@@ -644,13 +643,13 @@ void MyJson::all2json()
 	keyWordRegex2json();
 	keyWord2json();
 	relayGroupList2json();
-	groupConf2json();
+	aloneSwitch2json();
 }
 
 //所有的json读取到内存中
 void MyJson::json2all()
 {
-	json2main();
+	json2mainSwitch();
 	json2admin();
 	json2QQlist();
 	json2groupList();
@@ -658,7 +657,7 @@ void MyJson::json2all()
 	json2keyWordRegex();
 	json2keyWord();
 	json2relayGroupList();
-	json2groupConf();
+	json2mainSwitch();
 }
 
 //将json写到文件里

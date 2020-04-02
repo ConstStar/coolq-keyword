@@ -87,7 +87,7 @@ public:
 	//消息转发
 	void MsgRelayFun(const char* msg)
 	{
-		if (conf.msgRelay)
+		if (conf.relayPrivateMsg)
 		{
 			std::string SendMsg;
 
@@ -876,7 +876,7 @@ public:
 
 		SendMsg_root << "\n触发了关键词:" << KeyWord << "\n";
 
-		if (conf.alone[conf_index].revoke)
+		if (conf.alone[conf_index].deleteMsg)
 			CQ::deleteMsg(m_msgId);
 
 		if (m_fromQQ == 80000000)
