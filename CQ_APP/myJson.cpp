@@ -322,7 +322,7 @@ void MyJson::put(vector<string> json_path, T value)
 }
 
 //从keyword变量存放到json变量中
-bool MyJson::keyword2json()
+bool MyJson::keyWord2json()
 {
 	for (auto& temp : alone)
 	{
@@ -340,7 +340,7 @@ bool MyJson::keyword2json()
 }
 
 //从json变量存放到keyword变量中
-bool MyJson::json2keyword()
+bool MyJson::json2keyWord()
 {
 
 	auto keyList = getKeyList({ "alone" });
@@ -362,7 +362,7 @@ bool MyJson::json2keyword()
 }
 
 //从REkeyword变量存放到json变量中
-bool MyJson::REkeyword2json()
+bool MyJson::keyWordRegex2json()
 {
 
 	for (auto& temp : alone)
@@ -381,7 +381,7 @@ bool MyJson::REkeyword2json()
 }
 
 //从json变量存放到REkeyword变量中
-bool MyJson::json2REkeyword()
+bool MyJson::json2keyWordRegex()
 {
 
 	auto keyList = getKeyList({ "alone" });
@@ -403,7 +403,7 @@ bool MyJson::json2REkeyword()
 }
 
 //从keywordWhite变量存放到json变量中
-bool MyJson::keywordWhite2json()
+bool MyJson::keyWordWhite2json()
 {
 
 	for (auto& temp : alone)
@@ -422,7 +422,7 @@ bool MyJson::keywordWhite2json()
 }
 
 //从json变量存放到keywordWhite变量中
-bool MyJson::json2keywordWhite()
+bool MyJson::json2keyWordWhite()
 {
 	auto keyList = getKeyList({ "alone" });
 
@@ -444,7 +444,7 @@ bool MyJson::json2keywordWhite()
 }
 
 //从 监控群名单 存放到json中的
-bool MyJson::GroupList2json()
+bool MyJson::groupList2json()
 {
 	for (auto& temp : alone)
 	{
@@ -455,7 +455,7 @@ bool MyJson::GroupList2json()
 }
 
 //从 json 存放到 监控群名单 中
-bool MyJson::json2GroupList()
+bool MyJson::json2groupList()
 {
 	auto keyList = getKeyList({ "alone" });
 
@@ -469,7 +469,7 @@ bool MyJson::json2GroupList()
 }
 
 //从 QQ白名单/监控名单 存放到json中的
-bool MyJson::qqlist2json()
+bool MyJson::QQlist2json()
 {
 	for (auto& temp : alone)
 	{
@@ -480,7 +480,7 @@ bool MyJson::qqlist2json()
 }
 
 //从 json 存放到QQ白名单/监控名单中
-bool MyJson::json2qqlist()
+bool MyJson::json2QQlist()
 {
 	auto keyList = getKeyList({ "alone" });
 
@@ -493,8 +493,8 @@ bool MyJson::json2qqlist()
 	return true;
 }
 
-//从 发送群名单 存放到json中的
-bool MyJson::sendGroupList2json()
+//从 转发群名单 存放到json中的
+bool MyJson::relayGroupList2json()
 {
 
 	for (auto& temp : alone)
@@ -505,8 +505,8 @@ bool MyJson::sendGroupList2json()
 	return true;
 }
 
-//从 json 存放到 发送群名单 中
-bool MyJson::json2sendGroupList()
+//从 json 存放到 转发群名单 中
+bool MyJson::json2relayGroupList()
 {
 	auto keyList = getKeyList({ "alone" });
 
@@ -638,12 +638,12 @@ void MyJson::all2json()
 	//conf_json.clear();
 	main2json();
 	admin2json();
-	qqlist2json();
-	GroupList2json();
-	keywordWhite2json();
-	REkeyword2json();
-	keyword2json();
-	sendGroupList2json();
+	QQlist2json();
+	groupList2json();
+	keyWordWhite2json();
+	keyWordRegex2json();
+	keyWord2json();
+	relayGroupList2json();
 	groupConf2json();
 }
 
@@ -652,12 +652,12 @@ void MyJson::json2all()
 {
 	json2main();
 	json2admin();
-	json2qqlist();
-	json2GroupList();
-	json2keywordWhite();
-	json2REkeyword();
-	json2keyword();
-	json2sendGroupList();
+	json2QQlist();
+	json2groupList();
+	json2keyWordWhite();
+	json2keyWordRegex();
+	json2keyWord();
+	json2relayGroupList();
 	json2groupConf();
 }
 

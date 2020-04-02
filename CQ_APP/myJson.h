@@ -116,40 +116,40 @@ public:
 
 
 	//从keyword变量存放到json变量中
-	bool keyword2json();
+	bool keyWord2json();
 
 	//从json变量存放到keyword变量中
-	bool json2keyword();
+	bool json2keyWord();
 
 	//从REkeyword变量存放到json变量中
-	bool REkeyword2json();
+	bool keyWordRegex2json();
 
 	//从json变量存放到REkeyword变量中
-	bool json2REkeyword();
+	bool json2keyWordRegex();
 
 	//从keywordWhite变量存放到json变量中
-	bool keywordWhite2json();
+	bool keyWordWhite2json();
 
 	//从json变量存放到keywordWhite变量中
-	bool json2keywordWhite();
+	bool json2keyWordWhite();
 
 	//从 监控群名单 存放到json中的
-	bool GroupList2json();
+	bool groupList2json();
 
 	//从 json 存放到 监控群名单 中
-	bool json2GroupList();
+	bool json2groupList();
 
 	//从 QQ白名单/监控名单 存放到json中的
-	bool qqlist2json();
+	bool QQlist2json();
 
 	//从 json 存放到QQ白名单/监控名单中
-	bool json2qqlist();
+	bool json2QQlist();
 
-	//从 发送群名单 存放到json中的
-	bool sendGroupList2json();
+	//从 转发群名单 存放到json中的
+	bool relayGroupList2json();
 
-	//从 json 存放到 发送群名单 中
-	bool json2sendGroupList();
+	//从 json 存放到 转发群名单 中
+	bool json2relayGroupList();
 
 	//从 root 存放到json中的
 	bool admin2json();
