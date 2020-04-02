@@ -147,7 +147,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.keyWord2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加 默认关键词 成功");
@@ -178,7 +178,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.keyWord2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)
@@ -201,7 +201,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.QQlist2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加默认 白名单/监控名单 成功");
@@ -242,7 +242,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.QQlist2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)
@@ -265,7 +265,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.groupList2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加 默认监控群 成功");
@@ -305,7 +305,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.groupList2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)
@@ -344,7 +344,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.keyWordWhite2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加默认 白名单关键词 成功");
@@ -374,7 +374,7 @@ public:
 
 			}
 			//重新构造json 并写入文件
-			conf.keyWordWhite2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)
@@ -399,7 +399,7 @@ public:
 
 			}
 			//重新构造json 并写入文件
-			conf.keyWordRegex2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加默认 正则表达式关键词 成功");
@@ -429,7 +429,7 @@ public:
 
 			}
 			//重新构造json 并写入文件
-			conf.keyWordRegex2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)
@@ -453,7 +453,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.relayGroupList2json();
+			conf.all2json();
 			conf.json2file();
 
 			CQ::sendPrivateMsg(m_fromQQ, "添加默认 转发群 成功");
@@ -494,7 +494,7 @@ public:
 			}
 
 			//重新构造json 并写入文件
-			conf.relayGroupList2json();
+			conf.all2json();
 			conf.json2file();
 
 			if (del_bool)

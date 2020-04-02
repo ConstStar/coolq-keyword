@@ -1424,8 +1424,30 @@ class tab_page_alone
 {
 private:
 
+	//写入配置
+	void writeConf()
+	{
+		conf.all2json();
+		conf.json2file();
+	}
+
+	void writeList()
+	{
+		auto size = list_aloneList.size_item(0);
+		for (int i = 0; i < size; i++)
+		{
+			string buf = list_aloneList.at(0).at(i).text(0);
+			int id = atoi(buf.c_str());
+
+			conf.alone[id].use = list_aloneList.at(0).at(i).checked();
+		}
+	}
+
+	//读取配置
 	void readConf()
 	{
+		conf.file2json();
+		conf.json2all();
 
 		auto groupList = CQ::getGroupList();
 
@@ -1553,8 +1575,24 @@ private:
 
 		list_aloneList.events().mouse_up([this](const arg_mouse& arg) {
 
+
+			//如果为点击则重新保存复选框
 			if (mouse::right_button != arg.button)
+			{
+				auto size = list_aloneList.size_item(0);
+	
+				writeList();
+				writeConf();
+				readConf();
+
 				return;
+			}
+
+
+
+
+
+
 
 			auto index = list_aloneList.selected();
 
@@ -1581,6 +1619,8 @@ private:
 				conf.alone[add_index].use = true;
 				openAlone(add_index);
 
+				writeList();
+				writeConf();
 				readConf();
 			};
 
@@ -1590,6 +1630,8 @@ private:
 
 				openAlone(conf_index);
 
+				writeList();
+				writeConf();
 				readConf();
 			};
 
@@ -1604,6 +1646,7 @@ private:
 					int conf_index = atoi(list_aloneList.at(index.at(0)).text(0).c_str());
 					conf.alone.erase(conf_index);
 
+					writeConf();
 					readConf();
 				}
 
@@ -1628,7 +1671,6 @@ private:
 			}
 
 		});
-
 
 		//优先级提示
 		lab_priorityTip.create(*this);

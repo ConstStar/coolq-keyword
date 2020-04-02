@@ -326,268 +326,6 @@ void MyJson::put(vector<string> json_path, T value)
 
 }
 
-//从keyword变量存放到json变量中
-bool MyJson::keyWord2json()
-{
-	int index = 1;
-	for (auto& temp : alone)
-	{
-		vector<string> temp_keyword;
-		for (auto temp_word : temp.second.keyWord)
-		{
-			temp_keyword.push_back(temp_word.keyWord);
-		}
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone", "0" ,"keyWord" }, temp_keyword);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone", to_string(index++) ,"keyWord" }, temp_keyword);
-		}
-	}
-
-	return true;
-}
-
-//从json变量存放到keyword变量中
-bool MyJson::json2keyWord()
-{
-
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		vector<string> temp_keyword;
-		auto& keyWord = alone[atoll(temp_key.c_str())].keyWord;
-		readJson_vector({ "alone",temp_key,"keyWord" }, temp_keyword);
-
-		keyWord.clear();
-		for (auto temp_keyWord : temp_keyword)
-		{
-			keyWord.push_back(temp_keyWord);
-		}
-
-	}
-	return true;
-}
-
-//从keyWordRegex变量存放到json变量中
-bool MyJson::keyWordRegex2json()
-{
-	int index = 1;
-
-	for (auto& temp : alone)
-	{
-		vector<string> temp_keyWordRegex;
-		for (auto temp_wordRegex : temp.second.keyWordRegex)
-		{
-			temp_keyWordRegex.push_back(temp_wordRegex.keyWord);
-		}
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone", "0" ,"keyWordRegex" }, temp_keyWordRegex);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone", to_string(index++) ,"keyWordRegex" }, temp_keyWordRegex);
-		}
-
-	}
-
-	return true;
-}
-
-//从json变量存放到keyWordRegex变量中
-bool MyJson::json2keyWordRegex()
-{
-
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		vector<string> temp_keywordRegex;
-		auto& keyWordRegex = alone[atoll(temp_key.c_str())].keyWordRegex;
-		readJson_vector({ "alone",temp_key,"keyWordRegex" }, temp_keywordRegex);
-
-		keyWordRegex.clear();
-		for (auto temp_keyWordRegex : temp_keywordRegex)
-		{
-			keyWordRegex.push_back(temp_keyWordRegex);
-		}
-
-	}
-	return true;
-}
-
-//从keywordWhite变量存放到json变量中
-bool MyJson::keyWordWhite2json()
-{
-	int index = 1;
-
-	for (auto& temp : alone)
-	{
-		vector<string> temp_keyWordWhite;
-		for (auto temp_wordWhite : temp.second.keyWordWhite)
-		{
-			temp_keyWordWhite.push_back(temp_wordWhite.keyWord);
-		}
-
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone", "0" ,"keyWordWhite" }, temp_keyWordWhite);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone", to_string(index++) ,"keyWordWhite" }, temp_keyWordWhite);
-		}
-
-	}
-
-	return true;
-}
-
-//从json变量存放到keywordWhite变量中
-bool MyJson::json2keyWordWhite()
-{
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		vector<string> temp_keywordWhite;
-		auto& keyWordWhite = alone[atoll(temp_key.c_str())].keyWordWhite;
-		readJson_vector({ "alone",temp_key,"keyWordWhite" }, temp_keywordWhite);
-
-		keyWordWhite.clear();
-		for (auto temp_keyWordRegex : temp_keywordWhite)
-		{
-			keyWordWhite.push_back(temp_keyWordRegex);
-		}
-
-	}
-
-	return true;
-}
-
-//从 监控群名单 存放到json中的
-bool MyJson::groupList2json()
-{
-	int index = 1;
-
-	for (auto& temp : alone)
-	{
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone","0","groupList" }, alone[temp.first].groupList);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone",to_string(index),"groupList" }, alone[temp.first].groupList);
-		}
-	}
-
-	return true;
-}
-
-//从 json 存放到 监控群名单 中
-bool MyJson::json2groupList()
-{
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		auto& groupList = alone[atoll(temp_key.c_str())].groupList;
-		readJson_vector({ "alone",temp_key,"groupList" }, groupList);
-	}
-
-	return true;
-}
-
-//从 QQ白名单/监控名单 存放到json中的
-bool MyJson::QQlist2json()
-{
-	int index = 1;
-
-	for (auto& temp : alone)
-	{
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone","0","QQList" }, alone[temp.first].QQList);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone",to_string(index++),"QQList" }, alone[temp.first].QQList);
-		}
-	}
-
-	return true;
-}
-
-//从 json 存放到QQ白名单/监控名单中
-bool MyJson::json2QQlist()
-{
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		auto& QQList = alone[atoll(temp_key.c_str())].QQList;
-		readJson_vector({ "alone",temp_key,"QQList" }, QQList);
-	}
-
-	return true;
-}
-
-//从 转发群名单 存放到json中的
-bool MyJson::relayGroupList2json()
-{
-	int index = 1;
-
-	for (auto& temp : alone)
-	{
-
-		if (temp.first == 0)
-		{
-			//默认设置
-			writeJson_vector({ "alone","0","relayGroupList" }, alone[temp.first].relayGroupList);
-		}
-		else
-		{
-			//单独设置
-			writeJson_vector({ "alone",to_string(index++),"relayGroupList" }, alone[temp.first].relayGroupList);
-		}
-	}
-
-	return true;
-}
-
-//从 json 存放到 转发群名单 中
-bool MyJson::json2relayGroupList()
-{
-	auto keyList = getKeyList({ "alone" });
-
-	for (auto temp_key : keyList)
-	{
-		auto& relayGroupList = alone[atoll(temp_key.c_str())].relayGroupList;
-		readJson_vector({ "alone",temp_key,"relayGroupList" }, relayGroupList);
-	}
-
-	return true;
-}
 
 //从 root 存放到json中的
 bool MyJson::admin2json()
@@ -624,17 +362,52 @@ bool MyJson::mainSwitch2json()
 	return true;
 }
 
-//读取群配置json到内存中
-bool MyJson::json2aloneSwitch()
+//读取单独设置到内存
+bool MyJson::json2alone()
 {
 	try
 	{
+		alone.clear();
 
 		auto keyList = getKeyList({ "alone" });
-
 		for (auto temp_key : keyList)
 		{
 			auto& aloneTemp = alone[atoi(temp_key.c_str())];
+
+			//普通关键词
+			vector<string> temp_keyword;
+			auto& keyWord = aloneTemp.keyWord;
+			readJson_vector({ "alone",temp_key,"keyWord" }, temp_keyword);
+			keyWord.clear();
+			for (auto temp_keyWord : temp_keyword)
+			{
+				keyWord.push_back(temp_keyWord);
+			}
+
+			//正则表达式关键词
+			vector<string> temp_keywordRegex;
+			auto& keyWordRegex = aloneTemp.keyWordRegex;
+			readJson_vector({ "alone",temp_key,"keyWordRegex" }, temp_keywordRegex);
+
+			keyWordRegex.clear();
+			for (auto temp_keyWordRegex : temp_keywordRegex)
+			{
+				keyWordRegex.push_back(temp_keyWordRegex);
+			}
+
+			//白名单关键词
+			vector<string> temp_keywordWhite;
+			auto& keyWordWhite = aloneTemp.keyWordWhite;
+			readJson_vector({ "alone",temp_key,"keyWordWhite" }, temp_keywordWhite);
+			keyWordWhite.clear();
+			for (auto temp_keyWordRegex : temp_keywordWhite)
+			{
+				keyWordWhite.push_back(temp_keyWordRegex);
+			}
+
+			readJson_vector({ "alone",temp_key,"groupList" }, aloneTemp.groupList);
+			readJson_vector({ "alone",temp_key,"QQList" }, aloneTemp.QQList);
+			readJson_vector({ "alone",temp_key,"relayGroupList" }, aloneTemp.relayGroupList);
 
 
 			aloneTemp.keyWordGroupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
@@ -661,27 +434,59 @@ bool MyJson::json2aloneSwitch()
 	}
 
 	return true;
+
 }
 
-//从群配置中放置到json
-bool MyJson::aloneSwitch2json()
+//将单独设置放入json
+bool MyJson::alone2json()
 {
+
 	try
 	{
-		int index = 1;
 
-		for (auto& temp_alone : alone)
+		conf_json["alone"].clear();
+
+		int index = 1;
+		for (auto& temp : alone)
 		{
 			string temp_key = "0";
-
+			auto& aloneTemp = temp.second;
 
 			//单独设置
-			if (temp_alone.first != 0)
+			if (temp.first != 0)
 				temp_key = to_string(index++);
 
+			//普通关键词
+			vector<string> temp_keyword;
+			for (auto temp_word : aloneTemp.keyWord)
+			{
+				temp_keyword.push_back(temp_word.keyWord);
+			}
+
+			writeJson_vector({ "alone", temp_key ,"keyWord" }, temp_keyword);
+
+			//正则表达式关键词
+			vector<string> temp_keyWordRegex;
+			for (auto temp_wordRegex : aloneTemp.keyWordRegex)
+			{
+				temp_keyWordRegex.push_back(temp_wordRegex.keyWord);
+			}
+
+			writeJson_vector({ "alone", temp_key ,"keyWordRegex" }, temp_keyWordRegex);
+
+			//白名单关键词
+			vector<string> temp_keyWordWhite;
+			for (auto temp_wordWhite : aloneTemp.keyWordWhite)
+			{
+				temp_keyWordWhite.push_back(temp_wordWhite.keyWord);
+			}
+			writeJson_vector({ "alone", temp_key ,"keyWordWhite" }, temp_keyWordWhite);
 
 
-			auto& aloneTemp = alone[temp_alone.first];
+			writeJson_vector({ "alone",temp_key,"groupList" }, aloneTemp.groupList);
+			writeJson_vector({ "alone",temp_key,"QQList" }, aloneTemp.QQList);
+			writeJson_vector({ "alone",temp_key,"relayGroupList" }, aloneTemp.relayGroupList);
+
 
 			put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.keyWordGroupWarn);
 			put<bool>({ "alone",temp_key,"deleteMsg" }, aloneTemp.deleteMsg);
@@ -698,20 +503,16 @@ bool MyJson::aloneSwitch2json()
 			put<string>({ "alone",temp_key,"name" }, aloneTemp.name);
 			put<string>({ "alone",temp_key,"relayGroupWord" }, aloneTemp.relayGroupWord);
 			put<string>({ "alone",temp_key,"keyWordGroupWarn" }, aloneTemp.keyWordGroupWarnWord);
-
 		}
 	}
 	catch (exception & e)
 	{
-#ifdef DEBUG
-
 		cout << e.what() << endl;
-
-#endif // DEBUG
 		return false;
 	}
 
 	return true;
+
 }
 
 
