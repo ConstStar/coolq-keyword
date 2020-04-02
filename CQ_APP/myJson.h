@@ -6,7 +6,7 @@
 
 #include <json/json.h>
 #include <iostream>
-
+#include <functional> 
 
 using namespace std;
 
@@ -78,10 +78,17 @@ struct ConfAlone
 //	
 //};
 
+//map排序
+struct CmpByKeySize {
+	bool operator()(const int& k1, const int& k2)const {
+		return k1 < k2;
+	}
+};
 
 class MyJson
 {
 private:
+
 
 	//写入json
 	bool write_json(string path, Json::Value& root);
@@ -107,7 +114,7 @@ private:
 	//获取json
 	template <typename T>
 	T get(vector<string> json_path, T def = T());
-	
+
 
 	//放置json
 	template <typename T>
@@ -172,6 +179,159 @@ public:
 	bool aloneSwitch2json();
 
 
+	bool json2alone()
+	{
+		try
+		{
+			auto keyList = getKeyList({ "alone" });
+
+			for (auto temp_key : keyList)
+			{
+				auto& aloneTemp = alone[atoi(temp_key.c_str())];
+
+				//普通关键词
+				vector<string> temp_keyword;
+				auto& keyWord = aloneTemp.keyWord;
+				readJson_vector({ "alone",temp_key,"keyWord" }, temp_keyword);
+				keyWord.clear();
+				for (auto temp_keyWord : temp_keyword)
+				{
+					keyWord.push_back(temp_keyWord);
+				}
+
+				//正则表达式关键词
+				vector<string> temp_keywordRegex;
+				auto& keyWordRegex = aloneTemp.keyWordRegex;
+				readJson_vector({ "alone",temp_key,"keyWordRegex" }, temp_keywordRegex);
+
+				keyWordRegex.clear();
+				for (auto temp_keyWordRegex : temp_keywordRegex)
+				{
+					keyWordRegex.push_back(temp_keyWordRegex);
+				}
+
+				//白名单关键词
+				vector<string> temp_keywordWhite;
+				auto& keyWordWhite = aloneTemp.keyWordWhite;
+				readJson_vector({ "alone",temp_key,"keyWordWhite" }, temp_keywordWhite);
+				keyWordWhite.clear();
+				for (auto temp_keyWordRegex : temp_keywordWhite)
+				{
+					keyWordWhite.push_back(temp_keyWordRegex);
+				}
+
+				readJson_vector({ "alone",temp_key,"groupList" }, aloneTemp.groupList);
+				readJson_vector({ "alone",temp_key,"QQList" }, aloneTemp.QQList);
+				readJson_vector({ "alone",temp_key,"relayGroupList" }, aloneTemp.relayGroupList);
+
+
+				aloneTemp.keyWordGroupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
+				aloneTemp.deleteMsg = get<bool>({ "alone",temp_key, "deleteMsg" }, false);
+				aloneTemp.streng = get<bool>({ "alone",temp_key, "streng" }, false);
+
+				aloneTemp.relayGroupMsg_trimFront = get<int>({ "alone",temp_key, "relayGroupMsg_trimFront" }, 0);
+				aloneTemp.relayGroupMsg_trimBack = get<int>({ "alone",temp_key, "relayGroupMsg_trimBack" }, 0);
+				aloneTemp.QQListType = get<int>({ "alone",temp_key, "QQListType" }, 0);
+				aloneTemp.dealType = get<int>({ "alone",temp_key, "dealType" }, 0);
+				aloneTemp.banTimeLen = get<int>({ "alone",temp_key, "banTimeLen" }, 0);
+				aloneTemp.priority = get<int>({ "alone",temp_key, "priority" }, 0);
+
+				aloneTemp.name = get<string>({ "alone",temp_key, "name" }, "");
+				aloneTemp.relayGroupWord = get<string>({ "alone",temp_key, "relayGroupWord" }, "");
+				aloneTemp.keyWordGroupWarnWord = get<string>({ "alone",temp_key, "keyWordGroupWarn" }, "");
+			}
+		}
+		catch (exception & e)
+		{
+			cout << e.what() << endl;
+			return false;
+		}
+
+		return true;
+
+	}
+
+
+	bool alone2json()
+	{
+
+		try
+		{
+			int index = 1;
+			for (auto& temp : alone)
+			{
+
+				string temp_key = "0";
+				auto& aloneTemp = temp.second;
+
+				//单独设置
+				if (temp.first != 0)
+					temp_key = to_string(index++);
+
+				//普通关键词
+				vector<string> temp_keyword;
+				for (auto temp_word : aloneTemp.keyWord)
+				{
+					temp_keyword.push_back(temp_word.keyWord);
+				}
+
+				writeJson_vector({ "alone", temp_key ,"keyWord" }, temp_keyword);
+
+				//正则表达式关键词
+				vector<string> temp_keyWordRegex;
+				for (auto temp_wordRegex : aloneTemp.keyWordRegex)
+				{
+					temp_keyWordRegex.push_back(temp_wordRegex.keyWord);
+				}
+
+				writeJson_vector({ "alone", temp_key ,"keyWordRegex" }, temp_keyWordRegex);
+
+				//白名单关键词
+				vector<string> temp_keyWordWhite;
+				for (auto temp_wordWhite : aloneTemp.keyWordWhite)
+				{
+					temp_keyWordWhite.push_back(temp_wordWhite.keyWord);
+				}
+				writeJson_vector({ "alone", temp_key ,"keyWordWhite" }, temp_keyWordWhite);
+
+
+				writeJson_vector({ "alone",temp_key,"groupList" }, aloneTemp.groupList);
+				writeJson_vector({ "alone",temp_key,"QQList" }, aloneTemp.QQList);
+				writeJson_vector({ "alone",temp_key,"relayGroupList" }, aloneTemp.relayGroupList);
+
+
+				put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.keyWordGroupWarn);
+				put<bool>({ "alone",temp_key,"deleteMsg" }, aloneTemp.deleteMsg);
+				put<bool>({ "alone",temp_key,"streng" }, aloneTemp.streng);
+
+				put<int>({ "alone",temp_key,"relayGroupMsg_trimFront" }, aloneTemp.relayGroupMsg_trimFront);
+				put<int>({ "alone",temp_key,"relayGroupMsg_trimBack" }, aloneTemp.relayGroupMsg_trimBack);
+				put<int>({ "alone",temp_key,"QQListType" }, aloneTemp.QQListType);
+				put<int>({ "alone",temp_key,"dealType" }, aloneTemp.dealType);
+				put<int>({ "alone",temp_key,"banTimeLen" }, aloneTemp.banTimeLen);
+				put<int>({ "alone",temp_key,"priority" }, aloneTemp.priority);
+
+				put<string>({ "alone",temp_key,"name" }, aloneTemp.name);
+				put<string>({ "alone",temp_key,"relayGroupWord" }, aloneTemp.relayGroupWord);
+				put<string>({ "alone",temp_key,"keyWordGroupWarn" }, aloneTemp.keyWordGroupWarnWord);
+			}
+		}
+		catch (exception & e)
+		{
+			cout << e.what() << endl;
+			return false;
+		}
+
+		return true;
+
+	}
+
+
+
+
+
+
+
 
 	//把所有的存放到json中的
 	void all2json();
@@ -188,7 +348,7 @@ public:
 public:
 
 	//设置
-	map<int, ConfAlone> alone;		//单独设置
+	map<int, ConfAlone, CmpByKeySize> alone;		//单独设置
 	vector<long long> admin;		//主人QQ
 	string prefix;					//指令消息前缀
 	bool relayPrivateMsg;			//消息转发

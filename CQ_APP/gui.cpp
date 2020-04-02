@@ -356,6 +356,7 @@ private:
 		//清空原有
 		listGroupList.erase();
 
+
 		//先载入已选
 		for (auto temp : conf.alone[conf_index].groupList)
 		{
@@ -1451,7 +1452,7 @@ private:
 			}
 
 
-			list_aloneList.at(0).append({ to_string(tempAlone.second.priority),tempAlone.second.name ,groupListWord ,dealTypeList[tempAlone.second.dealType] });
+			list_aloneList.at(0).append({ to_string(tempAlone.first), to_string(tempAlone.second.priority),tempAlone.second.name ,groupListWord ,dealTypeList[tempAlone.second.dealType] });
 		}
 	}
 
@@ -1528,9 +1529,10 @@ private:
 		//列表
 		list_aloneList.create(*this);
 		list_aloneList.checkable(true);
-		list_aloneList.append_header(u8"优先级");
+		list_aloneList.append_header(u8"id", 50);
+		list_aloneList.append_header(u8"优先级", 50);
 		list_aloneList.append_header(u8"设置名称");
-		list_aloneList.append_header(u8"启用群");
+		list_aloneList.append_header(u8"启用群", 150);
 		list_aloneList.append_header(u8"处理方法");
 
 
@@ -1542,10 +1544,6 @@ private:
 				return;
 
 			auto index = list_aloneList.selected();
-
-
-			//防止两个窗口冲突，先读取一下
-			readConf();
 
 			//菜单
 			menu menu_;
@@ -1574,7 +1572,7 @@ private:
 
 			//编辑
 			auto handlerEdit = [=](menu::item_proxy& ip) {
-				int conf_index = index.at(0).item + 1;
+				int conf_index = atoi(list_aloneList.at(index.at(0)).text(0).c_str());
 
 				openAlone(conf_index);
 
@@ -1583,17 +1581,13 @@ private:
 
 			//删除
 			auto handlerDelete = [=](menu::item_proxy& ip) {
-
-				//获取选中项目的优先级
-				int priority = atoi(list_aloneList.at(index.at(0)).text(0).c_str());
-
 				msgbox m{ *this,u8"确认",nana::msgbox::yes_no };
 				m << u8"是否删除此项";
 				auto res = m.show();
 
 				if (res == m.pick_yes)
 				{
-					int conf_index = index.at(0).item + 1;
+					int conf_index = atoi(list_aloneList.at(index.at(0)).text(0).c_str());
 					conf.alone.erase(conf_index);
 
 					readConf();

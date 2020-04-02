@@ -646,18 +646,16 @@ bool MyJson::json2aloneSwitch()
 			aloneTemp.QQListType = get<int>({ "alone",temp_key, "QQListType" }, 0);
 			aloneTemp.dealType = get<int>({ "alone",temp_key, "dealType" }, 0);
 			aloneTemp.banTimeLen = get<int>({ "alone",temp_key, "banTimeLen" }, 0);
+			aloneTemp.priority = get<int>({ "alone",temp_key, "priority" }, 0);
 
+			aloneTemp.name = get<string>({ "alone",temp_key, "name" }, "");
 			aloneTemp.relayGroupWord = get<string>({ "alone",temp_key, "relayGroupWord" }, "");
 			aloneTemp.keyWordGroupWarnWord = get<string>({ "alone",temp_key, "keyWordGroupWarn" }, "");
 		}
 	}
 	catch (exception & e)
 	{
-#ifdef DEBUG
-
 		cout << e.what() << endl;
-
-#endif // DEBUG
 		return false;
 	}
 
@@ -693,7 +691,9 @@ bool MyJson::aloneSwitch2json()
 			put<int>({ "alone",temp_key,"QQListType" }, aloneTemp.QQListType);
 			put<int>({ "alone",temp_key,"dealType" }, aloneTemp.dealType);
 			put<int>({ "alone",temp_key,"banTimeLen" }, aloneTemp.banTimeLen);
+			put<int>({ "alone",temp_key,"priority" }, aloneTemp.priority);
 
+			put<string>({ "alone",temp_key,"name" }, aloneTemp.name);
 			put<string>({ "alone",temp_key,"relayGroupWord" }, aloneTemp.relayGroupWord);
 			put<string>({ "alone",temp_key,"keyWordGroupWarn" }, aloneTemp.keyWordGroupWarnWord);
 
@@ -718,13 +718,7 @@ void MyJson::all2json()
 {
 	mainSwitch2json();
 	admin2json();
-	QQlist2json();
-	groupList2json();
-	keyWordWhite2json();
-	keyWordRegex2json();
-	keyWord2json();
-	relayGroupList2json();
-	aloneSwitch2json();
+	alone2json();
 }
 
 //所有的json读取到内存中
@@ -732,13 +726,7 @@ void MyJson::json2all()
 {
 	json2mainSwitch();
 	json2admin();
-	json2QQlist();
-	json2groupList();
-	json2keyWordWhite();
-	json2keyWordRegex();
-	json2keyWord();
-	json2relayGroupList();
-	json2aloneSwitch();
+	json2alone();
 }
 
 //将json写到文件里
@@ -767,7 +755,7 @@ void MyJson::file2json()
 		cout << e.what() << endl;
 #endif
 	}
-	}
+}
 
 
 
