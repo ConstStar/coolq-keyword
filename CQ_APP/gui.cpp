@@ -26,180 +26,6 @@ extern MyJson conf;
 
 
 //单独设置中的主要设置
-class tab_page_aloneMain
-	: public panel<false>
-{
-private:
-
-	//写入配置
-	void writeConf()
-	{
-		conf.all2json();
-		conf.json2file();
-	}
-
-	//读取配置
-	void readConf()
-	{
-		conf.file2json();
-		conf.json2all();
-
-		//载入设置
-		text_prefix.reset(conf.prefix);
-
-		text_admin.reset();
-		for (auto id : conf.admin)
-		{
-			text_admin.append(to_string(id) + "\n", true);
-		}
-	}
-
-
-	//初始化
-	void init()
-	{
-		place_.bind(*this);
-		place_.div(
-
-			//整体边距
-			"margin = [15,15,15,15] "
-
-			//主人QQ
-			"<vert <weight=25 lab_admin> <text_admin>>"
-			"<weight=10>"
-
-
-			"<vert"
-			"<weight=25>"
-
-			//指令前缀
-			"<weight=25 <weight=65 lab_prefix><text_prefix>>"
-			"<weight=10>"
-
-			//绑定秘钥
-			"<weight=25 lab_usingKey>"
-			"<weight=25 <text_usingKey><weight=60 button_usingKey>>"
-			"<>"
-
-			//保存
-			"<weight=25% button_save>"
-
-			">");
-
-		//主人QQ
-		lab_admin.create(*this);
-		lab_admin.caption(u8"主人QQ(每行一个):");
-		place_.field("lab_admin") << lab_admin;
-
-		text_admin.create(*this);
-		place_.field("text_admin") << text_admin;
-
-
-		//指令前缀
-		lab_prefix.create(*this);
-		lab_prefix.caption(u8"指令前缀：");
-		place_.field("lab_prefix") << lab_prefix;
-
-		text_prefix.create(*this);
-		text_prefix.line_wrapped(false);
-		text_prefix.multi_lines(false);
-		place_.field("text_prefix") << text_prefix;
-
-
-		//使用秘钥
-		lab_usingKey.create(*this);
-		lab_usingKey.caption(u8"激活专业版：");
-		place_.field("lab_usingKey") << lab_usingKey;
-
-		text_usingKey.create(*this);
-		text_usingKey.line_wrapped(false);
-		text_usingKey.multi_lines(false);
-		place_.field("text_usingKey") << text_usingKey;
-
-		btn_usingKey.create(*this);
-		btn_usingKey.caption(u8"使用秘钥");
-		btn_usingKey.events().click([this] {
-
-		});
-		place_.field("button_usingKey") << btn_usingKey;
-
-
-		//保存按钮
-		btn_save.create(*this);
-		btn_save.caption(u8"保存");
-		btn_save.events().click([this] {
-
-			bool ok = regex_match(text_admin.text(), regex("[\\n\\d\\r]*"));
-			if (!ok)
-			{
-				msgbox a{ *this,u8"错误" };
-				a << u8"主人QQ格式有误";
-				a.show();
-				return;
-			}
-
-			//主人QQ
-			auto line = text_admin.text_line_count();
-			conf.admin.clear();
-			for (int i = 0; i < line; i++)
-			{
-				string buf;
-				text_admin.getline(i, buf);
-				if (!buf.empty())
-					conf.admin.push_back(atoll(buf.c_str()));
-			}
-
-			//消息前缀
-			conf.prefix = text_prefix.text();
-
-			//写入配置
-			writeConf();
-
-			msgbox m_save{ *this,u8"成功" };
-			m_save << u8"保存成功";
-			m_save.show();
-
-			//重新载入配置
-			readConf();
-		});
-		place_.field("button_save") << btn_save;
-
-		readConf();
-	}
-
-public:
-	tab_page_aloneMain(window wd, int index = 0)
-		: panel<false>(wd)
-		, conf_index(index)
-	{
-		init();
-	}
-
-
-private:
-	place place_;
-	int conf_index;
-
-	//主人QQ
-	label lab_admin;
-	textbox text_admin;
-
-	//指令前缀
-	label lab_prefix;
-	textbox text_prefix;
-
-	//使用秘钥
-	label lab_usingKey;
-	textbox text_usingKey;
-	button btn_usingKey;
-
-
-	//保存
-	button btn_save;
-
-};
-
-//主要设置
 class tab_page_main
 	: public panel<false>
 {
@@ -306,9 +132,10 @@ private:
 			bool ok = regex_match(text_admin.text(), regex("[\\n\\d\\r]*"));
 			if (!ok)
 			{
-				msgbox a{ *this,u8"错误" };
-				a << u8"主人QQ格式有误";
-				a.show();
+				msgbox m_error{ *this,u8"错误" };
+				m_error.icon(msgbox::icon_error);
+				m_error << u8"主人QQ格式有误";
+				m_error.show();
 				return;
 			}
 
@@ -349,8 +176,10 @@ public:
 	}
 
 
+
 private:
 	place place_;
+	int conf_index;
 
 	//主人QQ
 	label lab_admin;
@@ -365,6 +194,137 @@ private:
 	textbox text_usingKey;
 	button btn_usingKey;
 
+
+	//保存
+	button btn_save;
+
+};
+
+//主要设置
+class tab_page_aloneMain
+	: public panel<false>
+{
+private:
+
+	//写入配置
+	void writeConf()
+	{
+		conf.all2json();
+		conf.json2file();
+	}
+
+	//读取配置
+	void readConf()
+	{
+		conf.file2json();
+		conf.json2all();
+
+		text_name.reset(conf.alone[conf_index].name);
+		text_priority.from(conf.alone[conf_index].priority);
+	}
+
+
+	//初始化
+	void init()
+	{
+		place_.bind(*this);
+		place_.div(
+
+			//整体边距
+			"margin = [15,15,15,15] "
+
+
+			"<vert"
+			"<weight=25>"
+
+			//优先级
+			"<weight=25 <weight=65 lab_priority><weight=65 text_priority>>"
+			"<weight=10>"
+
+			//设置名称
+			"<weight=25 <weight=65 lab_name><weight=65 text_name>>"
+			"<weight=60%>"
+
+			//保存
+			"<<> <button_save> <>>"
+
+			">");
+
+
+		//设置名称
+		lab_priority.create(*this);
+		lab_priority.caption(u8"指令前缀：");
+		place_.field("lab_priority") << lab_priority;
+
+		text_priority.create(*this);
+		text_priority.line_wrapped(false);
+		text_priority.multi_lines(false);
+		place_.field("text_priority") << text_priority;
+
+		//设置名称
+		lab_name.create(*this);
+		lab_name.caption(u8"指令前缀：");
+		place_.field("lab_name") << lab_name;
+
+		text_name.create(*this);
+		text_name.line_wrapped(false);
+		text_name.multi_lines(false);
+		place_.field("text_name") << text_name;
+
+
+		//保存按钮
+		btn_save.create(*this);
+		btn_save.caption(u8"保存");
+		btn_save.events().click([this] {
+
+			int priority_temp = text_priority.to_int();
+			if (priority_temp <= 0)
+			{
+				msgbox m_error{ *this,u8"错误"};
+				m_error.icon(msgbox::icon_error);
+				m_error << u8"优先级必须为正数";
+				m_error.show();
+
+				return;
+			}
+
+
+			conf.alone[conf_index].priority = priority_temp;
+			conf.alone[conf_index].name = text_name.text();
+
+			writeConf();
+
+			msgbox m_save{ *this,u8"成功" };
+			m_save << u8"保存成功";
+			m_save.show();
+
+			//重新载入配置
+			readConf();
+		});
+		place_.field("button_save") << btn_save;
+
+		readConf();
+	}
+
+public:
+	tab_page_aloneMain(window wd, int index = 0)
+		: panel<false>(wd)
+		, conf_index(index)
+	{
+		init();
+	}
+
+private:
+	place place_;
+	int conf_index;
+
+	//优先级
+	label lab_priority;
+	textbox text_priority;
+
+	//设置名称
+	label lab_name;
+	textbox text_name;
 
 	//保存
 	button btn_save;
@@ -487,9 +447,10 @@ private:
 			bool ok = regex_match(textAddGroup.text(), regex("[1-9][0-9]*"));
 			if (!ok)
 			{
-				msgbox a{ *this ,u8"错误" };
-				a << u8"格式有误";
-				a.show();
+				msgbox m_error{ *this ,u8"错误" };
+				m_error.icon(msgbox::icon_error);
+				m_error << u8"格式有误";
+				m_error.show();
 				return;
 			}
 
@@ -1474,9 +1435,10 @@ private:
 	void openAlone(int conf_index)
 	{
 
-		form fm;
-		fm.caption(u8"设置");
+		form fm(*this);
+		fm.caption(u8"单独设置");
 		fm.size(nana::size(550, 400));
+
 
 		place place;
 		place.bind(fm);
@@ -1516,9 +1478,7 @@ private:
 		place.field("tabbar") << tabbar;
 		place.collocate();
 
-		fm.show();
-
-		exec();
+		fm.modality();
 	}
 
 
@@ -1558,7 +1518,7 @@ private:
 				return;
 
 			auto index = list_aloneList.selected();
-			
+
 
 			//防止两个窗口冲突，先读取一下
 			readConf();
@@ -1575,9 +1535,10 @@ private:
 
 				if (conf.alone.find(add_index) != conf.alone.end())
 				{
-					msgbox m(*this, u8"错误");
-					m << u8"配置项id冲突，添加失败，请尝试重启酷Q";
-					m.show();
+					msgbox m_error(*this, u8"错误");
+					m_error.icon(msgbox::icon_error);
+					m_error << u8"配置项id冲突，添加失败，请尝试重启酷Q";
+					m_error.show();
 					return;
 				}
 

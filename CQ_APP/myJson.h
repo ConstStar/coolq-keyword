@@ -48,6 +48,8 @@ struct WKEYWORD
 //具有单独设置的项目
 struct ConfAlone
 {
+	int priority;					//优先级
+	string name;					//设置名称
 
 	vector<WKEYWORD> keyWord;		//普通关键词		
 	vector<WKEYWORD> keyWordRegex;	//正则表达式关键词
