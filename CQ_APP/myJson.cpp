@@ -264,115 +264,62 @@ bool MyJson::writeJson_vector(vector<string> json_path, vector<long long>& value
 	return true;
 }
 
-
-#if 0
-//群单独设置map 存放到json
-
-bool OperateFile::json_map2json_longlong(const wchar_t* json_after, map<long long, vector<long long>>& value)
+//获取key列表
+vector<string> MyJson::getKeyList(vector<string> json_path)
 {
-	try
+	Json::Value temp_json = conf_json;
+	vector<string> keyList;
+
+	for (auto key : json_path)
 	{
-		for (auto temp : value)
+		temp_json = temp_json[key];
+
+		if (temp_json.isNull())
 		{
-			json_vector2json_longlong((L"GroupConf." + to_wstring(temp.first)).c_str(), json_after, temp.second);
+			return keyList;
 		}
-
 	}
-	catch (exception & e)
-	{
-#ifdef DEBUG
 
-		cout << e.what() << endl;
+	keyList = temp_json.getMemberNames();
 
-#endif // DEBUG
-		return false;
-	}
-	return true;
-}
-
-bool OperateFile::json_map2json_str(const wchar_t* json_after, map<long long, vector<string>>& value)
-{
-	try
-	{
-		for (auto temp : value)
-		{
-			json_vector2json_str((L"GroupConf." + to_wstring(temp.first)).c_str(), json_after, temp.second);
-
-		}
-
-	}
-	catch (exception & e)
-	{
-#ifdef DEBUG
-
-		cout << e.what() << endl;
-
-#endif // DEBUG
-		return false;
-	}
-	return true;
+	return keyList;
 }
 
 
-//群单独设置json 读取map
-bool OperateFile::json_json2map_str(const wchar_t* json_after, map<long long, vector<string>>& value)
+//获取json
+template <typename T>
+T MyJson::get(vector<string> json_path, T def)
 {
-	try
+	Json::Value temp_json = conf_json;
+	for (auto key : json_path)
 	{
-		for (auto temp : conf_json.get_child(L"GroupConf"))
+		temp_json = temp_json[key];
+
+		if (temp_json.isNull())
 		{
-			wstring temp_str;
-			temp_str = L"GroupConf.";
-			temp_str += temp.first.data();
-			temp_str += L".";
-			temp_str += json_after;
-
-			json_json2vector_str(temp_str.c_str(), value[_wtoll(temp.first.data())]);
-
+			return def;
 		}
 	}
-	catch (exception & e)
-	{
-#ifdef DEBUG
 
-		cout << e.what() << endl;
+	if (temp_json.is<T>())
+		temp_json.as<T>();
 
-#endif // DEBUG
-		return false;
-	}
-	return true;
+	return def;
 }
 
-bool OperateFile::json_json2map_longlong(const wchar_t* json_after, map<long long, vector<long long>>& value)
+//放置json
+template <typename T>
+void MyJson::put(vector<string> json_path, T value)
 {
-	try
+	Json::Value* temp_json = &conf_json;
+	for (auto key : json_path)
 	{
-		for (auto temp : conf_json.get_child(L"GroupConf"))
-		{
-			wstring temp_str;
-			temp_str = L"GroupConf.";
-			temp_str += temp.first.data();
-			temp_str += L".";
-			temp_str += json_after;
-
-			json_json2vector_longlong(temp_str.c_str(), value[_wtoll(temp.first.data())]);
-
-		}
+		temp_json = &((*temp_json)[key]);
 	}
-	catch (exception & e)
-	{
-#ifdef DEBUG
 
-		cout << e.what() << endl;
+	(*temp_json) = value;
 
-#endif // DEBUG
-		return false;
-	}
-	return true;
 }
-
-#endif
-
 
 //从keyword变量存放到json变量中
 bool MyJson::keyword2json()
@@ -573,14 +520,14 @@ bool MyJson::json2sendGroupList()
 }
 
 //从 root 存放到json中的
-bool MyJson::root2json()
+bool MyJson::admin2json()
 {
 	writeJson_vector({ "Main" ,"Root" }, admin);
 	return true;
 }
 
 //从 json 存放到root中
-bool MyJson::json2root()
+bool MyJson::json2admin()
 {
 	readJson_vector({ "Main","Root" }, admin);
 
@@ -690,7 +637,7 @@ void MyJson::all2json()
 {
 	//conf_json.clear();
 	main2json();
-	root2json();
+	admin2json();
 	qqlist2json();
 	GroupList2json();
 	keywordWhite2json();
@@ -704,7 +651,7 @@ void MyJson::all2json()
 void MyJson::json2all()
 {
 	json2main();
-	json2root();
+	json2admin();
 	json2qqlist();
 	json2GroupList();
 	json2keywordWhite();

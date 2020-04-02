@@ -88,25 +88,7 @@ private:
 	bool read_json(string path, Json::Value& root);
 
 	//获取key列表
-	vector<string> getKeyList(vector<string> json_path)
-	{
-		Json::Value temp_json = conf_json;
-		vector<string> keyList;
-
-		for (auto key : json_path)
-		{
-			temp_json = temp_json[key];
-
-			if (temp_json.isNull())
-			{
-				return keyList;
-			}
-		}
-
-		keyList = temp_json.getMemberNames();
-
-		return keyList;
-	}
+	vector<string> getKeyList(vector<string> json_path);
 
 	//解析json中的数组
 	bool readJson_vector(vector<string> json_path, vector<string>& value);
@@ -120,53 +102,15 @@ private:
 	//构造json中的数组
 	bool writeJson_vector(vector<string> json_path, vector<long long>& value);
 
-	//获取
+	//获取json
 	template <typename T>
-	T get(vector<string> json_path, T def = T())
-	{
-		Json::Value temp_json = conf_json;
-		for (auto key : json_path)
-		{
-			temp_json = temp_json[key];
+	T get(vector<string> json_path, T def = T());
+	
 
-			if (temp_json.isNull())
-			{
-				return def;
-			}
-		}
-
-		if (temp_json.is<T>())
-			temp_json.as<T>();
-
-		return def;
-	}
-
+	//放置json
 	template <typename T>
-	void put(vector<string> json_path, T value)
-	{
-		Json::Value* temp_json = &conf_json;
-		for (auto key : json_path)
-		{
-			temp_json = &((*temp_json)[key]);
-		}
+	void put(vector<string> json_path, T value);
 
-		(*temp_json) = value;
-
-	}
-
-	////群单独设置map 存放到json
-
-	//static bool json_map2json_longlong(vector<string> json_path, map<long long, vector<long long>>& value);
-
-
-	//static bool json_map2json_str(const char* json_after, map<long long, vector<string>>& value);
-
-
-	////群单独设置json 读取map
-	//static bool json_json2map_str(const char* json_after, map<long long, vector<string>>& value);
-
-
-	//static bool json_json2map_longlong(const char* json_after, map<long long, vector<long long>>& value);
 
 public:
 
@@ -208,10 +152,10 @@ public:
 	bool json2sendGroupList();
 
 	//从 root 存放到json中的
-	bool root2json();
+	bool admin2json();
 
 	//从 json 存放到root中
-	bool json2root();
+	bool json2admin();
 
 	//读取主要配置json到内存中
 	bool json2main();
