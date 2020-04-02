@@ -25,7 +25,7 @@ using namespace std;
 extern MyJson conf;
 
 
-//单独设置中的主要设置
+//主要设置
 class tab_page_main
 	: public panel<false>
 {
@@ -200,7 +200,8 @@ private:
 
 };
 
-//主要设置
+
+//单独设置中的主要设置
 class tab_page_aloneMain
 	: public panel<false>
 {
@@ -253,7 +254,7 @@ private:
 
 		//设置名称
 		lab_priority.create(*this);
-		lab_priority.caption(u8"指令前缀：");
+		lab_priority.caption(u8"优先级：");
 		place_.field("lab_priority") << lab_priority;
 
 		text_priority.create(*this);
@@ -263,7 +264,7 @@ private:
 
 		//设置名称
 		lab_name.create(*this);
-		lab_name.caption(u8"指令前缀：");
+		lab_name.caption(u8"设置名称：");
 		place_.field("lab_name") << lab_name;
 
 		text_name.create(*this);
@@ -280,7 +281,7 @@ private:
 			int priority_temp = text_priority.to_int();
 			if (priority_temp <= 0)
 			{
-				msgbox m_error{ *this,u8"错误"};
+				msgbox m_error{ *this,u8"错误" };
 				m_error.icon(msgbox::icon_error);
 				m_error << u8"优先级必须为正数";
 				m_error.show();
@@ -1421,14 +1422,37 @@ class tab_page_alone
 	: public panel<false>
 {
 private:
-	/*void writeConf()
-	{
-
-	}*/
 
 	void readConf()
 	{
 
+		auto groupList = CQ::getGroupList();
+
+		vector<string> dealTypeList{ "不作处理","禁言","踢出","踢出并拉黑" };
+
+
+		list_aloneList.erase();
+		for (auto tempAlone : conf.alone)
+		{
+			if (tempAlone.first == 0)
+				continue;
+
+			string groupListWord;
+			dealTypeList[1] = "禁言" + to_string(tempAlone.second.banTimeLen) + "分钟";
+
+			int i = 0;
+			for (auto tempGroup : tempAlone.second.groupList)
+			{
+				groupListWord += groupList[tempGroup] + " ";
+				if (i > 5)
+					break;
+
+				i++;
+			}
+
+
+			list_aloneList.at(0).append({ to_string(tempAlone.second.priority),tempAlone.second.name ,groupListWord ,dealTypeList[tempAlone.second.dealType] });
+		}
 	}
 
 
@@ -1603,6 +1627,8 @@ private:
 		lab_priorityTip.caption(u8"提示:   优先级数值小 > 优先级数值大 > 全局设置");
 		place_.field("lab_priorityTip") << lab_priorityTip;
 
+
+		readConf();
 	}
 
 public:
