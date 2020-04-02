@@ -25,6 +25,180 @@ using namespace std;
 extern MyJson conf;
 
 
+//单独设置中的主要设置
+class tab_page_aloneMain
+	: public panel<false>
+{
+private:
+
+	//写入配置
+	void writeConf()
+	{
+		conf.all2json();
+		conf.json2file();
+	}
+
+	//读取配置
+	void readConf()
+	{
+		conf.file2json();
+		conf.json2all();
+
+		//载入设置
+		text_prefix.reset(conf.prefix);
+
+		text_admin.reset();
+		for (auto id : conf.admin)
+		{
+			text_admin.append(to_string(id) + "\n", true);
+		}
+	}
+
+
+	//初始化
+	void init()
+	{
+		place_.bind(*this);
+		place_.div(
+
+			//整体边距
+			"margin = [15,15,15,15] "
+
+			//主人QQ
+			"<vert <weight=25 lab_admin> <text_admin>>"
+			"<weight=10>"
+
+
+			"<vert"
+			"<weight=25>"
+
+			//指令前缀
+			"<weight=25 <weight=65 lab_prefix><text_prefix>>"
+			"<weight=10>"
+
+			//绑定秘钥
+			"<weight=25 lab_usingKey>"
+			"<weight=25 <text_usingKey><weight=60 button_usingKey>>"
+			"<>"
+
+			//保存
+			"<weight=25% button_save>"
+
+			">");
+
+		//主人QQ
+		lab_admin.create(*this);
+		lab_admin.caption(u8"主人QQ(每行一个):");
+		place_.field("lab_admin") << lab_admin;
+
+		text_admin.create(*this);
+		place_.field("text_admin") << text_admin;
+
+
+		//指令前缀
+		lab_prefix.create(*this);
+		lab_prefix.caption(u8"指令前缀：");
+		place_.field("lab_prefix") << lab_prefix;
+
+		text_prefix.create(*this);
+		text_prefix.line_wrapped(false);
+		text_prefix.multi_lines(false);
+		place_.field("text_prefix") << text_prefix;
+
+
+		//使用秘钥
+		lab_usingKey.create(*this);
+		lab_usingKey.caption(u8"激活专业版：");
+		place_.field("lab_usingKey") << lab_usingKey;
+
+		text_usingKey.create(*this);
+		text_usingKey.line_wrapped(false);
+		text_usingKey.multi_lines(false);
+		place_.field("text_usingKey") << text_usingKey;
+
+		btn_usingKey.create(*this);
+		btn_usingKey.caption(u8"使用秘钥");
+		btn_usingKey.events().click([this] {
+
+		});
+		place_.field("button_usingKey") << btn_usingKey;
+
+
+		//保存按钮
+		btn_save.create(*this);
+		btn_save.caption(u8"保存");
+		btn_save.events().click([this] {
+
+			bool ok = regex_match(text_admin.text(), regex("[\\n\\d\\r]*"));
+			if (!ok)
+			{
+				msgbox a{ *this,u8"错误" };
+				a << u8"主人QQ格式有误";
+				a.show();
+				return;
+			}
+
+			//主人QQ
+			auto line = text_admin.text_line_count();
+			conf.admin.clear();
+			for (int i = 0; i < line; i++)
+			{
+				string buf;
+				text_admin.getline(i, buf);
+				if (!buf.empty())
+					conf.admin.push_back(atoll(buf.c_str()));
+			}
+
+			//消息前缀
+			conf.prefix = text_prefix.text();
+
+			//写入配置
+			writeConf();
+
+			msgbox m_save{ *this,u8"成功" };
+			m_save << u8"保存成功";
+			m_save.show();
+
+			//重新载入配置
+			readConf();
+		});
+		place_.field("button_save") << btn_save;
+
+		readConf();
+	}
+
+public:
+	tab_page_aloneMain(window wd, int index = 0)
+		: panel<false>(wd)
+		, conf_index(index)
+	{
+		init();
+	}
+
+
+private:
+	place place_;
+	int conf_index;
+
+	//主人QQ
+	label lab_admin;
+	textbox text_admin;
+
+	//指令前缀
+	label lab_prefix;
+	textbox text_prefix;
+
+	//使用秘钥
+	label lab_usingKey;
+	textbox text_usingKey;
+	button btn_usingKey;
+
+
+	//保存
+	button btn_save;
+
+};
+
 //主要设置
 class tab_page_main
 	: public panel<false>
@@ -218,6 +392,9 @@ private:
 		//载入群名单
 		auto groupList = CQ::getGroupList();
 
+		//清空原有
+		listGroupList.erase();
+
 		//先载入已选
 		for (auto temp : conf.alone[conf_index].groupList)
 		{
@@ -251,26 +428,12 @@ private:
 
 		//一些开关
 		checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
-		checkGroupWarn.check(conf.alone[conf_index].groupWarn);
+		checkGroupWarn.check(conf.alone[conf_index].keyWordGroupWarn);
 		checkStreng.check(conf.alone[conf_index].streng);
 
 		//私聊消息转发给主人
 		checkRelayPrivateMsg.check(conf.relayPrivateMsg);
 
-	}
-
-	void writeGroupList()
-	{
-		conf.alone[0].groupList.clear();
-		for (auto temp : listGroupList.checked())
-		{
-			string buf = listGroupList.at(temp).text(1);
-
-			conf.alone[0].groupList.push_back(atoll(buf.c_str()));
-
-		}
-
-		writeConf();
 	}
 
 	void init()
@@ -308,10 +471,6 @@ private:
 		listGroupList.checkable(true);
 		listGroupList.append_header(u8"群名");
 		listGroupList.append_header(u8"群号码");
-		listGroupList.events().click([&]
-		{
-			writeGroupList();
-		});
 		place_.field("list") << listGroupList;
 
 
@@ -349,9 +508,6 @@ private:
 					break;
 				}
 			}
-
-			//写入设置
-			writeGroupList();
 		});
 		place_.field("button_addgroup") << btnGroupAdd;
 
@@ -369,10 +525,6 @@ private:
 			{
 				listGroupList.at(listbox::index_pair(0, i)).check(true);
 			}
-
-
-			writeGroupList();
-
 		});
 		//反选
 		btnListReverse.create(*this);
@@ -387,8 +539,6 @@ private:
 
 				p.check(!p.checked());
 			}
-
-			writeGroupList();
 		});
 		place_.field("button_list") << btnListAll << btnListReverse;
 
@@ -474,6 +624,16 @@ private:
 		btnSave.caption(u8"保存");
 		btnSave.events().click([this]
 		{
+
+			//群名单
+			conf.alone[conf_index].groupList.clear();
+			for (auto temp : listGroupList.checked())
+			{
+				string buf = listGroupList.at(temp).text(1);
+
+				conf.alone[conf_index].groupList.push_back(atoll(buf.c_str()));
+			}
+
 			//处理方式
 			int dealType = 0;
 			for (int i = 0; i < checkDeal.size(); i++)
@@ -491,7 +651,7 @@ private:
 
 			//一些开关
 			conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
-			conf.alone[conf_index].groupWarn = checkGroupWarn.checked();
+			conf.alone[conf_index].keyWordGroupWarn = checkGroupWarn.checked();
 			conf.alone[conf_index].streng = checkStreng.checked();
 
 			conf.relayPrivateMsg = checkRelayPrivateMsg.checked();
@@ -567,7 +727,8 @@ private:
 	//写入配置
 	void writeConf()
 	{
-
+		conf.all2json();
+		conf.json2file();
 	}
 
 	//读取配置
@@ -587,12 +748,13 @@ private:
 		text_keyWordWhite.reset();
 		for (auto keyword : conf.alone[conf_index].keyWordWhite)
 		{
-			text_QQList.append(keyword.keyWord + "\n", true);
+			text_keyWordWhite.append(keyword.keyWord + "\n", true);
 		}
 
 		//特殊名单类型
 		check_QQListType.at(conf.alone[conf_index].QQListType)->check(true);
 	}
+
 
 	void init()
 	{
@@ -698,9 +860,9 @@ private:
 		btn_save.caption(u8"保存");
 		btn_save.events().click([this] {
 
-			//主人QQ
+			//QQ特殊名单
 			auto QQList_line = text_QQList.text_line_count();
-			conf.admin.clear();
+			conf.alone[conf_index].QQList.clear();
 			for (int i = 0; i < QQList_line; i++)
 			{
 				string buf;
@@ -709,15 +871,47 @@ private:
 					conf.alone[conf_index].QQList.push_back(atoll(buf.c_str()));
 			}
 
+			//白名单关键词
+			auto keyWrodWhite_line = text_keyWordWhite.text_line_count();
+			conf.alone[conf_index].keyWordWhite.clear();
+			for (int i = 0; i < keyWrodWhite_line; i++)
+			{
+				string buf;
+				text_keyWordWhite.getline(i, buf);
+				if (!buf.empty())
+					conf.alone[conf_index].keyWordWhite.push_back(buf.c_str());
+			}
+
+			//特殊名单类型  白名单||监控名单
+			int listType = 0;
+			for (int i = 0; i < check_QQListType.size(); i++)
+			{
+				if (check_QQListType.at(i)->checked())
+				{
+					listType = i;
+					break;
+				}
+			}
+			conf.alone[conf_index].QQListType = listType;
+
+
+			writeConf();
 
 			msgbox m_save{ *this,u8"成功" };
 			m_save << u8"保存成功";
 			m_save.show();
 
+			//重新读取配置
+			readConf();
+
 		});
 
 		place_.field("button_save") << btn_save;
+
+		readConf();
 	}
+
+
 
 public:
 	tab_page_list(window wd, int index = 0)
@@ -756,15 +950,34 @@ class tab_page_keyWord
 	: public panel<false>
 {
 private:
+	//写入配置
 	void writeConf()
 	{
-
+		conf.all2json();
+		conf.json2file();
 	}
 
+	//读取配置
 	void readConf()
 	{
+		conf.file2json();
+		conf.json2all();
 
+		//普通关键词
+		text_keyWord.reset();
+		for (auto keyword : conf.alone[conf_index].keyWord)
+		{
+			text_keyWord.append(keyword.keyWord + "\n", true);
+		}
+
+		//正则表达式关键词
+		text_keyWordRegex.reset();
+		for (auto keyword : conf.alone[conf_index].keyWordRegex)
+		{
+			text_keyWordRegex.append(keyword.keyWord + "\n", true);
+		}
 	}
+
 
 	void init()
 	{
@@ -782,7 +995,7 @@ private:
 			"<vert"
 
 			//正则表达式关键词
-			"<vert <weight=25 <lab_regexKeyWord> <weight=30% margin = [0,0,7] btn_regexTest>> <text_regexKeyWord>>"
+			"<vert <weight=25 <lab_keyWordRegex> <weight=30% margin = [0,0,7] btn_regexTest>> <text_keyWordRegex>>"
 			"<weight=10>"
 
 			//保存
@@ -800,12 +1013,12 @@ private:
 
 
 		//正则表达式关键词
-		lab_regexKeyWord.create(*this);
-		lab_regexKeyWord.caption(u8"正则表达式关键词(每行一个):");
-		place_.field("lab_regexKeyWord") << lab_regexKeyWord;
+		lab_keyWordRegex.create(*this);
+		lab_keyWordRegex.caption(u8"正则表达式关键词(每行一个):");
+		place_.field("lab_keyWordRegex") << lab_keyWordRegex;
 
-		text_regexKeyWord.create(*this);
-		place_.field("text_regexKeyWord") << text_regexKeyWord;
+		text_keyWordRegex.create(*this);
+		place_.field("text_keyWordRegex") << text_keyWordRegex;
 
 
 		//正则表达式测试
@@ -824,16 +1037,47 @@ private:
 		btn_save.caption(u8"保存");
 		btn_save.events().click([this] {
 
+			//关键词
+			auto keyWord_line = text_keyWord.text_line_count();
+			conf.alone[conf_index].keyWord.clear();
+			for (int i = 0; i < keyWord_line; i++)
+			{
+				string buf;
+				text_keyWord.getline(i, buf);
+				if (!buf.empty())
+					conf.alone[conf_index].keyWord.push_back(buf.c_str());
+			}
+
+			//正则表达式关键词
+			auto keyWordRegex_line = text_keyWordRegex.text_line_count();
+			conf.alone[conf_index].keyWordRegex.clear();
+			for (int i = 0; i < keyWordRegex_line; i++)
+			{
+				string buf;
+				text_keyWordRegex.getline(i, buf);
+				if (!buf.empty())
+					conf.alone[conf_index].keyWordRegex.push_back(buf.c_str());
+			}
+
+			//写入配置
+			writeConf();
+
 			msgbox m_save{ *this,u8"成功" };
 			m_save << u8"保存成功";
 			m_save.show();
+
+			//重新读取配置
+			readConf();
 		});
 		place_.field("button_save") << btn_save;
+
+		readConf();
 	}
 
 public:
-	tab_page_keyWord(window wd)
+	tab_page_keyWord(window wd, int index = 0)
 		: panel<false>(wd)
+		, conf_index(index)
 	{
 		init();
 	}
@@ -841,14 +1085,15 @@ public:
 
 private:
 	place place_;
+	int conf_index;
 
 	//主人QQ
 	label lab_keyWord;
 	textbox text_keyWord;
 
 	//正则表达式关键词
-	label lab_regexKeyWord;
-	textbox text_regexKeyWord;
+	label lab_keyWordRegex;
+	textbox text_keyWordRegex;
 
 	//正则表达式测试
 	button btn_regexTest;
@@ -863,14 +1108,21 @@ class tab_page_groupWarnWord
 	: public panel<false>
 {
 private:
+	//写入配置
 	void writeConf()
 	{
-
+		conf.all2json();
+		conf.json2file();
 	}
 
+	//读取配置
 	void readConf()
 	{
+		conf.file2json();
+		conf.json2all();
 
+		//触发提醒
+		text_warnWord.reset(conf.alone[conf_index].keyWordGroupWarnWord);
 	}
 
 	void init()
@@ -922,16 +1174,26 @@ private:
 		btn_save.caption(u8"保存");
 		btn_save.events().click([this] {
 
+			conf.alone[conf_index].keyWordGroupWarnWord = text_warnWord.text();
+
+
+			writeConf();
+
 			msgbox m_save{ *this,u8"成功" };
 			m_save << u8"保存成功";
 			m_save.show();
+
+			readConf();
 		});
 		place_.field("button_save") << btn_save;
+
+		readConf();
 	}
 
 public:
-	tab_page_groupWarnWord(window wd)
+	tab_page_groupWarnWord(window wd, int index = 0)
 		: panel<false>(wd)
+		, conf_index(index)
 	{
 		init();
 	}
@@ -939,6 +1201,7 @@ public:
 
 private:
 	place place_;
+	int conf_index;
 
 	//自定义触发提醒
 	label lab_warnWord;
@@ -960,12 +1223,54 @@ class tab_page_relayGroupMsg
 private:
 	void writeConf()
 	{
-
+		conf.all2json();
+		conf.json2file();
 	}
 
 	void readConf()
 	{
+		conf.file2json();
+		conf.json2all();
 
+
+
+		//载入群名单
+		auto groupList = CQ::getGroupList();
+
+		//清空原有
+		list_groupList.erase();
+
+		//先载入已选
+		for (auto temp : conf.alone[conf_index].relayGroupList)
+		{
+			list_groupList.at(0).append({ groupList[temp], to_string(temp) });
+			groupList.erase(temp);
+		}
+
+		//再载入未选
+		for (auto temp : groupList)
+		{
+			list_groupList.at(0).append({ temp.second, to_string(temp.first) });
+		}
+
+		//勾选已选的
+		auto size = list_groupList.size_item(0);
+		for (int i = 0; i < size; i++)
+		{
+			string buf = list_groupList.at(0).at(i).text(1);
+
+			if (find(conf.alone[conf_index].relayGroupList.begin(), conf.alone[conf_index].relayGroupList.end(), atoll(buf.c_str())) != conf.alone[conf_index].relayGroupList.end())
+			{
+				list_groupList.at(0).at(i).check(true);
+			}
+		}
+
+
+		//转发格式
+		text_relayGroupWord.reset(conf.alone[conf_index].relayGroupWord);
+
+		text_relayGroupMsg_trimFront.reset(to_string(conf.alone[conf_index].relayGroupMsg_trimFront));
+		text_relayGroupMsg_trimBack.reset(to_string(conf.alone[conf_index].relayGroupMsg_trimBack));
 	}
 
 	//显示文本
@@ -1002,14 +1307,14 @@ private:
 			"<weight=10>"
 
 			//转发格式
-			"<vert <weight=25 <lab_msgWord> <margin = [0,0,7] button_variable>> <text_msgWord>>"
+			"<vert <weight=25 <lab_relayGroupWord> <margin = [0,0,7] button_variable>> <text_relayGroupWord>>"
 			"<weight=10>"
 			">"
 
 			"<weight=20>"
 			"<weight=25%"
 			//消息修剪
-			"<vert <weight=25 lab_msgTrim> <vert <weight=25 <weight=80 lab_msgTrimFront><text_msgTrimFront>> <weight=25 <weight=80 lab_msgTrimBack><text_msgTrimBack>>>>"
+			"<vert <weight=25 lab_relayGroupMsg_trim> <vert <weight=25 <weight=80 lab_relayGroupMsg_trimFront><text_relayGroupMsg_trimFront>> <weight=25 <weight=80 lab_relayGroupMsg_trimBack><text_relayGroupMsg_trimBack>>>>"
 
 			"<weight=10%>"
 
@@ -1031,37 +1336,37 @@ private:
 		place_.field("list_groupList") << list_groupList;
 
 		//消息修剪
-		lab_msgTrim.create(*this);
-		lab_msgTrim.caption(u8"消息修剪（去广告尾巴专用）");
-		place_.field("lab_msgTrim") << lab_msgTrim;
+		lab_relayGroupMsg_trim.create(*this);
+		lab_relayGroupMsg_trim.caption(u8"消息修剪（去广告尾巴专用）");
+		place_.field("lab_relayGroupMsg_trim") << lab_relayGroupMsg_trim;
 
-		lab_msgTrimFront.create(*this);
-		lab_msgTrimFront.caption(u8"删除前面行数:");
-		place_.field("lab_msgTrimFront") << lab_msgTrimFront;
+		lab_relayGroupMsg_trimFront.create(*this);
+		lab_relayGroupMsg_trimFront.caption(u8"删除前面行数:");
+		place_.field("lab_relayGroupMsg_trimFront") << lab_relayGroupMsg_trimFront;
 
-		text_msgTrimFront.create(*this);
-		text_msgTrimFront.line_wrapped(false);
-		text_msgTrimFront.multi_lines(false);
-		place_.field("text_msgTrimFront") << text_msgTrimFront;
+		text_relayGroupMsg_trimFront.create(*this);
+		text_relayGroupMsg_trimFront.line_wrapped(false);
+		text_relayGroupMsg_trimFront.multi_lines(false);
+		place_.field("text_relayGroupMsg_trimFront") << text_relayGroupMsg_trimFront;
 
-		lab_msgTrimBack.create(*this);
-		lab_msgTrimBack.caption(u8"删除后面行数:");
-		place_.field("lab_msgTrimBack") << lab_msgTrimBack;
+		lab_relayGroupMsg_trimBack.create(*this);
+		lab_relayGroupMsg_trimBack.caption(u8"删除后面行数:");
+		place_.field("lab_relayGroupMsg_trimBack") << lab_relayGroupMsg_trimBack;
 
-		text_msgTrimBack.create(*this);
-		text_msgTrimBack.line_wrapped(false);
-		text_msgTrimBack.multi_lines(false);
-		place_.field("text_msgTrimBack") << text_msgTrimBack;
+		text_relayGroupMsg_trimBack.create(*this);
+		text_relayGroupMsg_trimBack.line_wrapped(false);
+		text_relayGroupMsg_trimBack.multi_lines(false);
+		place_.field("text_relayGroupMsg_trimBack") << text_relayGroupMsg_trimBack;
 
 
 		//转发消息格式
-		lab_variable.create(*this);
-		lab_variable.caption(u8"转发消息格式:");
-		place_.field("lab_msgWord") << lab_variable;
+		lab_relayGroupWord.create(*this);
+		lab_relayGroupWord.caption(u8"转发消息格式:");
+		place_.field("lab_relayGroupWord") << lab_relayGroupWord;
 
-		text_variable.create(*this);
-		text_variable.tip_string(u8"不填写则转发消息原格式 即 {msg}");
-		place_.field("text_msgWord") << text_variable;
+		text_relayGroupWord.create(*this);
+		text_relayGroupWord.tip_string(u8"不填写则转发消息原格式 即 {msg}");
+		place_.field("text_relayGroupWord") << text_relayGroupWord;
 
 		//变量按钮
 		button_variable.create(*this);
@@ -1083,25 +1388,41 @@ private:
 		btn_save.caption(u8"保存");
 		btn_save.events().click([this] {
 
+			//群名单
+			conf.alone[conf_index].relayGroupList.clear();
+			for (auto temp : list_groupList.checked())
+			{
+				string buf = list_groupList.at(temp).text(1);
+
+				conf.alone[conf_index].relayGroupList.push_back(atoll(buf.c_str()));
+
+			}
+
+			//转发格式
+			conf.alone[conf_index].relayGroupWord = text_relayGroupWord.text();
+
+			conf.alone[conf_index].relayGroupMsg_trimFront = atoi(text_relayGroupMsg_trimFront.text().c_str());
+			conf.alone[conf_index].relayGroupMsg_trimBack = atoi(text_relayGroupMsg_trimBack.text().c_str());
+
+
+			writeConf();
+
 			msgbox m_save{ *this,u8"成功" };
 			m_save << u8"保存成功";
 			m_save.show();
+
+			readConf();
+
 		});
 		place_.field("button_save") << btn_save;
 
-
-		//添加列表内容
-		auto groupList = CQ::getGroupList();
-		for (auto temp : groupList)
-		{
-			list_groupList.at(0).append({ temp.second, to_string(temp.first) });
-		}
-
+		readConf();
 	}
 
 public:
-	tab_page_relayGroupMsg(window wd)
+	tab_page_relayGroupMsg(window wd, int index = 0)
 		: panel<false>(wd)
+		, conf_index(index)
 	{
 		init();
 	}
@@ -1109,21 +1430,22 @@ public:
 
 private:
 	place place_;
+	int conf_index;
 
 	//群列表
 	label lab_groupList;
 	listbox	list_groupList;
 
 	//消息修建
-	label lab_msgTrim;
-	label lab_msgTrimFront;
-	label lab_msgTrimBack;
-	textbox text_msgTrimFront;
-	textbox text_msgTrimBack;
+	label lab_relayGroupMsg_trim;
+	label lab_relayGroupMsg_trimFront;
+	label lab_relayGroupMsg_trimBack;
+	textbox text_relayGroupMsg_trimFront;
+	textbox text_relayGroupMsg_trimBack;
 
 	//变量
-	label lab_variable;
-	textbox text_variable;
+	label lab_relayGroupWord;
+	textbox text_relayGroupWord;
 
 	//变量按钮
 	button button_variable;
@@ -1138,34 +1460,67 @@ class tab_page_alone
 	: public panel<false>
 {
 private:
-	void writeConf()
+	/*void writeConf()
 	{
 
-	}
+	}*/
 
 	void readConf()
 	{
 
 	}
 
-	//显示文本
-	void showText(string title, string word)
+
+	void openAlone(int conf_index)
 	{
-		form fm_temp;
-		fm_temp.caption(title);
+
+		form fm;
+		fm.caption(u8"设置");
+		fm.size(nana::size(550, 400));
+
+		place place;
+		place.bind(fm);
+		place.div("<vert <weight=30 tabbar> <tab_frame>>");
 
 
-		textbox text{ fm_temp };
-		text.caption(word);
-		text.editable(false);
+		std::vector<std::shared_ptr<panel<false>>> tabpages;
+		tabbar<std::string> tabbar{ fm };
 
-		fm_temp.div("<text>");
-		fm_temp["text"] << text;
-		fm_temp.collocate();
+		//不知道为啥 在添加前禁用scroll 就可以实现显示最前面的scroll页面
+		tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, false);
 
-		fm_temp.show();
+		tabbar.push_back(u8"主要设置");
+		tabpages.push_back(std::make_shared<tab_page_aloneMain>(fm, conf_index));
+		tabbar.push_back(u8"全局设置");
+		tabpages.push_back(std::make_shared<tab_page_overall>(fm, conf_index));
+		tabbar.push_back(u8"关键词");
+		tabpages.push_back(std::make_shared<tab_page_keyWord>(fm, conf_index));
+		tabbar.push_back(u8"过滤名单");
+		tabpages.push_back(std::make_shared<tab_page_list>(fm, conf_index));
+		tabbar.push_back(u8"触发提醒");
+		tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm, conf_index));
+		tabbar.push_back(u8"转发到群");
+		tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm, conf_index));
+
+
+		std::size_t index = 0;
+		for (auto& i : tabpages)
+		{
+			tabbar.attach(index++, *i);
+			place.field("tab_frame").fasten(*i);
+		}
+
+		tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, true);
+		tabbar.toolbox(nana::tabbar<std::string>::kits::list, true);
+		tabbar.activated(0);
+		place.field("tabbar") << tabbar;
+		place.collocate();
+
+		fm.show();
+
 		exec();
 	}
+
 
 	void init()
 	{
@@ -1203,23 +1558,42 @@ private:
 				return;
 
 			auto index = list_aloneList.selected();
+			
+
+			//防止两个窗口冲突，先读取一下
+			readConf();
 
 			//菜单
 			menu menu_;
 
+
 			//点击菜单事件
 			//添加
 			auto handlerAdd = [=](menu::item_proxy& ip) {
-				//添加
+
+				int add_index = conf.alone.size();
+
+				if (conf.alone.find(add_index) != conf.alone.end())
+				{
+					msgbox m(*this, u8"错误");
+					m << u8"配置项id冲突，添加失败，请尝试重启酷Q";
+					m.show();
+					return;
+				}
+
+
+				openAlone(add_index);
+
+				readConf();
 			};
 
 			//编辑
 			auto handlerEdit = [=](menu::item_proxy& ip) {
+				int conf_index = index.at(0).item + 1;
 
-				//获取选中项目的优先级
-				int priority = atoi(list_aloneList.at(index.at(0)).text(0).c_str());
+				openAlone(conf_index);
 
-				//编辑
+				readConf();
 			};
 
 			//删除
@@ -1233,7 +1607,12 @@ private:
 				auto res = m.show();
 
 				if (res == m.pick_yes)
-					list_aloneList.erase(index);
+				{
+					int conf_index = index.at(0).item + 1;
+					conf.alone.erase(conf_index);
+
+					readConf();
+				}
 
 			};
 

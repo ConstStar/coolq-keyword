@@ -88,7 +88,10 @@ bool MyJson::write_json(string path, Json::Value& root)
 	else
 	{
 		Json::StreamWriterBuilder wbuilder;
+
+#ifndef _DEBUG
 		wbuilder["indentation"] = "";
+#endif // !_DEBUG
 
 		file << Json::writeString(wbuilder, root);
 
@@ -197,6 +200,8 @@ bool MyJson::readJson_vector(vector<string> json_path, vector<long long>& value)
 
 		return false;
 	}
+
+	return true;
 }
 
 //构造json中的数组
@@ -302,7 +307,7 @@ T MyJson::get(vector<string> json_path, T def)
 	}
 
 	if (temp_json.is<T>())
-		temp_json.as<T>();
+		return temp_json.as<T>();
 
 	return def;
 }
@@ -324,6 +329,7 @@ void MyJson::put(vector<string> json_path, T value)
 //从keyword变量存放到json变量中
 bool MyJson::keyWord2json()
 {
+	int index = 1;
 	for (auto& temp : alone)
 	{
 		vector<string> temp_keyword;
@@ -332,8 +338,16 @@ bool MyJson::keyWord2json()
 			temp_keyword.push_back(temp_word.keyWord);
 		}
 
-		writeJson_vector({ "alone", to_string(temp.first) ,"keyWord" }, temp_keyword);
-
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone", "0" ,"keyWord" }, temp_keyword);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone", to_string(index++) ,"keyWord" }, temp_keyword);
+		}
 	}
 
 	return true;
@@ -361,9 +375,10 @@ bool MyJson::json2keyWord()
 	return true;
 }
 
-//从REkeyword变量存放到json变量中
+//从keyWordRegex变量存放到json变量中
 bool MyJson::keyWordRegex2json()
 {
+	int index = 1;
 
 	for (auto& temp : alone)
 	{
@@ -373,14 +388,23 @@ bool MyJson::keyWordRegex2json()
 			temp_keyWordRegex.push_back(temp_wordRegex.keyWord);
 		}
 
-		writeJson_vector({ "alone", to_string(temp.first) ,"keyWordRegex" }, temp_keyWordRegex);
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone", "0" ,"keyWordRegex" }, temp_keyWordRegex);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone", to_string(index++) ,"keyWordRegex" }, temp_keyWordRegex);
+		}
 
 	}
 
 	return true;
 }
 
-//从json变量存放到REkeyword变量中
+//从json变量存放到keyWordRegex变量中
 bool MyJson::json2keyWordRegex()
 {
 
@@ -405,6 +429,7 @@ bool MyJson::json2keyWordRegex()
 //从keywordWhite变量存放到json变量中
 bool MyJson::keyWordWhite2json()
 {
+	int index = 1;
 
 	for (auto& temp : alone)
 	{
@@ -414,7 +439,17 @@ bool MyJson::keyWordWhite2json()
 			temp_keyWordWhite.push_back(temp_wordWhite.keyWord);
 		}
 
-		writeJson_vector({ "alone", to_string(temp.first) ,"keyWordWhite" }, temp_keyWordWhite);
+
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone", "0" ,"keyWordWhite" }, temp_keyWordWhite);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone", to_string(index++) ,"keyWordWhite" }, temp_keyWordWhite);
+		}
 
 	}
 
@@ -446,9 +481,21 @@ bool MyJson::json2keyWordWhite()
 //从 监控群名单 存放到json中的
 bool MyJson::groupList2json()
 {
+	int index = 1;
+
 	for (auto& temp : alone)
 	{
-		writeJson_vector({ "alone",to_string(temp.first),"groupList" }, alone[temp.first].groupList);
+
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone","0","groupList" }, alone[temp.first].groupList);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone",to_string(index),"groupList" }, alone[temp.first].groupList);
+		}
 	}
 
 	return true;
@@ -471,9 +518,21 @@ bool MyJson::json2groupList()
 //从 QQ白名单/监控名单 存放到json中的
 bool MyJson::QQlist2json()
 {
+	int index = 1;
+
 	for (auto& temp : alone)
 	{
-		writeJson_vector({ "alone",to_string(temp.first),"QQList" }, alone[temp.first].QQList);
+
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone","0","QQList" }, alone[temp.first].QQList);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone",to_string(index++),"QQList" }, alone[temp.first].QQList);
+		}
 	}
 
 	return true;
@@ -496,10 +555,21 @@ bool MyJson::json2QQlist()
 //从 转发群名单 存放到json中的
 bool MyJson::relayGroupList2json()
 {
+	int index = 1;
 
 	for (auto& temp : alone)
 	{
-		writeJson_vector({ "alone",to_string(temp.first),"relayGroupList" }, alone[temp.first].relayGroupList);
+
+		if (temp.first == 0)
+		{
+			//默认设置
+			writeJson_vector({ "alone","0","relayGroupList" }, alone[temp.first].relayGroupList);
+		}
+		else
+		{
+			//单独设置
+			writeJson_vector({ "alone",to_string(index++),"relayGroupList" }, alone[temp.first].relayGroupList);
+		}
 	}
 
 	return true;
@@ -522,14 +592,15 @@ bool MyJson::json2relayGroupList()
 //从 root 存放到json中的
 bool MyJson::admin2json()
 {
-	writeJson_vector({ "Main" ,"Root" }, admin);
+	writeJson_vector({ "main" ,"admin" }, admin);
 	return true;
 }
 
 //从 json 存放到root中
+
 bool MyJson::json2admin()
 {
-	readJson_vector({ "Main","Root" }, admin);
+	readJson_vector({ "main","admin" }, admin);
 
 	return true;
 }
@@ -566,18 +637,18 @@ bool MyJson::json2aloneSwitch()
 			auto& aloneTemp = alone[atoi(temp_key.c_str())];
 
 
-			aloneTemp.groupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
+			aloneTemp.keyWordGroupWarn = get<bool>({ "alone",temp_key, "groupWarn" }, false);
 			aloneTemp.deleteMsg = get<bool>({ "alone",temp_key, "deleteMsg" }, false);
 			aloneTemp.streng = get<bool>({ "alone",temp_key, "streng" }, false);
 
-			aloneTemp.relayGroupMsg_afterLine = get<int>({ "alone",temp_key, "relayGroupMsg_afterLine" }, 0);
-			aloneTemp.relayGroupMsg_frontLine = get<int>({ "alone",temp_key, "relayGroupMsg_frontLine" }, 0);
+			aloneTemp.relayGroupMsg_trimFront = get<int>({ "alone",temp_key, "relayGroupMsg_trimFront" }, 0);
+			aloneTemp.relayGroupMsg_trimBack = get<int>({ "alone",temp_key, "relayGroupMsg_trimBack" }, 0);
 			aloneTemp.QQListType = get<int>({ "alone",temp_key, "QQListType" }, 0);
 			aloneTemp.dealType = get<int>({ "alone",temp_key, "dealType" }, 0);
 			aloneTemp.banTimeLen = get<int>({ "alone",temp_key, "banTimeLen" }, 0);
 
 			aloneTemp.relayGroupWord = get<string>({ "alone",temp_key, "relayGroupWord" }, "");
-			aloneTemp.keyWordGroupWarn = get<string>({ "alone",temp_key, "keyWordGroupWarn" }, "");
+			aloneTemp.keyWordGroupWarnWord = get<string>({ "alone",temp_key, "keyWordGroupWarn" }, "");
 		}
 	}
 	catch (exception & e)
@@ -598,23 +669,33 @@ bool MyJson::aloneSwitch2json()
 {
 	try
 	{
+		int index = 1;
+
 		for (auto& temp_alone : alone)
 		{
-			string temp_key = to_string(temp_alone.first);
+			string temp_key = "0";
+
+
+			//单独设置
+			if (temp_alone.first != 0)
+				temp_key = to_string(index++);
+
+
+
 			auto& aloneTemp = alone[temp_alone.first];
 
-			put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.groupWarn);
+			put<bool>({ "alone",temp_key,"groupWarn" }, aloneTemp.keyWordGroupWarn);
 			put<bool>({ "alone",temp_key,"deleteMsg" }, aloneTemp.deleteMsg);
 			put<bool>({ "alone",temp_key,"streng" }, aloneTemp.streng);
 
-			put<int>({ "alone",temp_key,"relayGroupMsg_afterLine" }, aloneTemp.relayGroupMsg_afterLine);
-			put<int>({ "alone",temp_key,"relayGroupMsg_frontLine" }, aloneTemp.relayGroupMsg_frontLine);
+			put<int>({ "alone",temp_key,"relayGroupMsg_trimFront" }, aloneTemp.relayGroupMsg_trimFront);
+			put<int>({ "alone",temp_key,"relayGroupMsg_trimBack" }, aloneTemp.relayGroupMsg_trimBack);
 			put<int>({ "alone",temp_key,"QQListType" }, aloneTemp.QQListType);
 			put<int>({ "alone",temp_key,"dealType" }, aloneTemp.dealType);
 			put<int>({ "alone",temp_key,"banTimeLen" }, aloneTemp.banTimeLen);
 
 			put<string>({ "alone",temp_key,"relayGroupWord" }, aloneTemp.relayGroupWord);
-			put<string>({ "alone",temp_key,"keyWordGroupWarn" }, aloneTemp.keyWordGroupWarn);
+			put<string>({ "alone",temp_key,"keyWordGroupWarn" }, aloneTemp.keyWordGroupWarnWord);
 
 		}
 	}
@@ -657,7 +738,7 @@ void MyJson::json2all()
 	json2keyWordRegex();
 	json2keyWord();
 	json2relayGroupList();
-	json2mainSwitch();
+	json2aloneSwitch();
 }
 
 //将json写到文件里
@@ -686,7 +767,7 @@ void MyJson::file2json()
 		cout << e.what() << endl;
 #endif
 	}
-}
+	}
 
 
 

@@ -949,12 +949,12 @@ public:
 			}
 		}
 
-		if (conf.alone[conf_index].groupWarn)
+		if (conf.alone[conf_index].keyWordGroupWarn)
 		{
 
-			if (!conf.alone[conf_index].keyWordGroupWarn.empty())
+			if (!conf.alone[conf_index].keyWordGroupWarnWord.empty())
 			{
-				string SendMsg(conf.alone[conf_index].keyWordGroupWarn);
+				string SendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
 
 				//Ω‚Œˆ±‰¡ø
 				KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
@@ -1013,7 +1013,7 @@ public:
 
 			int i = 0;
 
-			if (conf.alone[conf_index].relayGroupMsg_frontLine)
+			if (conf.alone[conf_index].relayGroupMsg_trimFront)
 			{
 				for (auto it = temp_msg.begin(); it != temp_msg.end(); it++)
 				{
@@ -1021,13 +1021,13 @@ public:
 					if (*it == '\n')
 					{
 						i++;
-						if (i == conf.alone[conf_index].relayGroupMsg_frontLine)
+						if (i == conf.alone[conf_index].relayGroupMsg_trimFront)
 							break;
 					}
 				}
 			}
 
-			if (conf.alone[conf_index].relayGroupMsg_afterLine)
+			if (conf.alone[conf_index].relayGroupMsg_trimBack)
 			{
 				i = 0;
 				for (auto it = temp_msg.rbegin(); it != temp_msg.rend(); it++)
@@ -1036,7 +1036,7 @@ public:
 					if (*it == '\n')
 					{
 						i++;
-						if (i == conf.alone[conf_index].relayGroupMsg_afterLine)
+						if (i == conf.alone[conf_index].relayGroupMsg_trimBack)
 							break;
 					}
 				}
