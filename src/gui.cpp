@@ -976,17 +976,17 @@ private:
         place_.field("lab_variable") << lab_variable;
 
         string variable(
-            u8"{at}\t\t艾特\t\t如:@群关键词监控\r\n"
-            u8"{日期}\t\t当前日期\t如:2019年01月01日\r\n"
-            u8"{时间}\t\t当前时间\t如:00:00:00.000\r\n"
-            u8"{星期}\t\t当前星期\t如:星期1\r\n"
-            u8"{处理方式}\t触发后处理方式\t如:禁言29天23小时59分钟\r\n"
-            u8"{关键词}\t\t触发的关键词\t如:微信回收\r\n"
-            u8"{触发的QQ号码}\t触发关键词的QQ号码\t如:1164442003\r\n"
-            u8"{触发的QQ名称}\t触发关键词的QQ名称\t如:小小哥\r\n"
-            u8"{触发的QQ名片}\t触发关键词的QQ名片\t如:定制插件\r\n"
-            u8"{触发的群名称}\t触发关键词的群名称\t如:QQ机器人内测群\r\n"
-            u8"\r\n\r\n\r\n更多变量欢迎补充");
+            u8"{at}\t\t艾特\r\n"
+            u8"{日期}\t\t当前日期\r\n"
+            u8"{时间}\t\t当前时间\r\n"
+            u8"{星期}\t\t当前星期\r\n"
+            u8"{处理方式}\t触发后处理方式\r\n"
+            u8"{关键词}\t\t触发的关键词\r\n"
+            u8"{触发的QQ号码}\t触发关键词的QQ号码\r\n"
+            u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
+            u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
+            u8"{触发的群名称}\t触发关键词的群名称\r\n"
+            u8"\r\n\r\n更多变量欢迎补充");
         text_variable.create(*this);
         text_variable.editable(false);
         text_variable.caption(variable);
@@ -1188,15 +1188,15 @@ private:
         button_variable.events().click([this] {
             string variable(
                 u8"{msg}\t\t触发关键词的消息内容\r\n"
-                u8"{日期}\t\t当前日期\t如:2019年01月01日\r\n"
-                u8"{时间}\t\t当前时间\t如:00:00:00.000\r\n"
-                u8"{星期}\t\t当前星期\t如:星期1\r\n"
-                u8"{关键词}\t\t触发的关键词\t如:微信回收\r\n"
-                u8"{触发的QQ号码}\t触发关键词的QQ号码\t如:1164442003\r\n"
-                u8"{触发的QQ名称}\t触发关键词的QQ名称\t如:小小哥\r\n"
-                u8"{触发的QQ名片}\t触发关键词的QQ名片\t如:定制插件\r\n"
-                u8"{触发的群名称}\t触发关键词的群名称\t如:QQ机器人内测群\r\n"
-                u8"\r\n\r\n\r\n更多变量欢迎补充");
+                u8"{日期}\t\t当前日期\r\n"
+                u8"{时间}\t\t当前时间\r\n"
+                u8"{星期}\t\t当前星期\r\n"
+                u8"{关键词}\t\t触发的关键词\r\n"
+                u8"{触发的QQ号码}\t触发关键词的QQ号码\r\n"
+                u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
+                u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
+                u8"{触发的群名称}\t触发关键词的群名称\r\n"
+                u8"\r\n\r\n更多变量欢迎补充");
 
             showText(u8"转发群消息变量", variable);
         });
