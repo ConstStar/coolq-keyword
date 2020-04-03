@@ -33,6 +33,25 @@
 
 class mycq {
 public:
+
+    //发送群消息
+    static int64_t send_group_message(const int64_t group_id, const std::string &message) {
+        try {
+            return cq::send_group_message(group_id, message);
+        } catch (cq::ApiError &e) {
+            cq::logging::info(APPNAME, e.what());
+        }
+    }
+
+    //发送私聊消息
+    static int64_t send_private_message(const int64_t user_id, const std::string &message) {
+        try {
+            return cq::send_private_message(user_id, message);
+        } catch (cq::ApiError &e) {
+            cq::logging::info(APPNAME, e.what());
+        }
+    }
+
     //踢出
     static void set_group_kick(const int64_t group_id, const int64_t user_id, const bool reject_future_request) {
         try {

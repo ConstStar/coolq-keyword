@@ -453,18 +453,16 @@ void MyJson::file2json() {
     try {
         read_json((appDir + "conf.json"), conf_json);
     } catch (exception& e) {
-#ifdef DEBUG
         cout << e.what() << endl;
-#endif
     }
 }
 
 //获取 分割每行的字符串 json
 void OperateLine::line_get_str(string str, vector<string>& value) {
     value.clear();
-
+ 
     vector<string> temp_vectorStr;
-    boost::split(temp_vectorStr, str, boost::is_any_of(L"\n"));
+    boost::split(temp_vectorStr, str, boost::is_any_of(L"\r\n"));
 
     for (auto temp_str : temp_vectorStr) {
         //过滤无效值
@@ -479,7 +477,7 @@ void OperateLine::line_get_ll(string str, vector<long long>& value) {
     value.clear();
 
     vector<string> temp_vectorStr;
-    boost::split(temp_vectorStr, str, boost::is_any_of(L"\n"));
+    boost::split(temp_vectorStr, str, boost::is_any_of(L"\r\n"));
 
     for (auto temp_str : temp_vectorStr) {
         long long num = atoll(temp_str.c_str());

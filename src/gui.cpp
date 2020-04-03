@@ -922,7 +922,7 @@ private:
     button btn_save;
 };
 
-//自定义触发提醒
+//自定义触发回复
 class tab_page_groupWarnWord : public panel<false> {
 private:
     //写入配置
@@ -936,7 +936,7 @@ private:
         conf.file2json();
         conf.json2all();
 
-        //触发提醒
+        //触发回复
         text_warnWord.reset(conf.alone[conf_index].keyWordGroupWarnWord);
     }
 
@@ -947,7 +947,7 @@ private:
             //整体边距
             "margin = [15,15,15,15] "
 
-            //自定义触发提醒
+            //自定义触发回复
             "<vert <weight=25 lab_warnWord> <text_warnWord>>"
             "<weight=10>"
 
@@ -962,9 +962,9 @@ private:
 
             ">");
 
-        //自定义触发提醒
+        //自定义触发回复
         lab_warnWord.create(*this);
-        lab_warnWord.caption(u8"自定义触发提醒:");
+        lab_warnWord.caption(u8"群内触发后回复内容:");
         place_.field("lab_warnWord") << lab_warnWord;
 
         text_warnWord.create(*this);
@@ -1020,7 +1020,7 @@ private:
     place place_;
     int conf_index;
 
-    //自定义触发提醒
+    //自定义触发回复
     label lab_warnWord;
     textbox text_warnWord;
 

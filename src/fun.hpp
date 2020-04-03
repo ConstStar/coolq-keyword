@@ -88,7 +88,7 @@ public:
 
             //发送给主人
             for (long long root : conf.admin) {
-                cq::send_private_message(root, SendMsg);
+                mycq::send_private_message(root, SendMsg);
             }
         }
     }
@@ -99,7 +99,7 @@ public:
         case SEND_GROUP_1: //回复群
         {
             m_ReplyGroup = atoll(msg);
-            cq::send_private_message(m_fromQQ, "请发送回复内容");
+            mycq::send_private_message(m_fromQQ, "请发送回复内容");
             m_index = SEND_GROUP_END;
             break;
         }
@@ -107,12 +107,12 @@ public:
         {
             char ch[100] = {'\0'};
             int t;
-            t = cq::send_group_message(m_ReplyGroup, msg);
+            t = mycq::send_group_message(m_ReplyGroup, msg);
             if (t > 0)
                 sprintf(ch, "发送给QQ群%lld成功", m_ReplyGroup);
             else
                 sprintf(ch, "发送给QQ群%lld失败\n错误代码：%d", m_ReplyGroup, t);
-            cq::send_private_message(m_fromQQ, ch);
+            mycq::send_private_message(m_fromQQ, ch);
             m_ReplyGroup = 0;
             m_index = NONE;
             break;
@@ -132,7 +132,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加 默认关键词 成功");
+            mycq::send_private_message(m_fromQQ, "添加 默认关键词 成功");
 
             m_index = NONE;
             break;
@@ -159,9 +159,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除 默认关键词 成功");
+                mycq::send_private_message(m_fromQQ, "删除 默认关键词 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除 默认关键词 失败");
+                mycq::send_private_message(m_fromQQ, "删除 默认关键词 失败");
 
             m_index = NONE;
             break;
@@ -180,7 +180,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加默认 白名单/监控名单 成功");
+            mycq::send_private_message(m_fromQQ, "添加默认 白名单/监控名单 成功");
 
             m_index = NONE;
             break;
@@ -193,7 +193,7 @@ public:
             del_QQId = atoll(msg);
 
             if (del_QQId == 0) {
-                cq::send_private_message(m_fromQQ, "格式有误");
+                mycq::send_private_message(m_fromQQ, "格式有误");
                 m_index = NONE;
                 break;
             }
@@ -216,9 +216,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 成功");
+                mycq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 失败");
+                mycq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 失败");
 
             m_index = NONE;
             break;
@@ -237,7 +237,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加 默认监控群 成功");
+            mycq::send_private_message(m_fromQQ, "添加 默认监控群 成功");
             m_index = NONE;
             break;
         }
@@ -249,7 +249,7 @@ public:
             del_GourpId = atoll(msg);
 
             if (del_GourpId == 0) {
-                cq::send_private_message(m_fromQQ, "格式有误");
+                mycq::send_private_message(m_fromQQ, "格式有误");
                 m_index = NONE;
                 break;
             }
@@ -272,9 +272,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除 默认监控群 成功");
+                mycq::send_private_message(m_fromQQ, "删除 默认监控群 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除 默认监控群 失败");
+                mycq::send_private_message(m_fromQQ, "删除 默认监控群 失败");
             m_index = NONE;
             break;
         }
@@ -282,12 +282,12 @@ public:
         {
             char buf[100] = {'\0'};
             int t;
-            t = cq::send_private_message(m_ReplyQQ, msg);
+            t = mycq::send_private_message(m_ReplyQQ, msg);
             if (t > 0)
                 sprintf(buf, "发送给 QQ%lld 成功", m_ReplyQQ);
             else
                 sprintf(buf, "发送给 QQ%lld 失败\n错误代码：%d", m_ReplyQQ, t);
-            cq::send_private_message(m_fromQQ, buf);
+            mycq::send_private_message(m_fromQQ, buf);
             m_ReplyQQ = 0;
             m_index = NONE;
             break;
@@ -308,7 +308,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加默认 白名单关键词 成功");
+            mycq::send_private_message(m_fromQQ, "添加默认 白名单关键词 成功");
 
             m_index = NONE;
             break;
@@ -334,9 +334,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除默认 白名单关键词 成功");
+                mycq::send_private_message(m_fromQQ, "删除默认 白名单关键词 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除默认 白名单关键词 失败");
+                mycq::send_private_message(m_fromQQ, "删除默认 白名单关键词 失败");
 
             m_index = NONE;
             break;
@@ -356,7 +356,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加默认 正则表达式关键词 成功");
+            mycq::send_private_message(m_fromQQ, "添加默认 正则表达式关键词 成功");
 
             m_index = NONE;
             break;
@@ -382,9 +382,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除默认 正则表达式关键词 成功");
+                mycq::send_private_message(m_fromQQ, "删除默认 正则表达式关键词 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除默认 正则表达式关键词 失败");
+                mycq::send_private_message(m_fromQQ, "删除默认 正则表达式关键词 失败");
 
             m_index = NONE;
             break;
@@ -404,7 +404,7 @@ public:
             conf.all2json();
             conf.json2file();
 
-            cq::send_private_message(m_fromQQ, "添加默认 转发群 成功");
+            mycq::send_private_message(m_fromQQ, "添加默认 转发群 成功");
 
             m_index = NONE;
             break;
@@ -417,7 +417,7 @@ public:
             del_QQId = atoll(msg);
 
             if (del_QQId == 0) {
-                cq::send_private_message(m_fromQQ, "格式有误");
+                mycq::send_private_message(m_fromQQ, "格式有误");
                 m_index = NONE;
                 break;
             }
@@ -440,9 +440,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                cq::send_private_message(m_fromQQ, "删除默认 转发群 成功");
+                mycq::send_private_message(m_fromQQ, "删除默认 转发群 成功");
             else
-                cq::send_private_message(m_fromQQ, "删除默认 转发群 失败");
+                mycq::send_private_message(m_fromQQ, "删除默认 转发群 失败");
 
             m_index = NONE;
             break;
@@ -481,13 +481,13 @@ public:
                 "\n请发送功能名称（不包括表情）\n"
                 "如: 查看关键词";
 
-            cq::send_private_message(m_fromQQ, menu);
+            mycq::send_private_message(m_fromQQ, menu);
             m_index = NONE;
         }
 
         //检测主人列表是否为空
         else if (conf.admin.empty()) {
-            cq::send_private_message(m_fromQQ, "暂无群监控主人，请先使用界面添加群监控主人");
+            mycq::send_private_message(m_fromQQ, "暂无群监控主人，请先使用界面添加群监控主人");
             return -1;
         }
 
@@ -495,15 +495,15 @@ public:
         else if (std::string(msg).find(prefix + "回复") != string::npos) {
             m_ReplyQQ = atoll(msg + std::string(prefix + "回复").length());
             if (m_ReplyQQ != 0) {
-                cq::send_private_message(m_fromQQ, "请发送要回复的消息");
+                mycq::send_private_message(m_fromQQ, "请发送要回复的消息");
                 m_index = SEND_QQ;
             } else {
-                cq::send_private_message(m_fromQQ, "输入有误，请发送 回复+QQ号");
+                mycq::send_private_message(m_fromQQ, "输入有误，请发送 回复+QQ号");
                 m_index = NONE;
             }
 
         } else if (!std::string(prefix + "回复群").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送要回复的QQ群号");
+            mycq::send_private_message(m_fromQQ, "请发送要回复的QQ群号");
             m_index = SEND_GROUP_1;
         } else if (std::string(msg).find(prefix + "回复群") != string::npos) {
             m_ReplyGroup = atoll(msg + std::string(prefix + "回复群").length());
@@ -511,11 +511,11 @@ public:
             if (m_ReplyGroup == 0) {
                 sscanf(msg, "回复群＋%lld", m_ReplyGroup);
                 if (m_ReplyGroup == 0) {
-                    cq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
+                    mycq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
                     return -1;
                 }
             }
-            cq::send_private_message(m_fromQQ, "请发送回复内容");
+            mycq::send_private_message(m_fromQQ, "请发送回复内容");
             m_index = SEND_GROUP_END;
         }
 
@@ -525,10 +525,10 @@ public:
 
             for (auto KeyWord : conf.alone[0].keyWord) SendMsg += KeyWord.keyWord + "\n";
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
             m_index = NONE;
         } else if (!std::string(prefix + "添加关键词").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送添加的关键词(可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的关键词(可批量添加，每行一个)");
             m_index = ADD_KEYWORD;
         } else if (!std::string(prefix + "删除关键词").compare(msg)) {
             std::string SendMsg = "全局默认 关键词：\n";
@@ -537,9 +537,9 @@ public:
                 SendMsg += WKeyWord.keyWord + "\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
-            cq::send_private_message(m_fromQQ, "请发送准备删除的关键词");
+            mycq::send_private_message(m_fromQQ, "请发送准备删除的关键词");
             m_index = DEL_KEYWORD;
         }
 
@@ -549,10 +549,10 @@ public:
 
             for (auto KeyWord : conf.alone[0].keyWordWhite) SendMsg += KeyWord.keyWord + "\n";
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
             m_index = NONE;
         } else if (!std::string(prefix + "添加白名单关键词").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送添加的 白名单关键词 (可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的 白名单关键词 (可批量添加，每行一个)");
             m_index = ADD_KEYWORD_WHITE;
         } else if (!std::string(prefix + "删除白名单关键词").compare(msg)) {
             std::string SendMsg = "全局默认 白名单关键词：\n";
@@ -561,9 +561,9 @@ public:
                 SendMsg += WKeyWord.keyWord + "\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
-            cq::send_private_message(m_fromQQ, "请发送准备删除的 白名单关键词");
+            mycq::send_private_message(m_fromQQ, "请发送准备删除的 白名单关键词");
             m_index = DEL_KEYWORD_WHITE;
         }
 
@@ -573,10 +573,10 @@ public:
 
             for (auto KeyWord : conf.alone[0].keyWordRegex) SendMsg += KeyWord.keyWord + "\n";
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
             m_index = NONE;
         } else if (!std::string(prefix + "添加正则表达式关键词").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送添加的 正则表达式关键词 (可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的 正则表达式关键词 (可批量添加，每行一个)");
             m_index = ADD_KEYWORD_RE;
         } else if (!std::string(prefix + "删除正则表达式关键词").compare(msg)) {
             std::string SendMsg = "全局默认 正则表达式关键词：\n";
@@ -585,9 +585,9 @@ public:
                 SendMsg += WKeyWord.keyWord + "\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
-            cq::send_private_message(m_fromQQ, "请发送准备删除的 正则表达式关键词");
+            mycq::send_private_message(m_fromQQ, "请发送准备删除的 正则表达式关键词");
             m_index = DEL_KEYWORD_RE;
         }
 
@@ -610,11 +610,11 @@ public:
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
             m_index = NONE;
         } else if (!std::string(prefix + "添加转发群").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送添加的 群号码 (可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的 群号码 (可批量添加，每行一个)");
             m_index = ADD_GROUPLIST_SEND;
         } else if (!std::string(prefix + "删除转发群").compare(msg)) {
             std::string SendMsg = "全局默认 转发群：\n";
@@ -634,14 +634,14 @@ public:
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
-            cq::send_private_message(m_fromQQ, "请发送要删除 群号码");
+            mycq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, "请发送要删除 群号码");
             m_index = DEL_GROUPLIST_SEND;
         }
 
         //设置监控群
         else if (!std::string(prefix + "添加监控群").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "请发送添加的群号码(可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的群号码(可批量添加，每行一个)");
             m_index = ADD_GROUPLIST;
         } else if (!std::string(prefix + "删除监控群").compare(msg)) {
             std::string SendMsg = "全局默认 监控群：\n";
@@ -660,8 +660,8 @@ public:
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
-            cq::send_private_message(m_fromQQ, "请发送要删除群号码");
+            mycq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, "请发送要删除群号码");
             m_index = DEL_GROUPLIST;
         } else if (!std::string(prefix + "查看监控群").compare(msg)) {
             std::string SendMsg = "全局默认 监控群：\n";
@@ -679,7 +679,7 @@ public:
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
             m_index = NONE;
         }
@@ -687,13 +687,13 @@ public:
         //设置白名单
         else if (!std::string(prefix + "添加白名单").compare(msg)
                  || !std::string(prefix + "添加监控名单").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
+            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
 
-            cq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
             m_index = ADD_QQLIST;
         } else if (!std::string(prefix + "删除白名单").compare(msg)
                    || !std::string(prefix + "删除监控名单").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
+            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
 
             std::string SendMsg = "全局默认 白名单/监控名单：\n";
 
@@ -702,12 +702,12 @@ public:
                 SendMsg += QQinf.nickname + "(" + to_string(id) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
-            cq::send_private_message(m_fromQQ, "请发送要删除白名单号码");
+            mycq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, "请发送要删除白名单号码");
             m_index = DEL_QQLIST;
         } else if (!std::string(prefix + "查看白名单").compare(msg)
                    || !std::string(prefix + "查看监控名单").compare(msg)) {
-            cq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
+            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
 
             std::string SendMsg = "全局默认 白名单/监控名单：\n";
 
@@ -716,7 +716,7 @@ public:
                 SendMsg += QQinf.nickname + "(" + to_string(temp) + ")\n";
             }
 
-            cq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, SendMsg);
 
             m_index = NONE;
         }
@@ -748,7 +748,7 @@ public:
 
         //发送 群消息
         for (long long GroupId : conf.alone[conf_index].relayGroupList) {
-            cq::send_group_message(GroupId, sendMsg_toGroup);
+            mycq::send_group_message(GroupId, sendMsg_toGroup);
         }
 
         //发送 私聊消息
@@ -848,9 +848,9 @@ public:
                 //解析变量
                 KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
 
-                cq::send_group_message(m_fromGroup, SendMsg);
+                mycq::send_group_message(m_fromGroup, SendMsg);
             } else {
-                cq::send_group_message(m_fromGroup, GroupAt);
+                mycq::send_group_message(m_fromGroup, GroupAt);
             }
         }
 
@@ -859,7 +859,7 @@ public:
         SendMsg_root << "\n(回复请发送：回复群" << m_fromGroup << ")";
 
         for (long long root : conf.admin) {
-            cq::send_private_message(root, SendMsg_root.str().c_str());
+            mycq::send_private_message(root, SendMsg_root.str().c_str());
         }
     }
 
@@ -923,7 +923,7 @@ public:
                 sendMsg += "\n\n请查看转发到群格式中删除行是否有误";
 
                 for (auto temp : conf.admin) {
-                    cq::send_private_message(temp, sendMsg);
+                    mycq::send_private_message(temp, sendMsg);
                 }
                 str = "";
 
@@ -1155,7 +1155,7 @@ public:
                 SendMsg += e.what();
 
                 for (long long root : conf.admin) {
-                    cq::send_private_message(root, SendMsg);
+                    mycq::send_private_message(root, SendMsg);
                 }
             }
         }
