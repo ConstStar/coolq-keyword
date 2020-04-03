@@ -975,8 +975,21 @@ private:
         lab_variable.caption(u8"可用变量(仅参考，不可编辑):");
         place_.field("lab_variable") << lab_variable;
 
+        string variable(
+            u8"{at}\t\t艾特\t\t如:@群关键词监控\r\n"
+            u8"{日期}\t\t当前日期\t如:2019年01月01日\r\n"
+            u8"{时间}\t\t当前时间\t如:00:00:00.000\r\n"
+            u8"{星期}\t\t当前星期\t如:星期1\r\n"
+            u8"{处理方式}\t触发后处理方式\t如:禁言29天23小时59分钟\r\n"
+            u8"{关键词}\t\t触发的关键词\t如:微信回收\r\n"
+            u8"{触发的QQ号码}\t触发关键词的QQ号码\t如:1164442003\r\n"
+            u8"{触发的QQ名称}\t触发关键词的QQ名称\t如:小小哥\r\n"
+            u8"{触发的QQ名片}\t触发关键词的QQ名片\t如:定制插件\r\n"
+            u8"{触发的群名称}\t触发关键词的群名称\t如:QQ机器人内测群\r\n"
+            u8"\r\n\r\n\r\n更多变量欢迎补充");
         text_variable.create(*this);
         text_variable.editable(false);
+        text_variable.caption(variable);
         place_.field("text_variable") << text_variable;
 
         //保存按钮
@@ -1173,12 +1186,19 @@ private:
         button_variable.create(*this);
         button_variable.caption(u8"查看变量");
         button_variable.events().click([this] {
-            string buf(
+            string variable(
+                u8"{msg}\t\t触发关键词的消息内容\r\n"
+                u8"{日期}\t\t当前日期\t如:2019年01月01日\r\n"
+                u8"{时间}\t\t当前时间\t如:00:00:00.000\r\n"
+                u8"{星期}\t\t当前星期\t如:星期1\r\n"
+                u8"{关键词}\t\t触发的关键词\t如:微信回收\r\n"
+                u8"{触发的QQ号码}\t触发关键词的QQ号码\t如:1164442003\r\n"
+                u8"{触发的QQ名称}\t触发关键词的QQ名称\t如:小小哥\r\n"
+                u8"{触发的QQ名片}\t触发关键词的QQ名片\t如:定制插件\r\n"
+                u8"{触发的群名称}\t触发关键词的群名称\t如:QQ机器人内测群\r\n"
+                u8"\r\n\r\n\r\n更多变量欢迎补充");
 
-                u8""
-
-            );
-            showText(u8"转发群消息变量", buf);
+            showText(u8"转发群消息变量", variable);
         });
         place_.field("button_variable") << button_variable;
 
@@ -1281,15 +1301,13 @@ private:
 
             int i = 0;
             for (auto id : tempAlone.second.groupList) {
-				string groupName;
-				for(auto &group:groupList)
-				{
-					if(group.group_id==id)
-					{
-						groupName=group.group_name;
-						break;
-					}
-				}
+                string groupName;
+                for (auto& group : groupList) {
+                    if (group.group_id == id) {
+                        groupName = group.group_name;
+                        break;
+                    }
+                }
 
                 groupListWord += groupName + " ";
                 if (i > 5) break;
@@ -1491,17 +1509,7 @@ private:
     label lab_priorityTip;
 };
 
-Gui::Gui() : m_writeConf(nullptr) {
-}
-
-Gui::Gui(void (*p)()) : m_writeConf(p) {
-}
-
-//写入配置
-void Gui::writeConf() {
-    if (m_writeConf != nullptr) {
-        m_writeConf();
-    }
+Gui::Gui() {
 }
 
 //打开主要界面

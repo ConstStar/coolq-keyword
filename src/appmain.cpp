@@ -62,18 +62,7 @@ CQ_INIT {
 
 CQ_MENU(menu) {
     try {
-        auto readConf([]() {
-            //修改配置后重新读取配置
-            conf.all2json();
-            conf.json2file();
-
-            /*for (long long root : g_root)
-            {
-                    CQ::sendPrivateMsg(root, "《群关键词监控》配置已生效");
-            }*/
-        });
-
-        Gui gui(readConf);
+        Gui gui;
         gui.openMain();
 
     } catch (exception &e) {
