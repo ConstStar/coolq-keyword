@@ -1,0 +1,30 @@
+branches:
+  except:
+    - /dev.*/ # 不编译 dev 分支
+
+image:
+  - Visual Studio 2019
+
+platform:
+  - x86
+
+configuration:
+  - Debug # 禁用优化 - 包括调试信息
+  - Release # 优化速度 - 排除调试信息
+  # - MinSizeRel # 优化最小二进制大小 - 排除调试信息
+  # - RelWithDebInfo # 优化速度 - 包括调试信息
+
+install:
+  - git submodule update --init --recursive # 下载子模块
+  - set /p APP_ID=<app_id.txt # 如果你没有使用 app_id.txt 存放 app id，需在此手动设置
+
+build_script:
+  - cmake -B build -G "Visual Studio 16 2019" -A Win32 # CMake generate
+  - cmake --build build --target app --config %CONFIGURATION% --clean-first --verbose # CMake build
+
+after_build:
+  - copy build\%CONFIGURATION%\app.dll app.dll
+  - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
+
+artifacts:
+  - path: build\%CONFIGURATION%\%APP_ID%.zip

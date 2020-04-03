@@ -1,0 +1,9 @@
+.idea
+.vs
+.vscode/settings.json
+.vscode/c_cpp_properties.json
+build
+out
+cmake-build-*
+tmp
+/lib/
