@@ -986,7 +986,7 @@ private:
             u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
             u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
             u8"{触发的群名称}\t触发关键词的群名称\r\n"
-            u8"\r\n\r\n更多变量欢迎补充");
+            u8"\r\n更多变量欢迎进群补充(群:839067703)");
         text_variable.create(*this);
         text_variable.editable(false);
         text_variable.caption(variable);
@@ -1196,7 +1196,7 @@ private:
                 u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
                 u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
                 u8"{触发的群名称}\t触发关键词的群名称\r\n"
-                u8"\r\n\r\n更多变量欢迎补充");
+                u8"\r\n更多变量欢迎进群补充(群:839067703)");
 
             showText(u8"转发群消息变量", variable);
         });
