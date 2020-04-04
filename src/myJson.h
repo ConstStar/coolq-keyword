@@ -69,6 +69,7 @@ struct ConfAlone
 	bool keyWordPrivateWarn;		//触发后是否私聊警告
 	bool streng;					//强力检测
 	bool deleteMsg;					//消息撤回
+	bool deleteCQCode;				//过滤CQ码
 
 	string relayGroupWord;			//发送到群 消息格式
 	int relayGroupMsg_trimFront;	//发送到群 消息前几行删除

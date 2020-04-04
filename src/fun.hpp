@@ -727,9 +727,6 @@ class OperateMsg {
 public:
     //触发关键词操作
     void KeyWrodWarn(stringstream& SendMsg_root, int conf_index, string& KeyWord, string REWord = "") {
-        //删除多余的CQ码
-        DelCQ(m_msg);
-
         string sendMsg_toGroup(conf.alone[conf_index].relayGroupWord);
 
         //解析变量
@@ -864,12 +861,13 @@ public:
     }
 
     //删除cq码
-    void DelCQ(std::string& msg) {
-
+    std::string DelCQ(std::string msg) {
         if (msg.find("[CQ:") != string::npos) {
             regex e1("\\[CQ:.*\\]");
             msg = regex_replace(msg, e1, "");
         }
+
+        return msg;
     }
 
     //转发到群格式
@@ -1064,12 +1062,19 @@ public:
     }
 
     //白名单关键词检测
-    bool KeyWordWhiteFun(vector<WKEYWORD>& KeyWordWhite) {
-        if (KeyWordWhite.empty()) return false;
+    bool KeyWordWhiteFun(int conf_index) {
+        if (conf.alone[conf_index].keyWordWhite.empty()) return false;
+
+        wstring wmsg;
+        if (conf.alone[conf_index].deleteCQCode) {
+            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+        } else {
+            wmsg = m_wmsg;
+        }
 
         //查找关键词 如果存在某一个 则返回true
-        for (WKEYWORD KeyWord_one : KeyWordWhite) {
-            if (m_wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos) {
+        for (WKEYWORD KeyWord_one : conf.alone[conf_index].keyWordWhite) {
+            if (wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos) {
                 return true;
             }
         }
@@ -1084,9 +1089,16 @@ public:
             return false;
         }
 
+        wstring wmsg;
+        if (conf.alone[conf_index].deleteCQCode) {
+            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+        } else {
+            wmsg = m_wmsg;
+        }
+
         //普通关键词检测
         for (auto KeyWord_one : conf.alone[conf_index].keyWord) {
-            if (m_wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos) {
+            if (wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos) {
                 //返回触发的关键词
                 if (KeyWordWarn != NULL) *KeyWordWarn = KeyWord_one.keyWord;
 
@@ -1107,7 +1119,7 @@ public:
 
                 //开始强力检测   逐个字对比
                 for (auto keyc : KeyWord_one.wkeyWrod) {
-                    for (auto msgc : m_wmsg) {
+                    for (auto msgc : wmsg) {
                         if (keyc == msgc) {
                             temp_num_find++;
                             break;
@@ -1130,12 +1142,19 @@ public:
 
     //正则表达式  REKeyWord 正则表达式关键词 REKeyWordWarn返回触发的内容 REWord返回触发的关键词
     bool REKeyKordFun(int conf_index, string* REKeyWordWarn, string* REWord) {
+        wstring wmsg;
+        if (conf.alone[conf_index].deleteCQCode) {
+            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+        } else {
+            wmsg = m_wmsg;
+        }
+
         for (WKEYWORD alone : conf.alone[conf_index].keyWordRegex) {
             try {
                 wregex re(alone.wkeyWrod);
                 wsmatch RE;
 
-                bool rec = regex_search(m_wmsg, RE, re);
+                bool rec = regex_search(wmsg, RE, re);
 
                 if (rec) {
                     *REKeyWordWarn = OperateStr::wstring2string(RE.str());
@@ -1189,7 +1208,7 @@ public:
         }
 
         //如果关键词为白名单 将退出函数
-        if (KeyWordWhiteFun(conf.alone[conf_index].keyWordWhite)) {
+        if (KeyWordWhiteFun(conf_index)) {
             return false;
         }
 

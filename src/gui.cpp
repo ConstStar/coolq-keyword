@@ -442,6 +442,7 @@ private:
         //一些开关
         checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
         checkStreng.check(conf.alone[conf_index].streng);
+        check_deleteCQCode.check(conf.alone[conf_index].deleteCQCode);
     }
 
     void init() {
@@ -596,6 +597,10 @@ private:
         checkDeleteMsg.caption(u8"撤回触发关键词消息");
         place_.field("checkSwitch") << checkDeleteMsg;
 
+        check_deleteCQCode.create(*this);
+        check_deleteCQCode.caption(u8"过滤CQ码（如图片消息，签到消息等）");
+        place_.field("checkSwitch") << check_deleteCQCode;
+
         btnSave.create(*this);
         btnSave.caption(u8"保存");
         btnSave.events().click([this] {
@@ -623,6 +628,7 @@ private:
             //一些开关
             conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
             conf.alone[conf_index].streng = checkStreng.checked();
+            conf.alone[conf_index].deleteCQCode = check_deleteCQCode.checked();
 
             //写入配置
             writeConf();
@@ -670,6 +676,7 @@ private:
     label labelSwitch;
     checkbox checkStreng; //强力检测
     checkbox checkDeleteMsg; //撤回消息
+    checkbox check_deleteCQCode; //过滤CQ码
 
     //保存
     button btnSave;
