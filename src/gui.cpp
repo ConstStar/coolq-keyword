@@ -1064,10 +1064,11 @@ private:
             u8"{星期}\t\t当前星期\r\n"
             u8"{处理方式}\t触发后处理方式\r\n"
             u8"{关键词}\t\t触发的关键词\r\n"
-            u8"{触发的QQ号码}\t触发关键词的QQ号码\r\n"
-            u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
-            u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
-            u8"{触发的群名称}\t触发关键词的群名称\r\n"
+            u8"{QQ号码}\t触发关键词的QQ号码\r\n"
+            u8"{QQ名称}\t触发关键词的QQ名称\r\n"
+            u8"{QQ名片}\t触发关键词的QQ名片\r\n"
+            u8"{群号码}\t触发关键词的群名称\r\n"
+            u8"{群名称}\t触发关键词的群名称\r\n"
             u8"\r\n更多变量欢迎进群补充(群:839067703)");
         text_variable.create(*this);
         text_variable.editable(false);
@@ -1274,10 +1275,11 @@ private:
                 u8"{时间}\t\t当前时间\r\n"
                 u8"{星期}\t\t当前星期\r\n"
                 u8"{关键词}\t\t触发的关键词\r\n"
-                u8"{触发的QQ号码}\t触发关键词的QQ号码\r\n"
-                u8"{触发的QQ名称}\t触发关键词的QQ名称\r\n"
-                u8"{触发的QQ名片}\t触发关键词的QQ名片\r\n"
-                u8"{触发的群名称}\t触发关键词的群名称\r\n"
+                u8"{QQ号码}\t触发关键词的QQ号码\r\n"
+                u8"{QQ名称}\t触发关键词的QQ名称\r\n"
+                u8"{QQ名片}\t触发关键词的QQ名片\r\n"
+                u8"{群号码}\t触发关键词的群号码\r\n"
+                u8"{群名称}\t触发关键词的群名称\r\n"
                 u8"\r\n更多变量欢迎进群补充(群:839067703)");
 
             showText(u8"转发群消息变量", variable);
@@ -1570,7 +1572,7 @@ private:
 
         //优先级提示
         lab_priorityTip.create(*this);
-        lab_priorityTip.caption(u8"提示:   优先级数值小 > 优先级数值大 > 全局设置");
+        lab_priorityTip.caption(u8"提示:   优先级数值小 > 优先级数值大 > 默认的设置");
         place_.field("lab_priorityTip") << lab_priorityTip;
 
         readConf();

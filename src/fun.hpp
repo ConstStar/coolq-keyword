@@ -1,10 +1,10 @@
 #pragma once
 
 //数据结构
-#include "mycq.hpp"
 #include <map>
 #include <string>
 #include <vector>
+#include "mycq.hpp"
 
 //系统
 #include <Windows.h>
@@ -13,8 +13,8 @@
 #include <fstream>
 #include <thread>
 
-#include <regex>
 #include <boost/timer.hpp>
+#include <regex>
 
 #include "myJson.h"
 
@@ -462,8 +462,7 @@ public:
 
         //功能菜单
         if (!std::string(prefix + "功能").compare(msg) || !std::string(prefix + "菜单").compare(msg)
-            || !strcmp(msg, "关键词触发器菜单"))
-            {
+            || !strcmp(msg, "关键词触发器菜单")) {
             std::string menu =
                 "**设置类(自定义需加前缀)**\n"
                 "[CQ:emoji,id=9999]查看/添加/删除关键词\n"
@@ -592,15 +591,13 @@ public:
 
             //列出监控群名单
             for (auto id : conf.alone[0].relayGroupList) {
-				string groupName;
-				for(auto& group:temp_GourpList)
-				{
-					if(group.group_id==id)
-					{
-						groupName=group.group_name;
-						break;
-					}
-				}
+                string groupName;
+                for (auto& group : temp_GourpList) {
+                    if (group.group_id == id) {
+                        groupName = group.group_name;
+                        break;
+                    }
+                }
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
@@ -614,17 +611,15 @@ public:
             std::string SendMsg = "全局默认 转发群：\n";
             auto temp_GourpList = cq::get_group_list();
 
-           //列出监控群名单
+            //列出监控群名单
             for (auto id : conf.alone[0].relayGroupList) {
-				string groupName;
-				for(auto& group:temp_GourpList)
-				{
-					if(group.group_id==id)
-					{
-						groupName=group.group_name;
-						break;
-					}
-				}
+                string groupName;
+                for (auto& group : temp_GourpList) {
+                    if (group.group_id == id) {
+                        groupName = group.group_name;
+                        break;
+                    }
+                }
                 SendMsg += groupName + "(" + to_string(id) + ")\n";
             }
 
@@ -952,7 +947,7 @@ public:
         str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
 
         //触发的QQ号码
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ号码}", to_string(m_fromQQ));
+        str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
         auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ, true);
         auto GroupList = cq::get_group_list();
@@ -963,12 +958,13 @@ public:
         }
 
         //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ名称}", QQInf.nickname);
+        str = OperateStr::replace_all_distinct(str, "{QQ名称}", QQInf.nickname);
 
         //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ名片}", QQInf.card);
+        str = OperateStr::replace_all_distinct(str, "{QQ名片}", QQInf.card);
 
-        str = OperateStr::replace_all_distinct(str, "{触发的群名称}", group.group_name);
+        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(group.group_id));
+        str = OperateStr::replace_all_distinct(str, "{群名称}", group.group_name);
     }
 
     //自定义触发关键词提醒
@@ -1036,7 +1032,7 @@ public:
         str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
 
         //触发的QQ号码
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ号码}", to_string(m_fromQQ));
+        str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
         auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ, true);
         auto GroupList = cq::get_group_list();
@@ -1048,13 +1044,16 @@ public:
         }
 
         //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ名称}", QQInf.nickname);
+        str = OperateStr::replace_all_distinct(str, "{QQ名称}", QQInf.nickname);
 
         //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{触发的QQ名片}", QQInf.card);
+        str = OperateStr::replace_all_distinct(str, "{QQ名片}", QQInf.card);
 
+        //触发的群号码
+        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(group.group_id));
+        
         //触发的群名称
-        str = OperateStr::replace_all_distinct(str, "{触发的群名称}", group.group_name);
+        str = OperateStr::replace_all_distinct(str, "{群名称}", group.group_name);
     }
 
     //白名单关键词检测
@@ -1226,14 +1225,12 @@ public:
         MsgOneFun(0);
     }
 
-    OperateMsg(cq::GroupMessageEvent evet)
-        : evet(evet)
-	{
-		m_fromQQ=evet.user_id;
-		m_fromGroup=evet.group_id;
-		m_fromAnonymous=evet.anonymous;
-		m_msg=evet.message;
-		m_msgId=evet.message_id;
+    OperateMsg(cq::GroupMessageEvent evet) : evet(evet) {
+        m_fromQQ = evet.user_id;
+        m_fromGroup = evet.group_id;
+        m_fromAnonymous = evet.anonymous;
+        m_msg = evet.message;
+        m_msgId = evet.message_id;
         //将消息的宽字符串格式存放到对象中
         m_wmsg = OperateStr::string2wstring(evet.message);
     }
@@ -1247,5 +1244,5 @@ private:
     boost::timer m_time; //计算程序流失的时间
 
     wstring m_wmsg; //宽字节消息内容
-	cq::GroupMessageEvent &evet;
+    cq::GroupMessageEvent& evet;
 };
