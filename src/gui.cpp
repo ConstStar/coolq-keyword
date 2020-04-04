@@ -1,6 +1,7 @@
 #include "gui.h"
 #include "myJson.h"
 #include "mycq.hpp"
+#include "mynetwork.h"
 
 #include <regex>
 
@@ -34,13 +35,17 @@ private:
         conf.file2json();
         conf.json2all();
 
-        //载入设置
-        text_prefix.reset(conf.prefix);
-
+        //主人QQ
         text_admin.reset();
         for (auto id : conf.admin) {
             text_admin.append(to_string(id) + "\n", true);
         }
+
+        //指令前缀
+        text_prefix.reset(conf.prefix);
+
+        //私聊消息转发给主人
+        check_relayPrivateMsg.check(conf.relayPrivateMsg);
     }
 
     //初始化
@@ -62,13 +67,21 @@ private:
             "<weight=25 <weight=65 lab_prefix><text_prefix>>"
             "<weight=10>"
 
-            //绑定秘钥
-            "<weight=25 lab_usingKey>"
-            "<weight=25 <text_usingKey><weight=60 button_usingKey>>"
+            //开关
+            "<check>"
             "<>"
 
+            //使用教程 //在线更新 //反馈
+            "<weight=60 <button_document> <button_update> <button_feedback>>"
+            "<>"
+
+            // //绑定秘钥
+            // "<weight=25 lab_usingKey>"
+            // "<weight=25 <text_usingKey><weight=60 button_usingKey>>"
+            // "<>"
+
             //保存
-            "<weight=25% button_save>"
+            "<weight=30% button_save>"
 
             ">");
 
@@ -85,27 +98,96 @@ private:
         lab_prefix.caption(u8"指令前缀：");
         place_.field("lab_prefix") << lab_prefix;
 
+        //收到私聊消息转发给主人
+        check_relayPrivateMsg.create(*this);
+        check_relayPrivateMsg.caption(u8"收到的私聊消息转发给主人");
+        place_.field("check") << check_relayPrivateMsg;
+
         text_prefix.create(*this);
         text_prefix.line_wrapped(false);
         text_prefix.multi_lines(false);
         place_.field("text_prefix") << text_prefix;
 
-        //使用秘钥
-        lab_usingKey.create(*this);
-        lab_usingKey.caption(u8"激活专业版：");
-        place_.field("lab_usingKey") << lab_usingKey;
-
-        text_usingKey.create(*this);
-        text_usingKey.line_wrapped(false);
-        text_usingKey.multi_lines(false);
-        place_.field("text_usingKey") << text_usingKey;
-
-        btn_usingKey.create(*this);
-        btn_usingKey.caption(u8"使用秘钥");
-        btn_usingKey.events().click([this] {
-
+        button_document.create(*this);
+        button_document.caption(u8"使用教程");
+        button_document.events().click([this] {
+            msgbox m_inf{*this, u8"提示"};
+            m_inf << u8"待开发";
+            m_inf.show();
         });
-        place_.field("button_usingKey") << btn_usingKey;
+        place_.field("button_document") << button_document;
+
+        button_update.create(*this);
+        button_update.caption(u8"检查更新");
+        button_update.events().click([this] {
+            Update up;
+            string inf;
+            Update::updateType type = up.check(VERSION_ID, inf);
+
+            //更新
+            auto update = [&]() {
+                string inf;
+                bool ret = up.getUpdate(inf);
+                if (ret) {
+                    msgbox m_inf{*this, u8"更新完成"};
+                    m_inf << inf;
+                    m_inf.show();
+                } else {
+                    msgbox m_error{*this, u8"更新错误"};
+                    m_error.icon(msgbox::icon_error);
+                    m_error << inf;
+                    m_error.show();
+                }
+            };
+
+            if (type == Update::updateType::no) {
+                msgbox m_inf{*this, u8"无需更新"};
+                m_inf << inf;
+                m_inf.show();
+            } else if (type == Update::updateType::update) {
+                msgbox m_inf{*this, u8"有新版本", msgbox::yes_no};
+                m_inf << inf << "\n";
+                m_inf << "是否更新";
+                auto ret = m_inf.show();
+                if (ret == msgbox::pick_yes) {
+                    update();
+                }
+            } else if (type == Update::updateType::mustUpdate) {
+                update();
+            } else if (type == Update::updateType::error) {
+                msgbox m_error{*this, u8"错误"};
+                m_error.icon(msgbox::icon_error);
+                m_error << inf;
+                m_error.show();
+            }
+        });
+        place_.field("button_update") << button_update;
+
+        button_feedback.create(*this);
+        button_feedback.caption(u8"问题反馈");
+        button_feedback.events().click([this] {
+            msgbox m_inf{*this, u8"提示"};
+            m_inf << u8"待开发";
+            m_inf.show();
+        });
+        place_.field("button_feedback") << button_feedback;
+
+        // //使用秘钥
+        // lab_usingKey.create(*this);
+        // lab_usingKey.caption(u8"激活专业版：");
+        // place_.field("lab_usingKey") << lab_usingKey;
+
+        // text_usingKey.create(*this);
+        // text_usingKey.line_wrapped(false);
+        // text_usingKey.multi_lines(false);
+        // place_.field("text_usingKey") << text_usingKey;
+
+        // btn_usingKey.create(*this);
+        // btn_usingKey.caption(u8"使用秘钥");
+        // btn_usingKey.events().click([this] {
+
+        // });
+        // place_.field("button_usingKey") << btn_usingKey;
 
         //保存按钮
         btn_save.create(*this);
@@ -131,6 +213,9 @@ private:
 
             //消息前缀
             conf.prefix = text_prefix.text();
+
+            //收到的私聊消息转发给主人
+            conf.relayPrivateMsg = check_relayPrivateMsg.checked();
 
             //写入配置
             writeConf();
@@ -164,10 +249,17 @@ private:
     label lab_prefix;
     textbox text_prefix;
 
-    //使用秘钥
-    label lab_usingKey;
-    textbox text_usingKey;
-    button btn_usingKey;
+    //收到的私聊消息转发主人
+    checkbox check_relayPrivateMsg;
+
+    // //使用秘钥
+    // label lab_usingKey;
+    // textbox text_usingKey;
+    // button btn_usingKey;
+
+    button button_document;
+    button button_update;
+    button button_feedback;
 
     //保存
     button btn_save;
@@ -348,9 +440,6 @@ private:
         checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
         checkGroupWarn.check(conf.alone[conf_index].keyWordGroupWarn);
         checkStreng.check(conf.alone[conf_index].streng);
-
-        //私聊消息转发给主人
-        checkRelayPrivateMsg.check(conf.relayPrivateMsg);
     }
 
     void init() {
@@ -501,11 +590,6 @@ private:
         checkGroupWarn.caption(u8"触发关键词发送群消息提醒");
         place_.field("checkSwitch") << checkGroupWarn;
 
-        checkRelayPrivateMsg.create(*this);
-        checkRelayPrivateMsg.caption(u8"私聊消息转发给主人");
-        if (!conf_index) //只在默认设置下显示
-            place_.field("checkSwitch") << checkRelayPrivateMsg;
-
         checkStreng.create(*this);
         checkStreng.caption(u8"关键词强力检测");
         place_.field("checkSwitch") << checkStreng;
@@ -542,8 +626,6 @@ private:
             conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
             conf.alone[conf_index].keyWordGroupWarn = checkGroupWarn.checked();
             conf.alone[conf_index].streng = checkStreng.checked();
-
-            conf.relayPrivateMsg = checkRelayPrivateMsg.checked();
 
             //写入配置
             writeConf();
@@ -590,7 +672,6 @@ private:
     //一些功能开关
     label labelSwitch;
     checkbox checkGroupWarn; //触发关键词发送群消息提醒
-    checkbox checkRelayPrivateMsg; //私聊消息转发给主人
     checkbox checkStreng; //强力检测
     checkbox checkDeleteMsg; //撤回消息
 
@@ -856,9 +937,7 @@ private:
         //正则表达式测试
         btn_regexTest.create(*this);
         btn_regexTest.caption(u8"测试正则");
-        btn_regexTest.events().click([this] {
-            // openRegexTest
-        });
+        btn_regexTest.events().click([this] { mynetwork::openUrl("https://c.runoob.com/front-end/854"); });
         place_.field("btn_regexTest") << btn_regexTest;
 
         //保存按钮
@@ -1141,7 +1220,7 @@ private:
 
         //群列表
         lab_groupList.create(*this);
-        lab_groupList.caption(u8"转发到群:");
+        lab_groupList.caption(u8"触发后转发到群:");
         place_.field("lab_groupList") << lab_groupList;
 
         list_groupList.create(*this);
@@ -1357,7 +1436,7 @@ private:
         tabpages.push_back(std::make_shared<tab_page_keyWord>(fm, conf_index));
         tabbar.push_back(u8"过滤名单");
         tabpages.push_back(std::make_shared<tab_page_list>(fm, conf_index));
-        tabbar.push_back(u8"触发提醒");
+        tabbar.push_back(u8"触发回复");
         tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm, conf_index));
         tabbar.push_back(u8"转发到群");
         tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm, conf_index));
@@ -1536,7 +1615,7 @@ void Gui::openMain() {
     tabpages.push_back(std::make_shared<tab_page_keyWord>(fm));
     tabbar.push_back(u8"过滤名单");
     tabpages.push_back(std::make_shared<tab_page_list>(fm));
-    tabbar.push_back(u8"触发提醒");
+    tabbar.push_back(u8"触发回复");
     tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm));
     tabbar.push_back(u8"转发到群");
     tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm));
