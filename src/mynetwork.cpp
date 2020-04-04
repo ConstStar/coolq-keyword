@@ -10,7 +10,7 @@ using namespace std;
 
 #define HOST "keyword.xiaoxiaoge.cn"
 #define PORT 80
-#define PATH_UPDATE_CHECK "/version"
+#define PATH_UPDATE_CHECK "/api/version"
 
 void mynetwork::openUrl(std::string url) {
     string temp = "\"" + url;
@@ -43,7 +43,12 @@ Update::updateType Update::check(int version_id, string &inf) {
             appName = root["file_name"].asString();
 
             int must = root["must_version_id"].asInt();
-            if (version_id > must) return updateType::mustUpdate;
+            if (must > version_id) {
+                inf = "重要更新,更新内容:\r\n";
+                inf += root["inf"].asString();
+
+                return updateType::mustUpdate;
+            }
 
             inf = "有新版本,更新内容:\r\n";
             inf += root["inf"].asString();
@@ -75,8 +80,9 @@ bool Update::getUpdate(string &inf) {
             throw exception("插件下载失败 网络异常");
         }
 
-        string appPath = cq::dir::app();
-        ofstream file(appPath + appName, ios::out | ios::binary);
+        string appPath = cq::utils::ansi(cq::dir::root()) + "app/" + cq::utils::ansi(appName);
+        ofstream file(appPath, ios::out | ios::binary);
+        if (!file.good()) throw exception("文件打开失败");
         file << ret->body;
         file.close();
         inf = "更新完成";

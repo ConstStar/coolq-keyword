@@ -146,7 +146,7 @@ private:
                 m_inf.show();
             } else if (type == Update::updateType::update) {
                 msgbox m_inf{*this, u8"有新版本", msgbox::yes_no};
-                m_inf << inf << "\n";
+                m_inf << inf << "\n\n";
                 m_inf << "是否更新";
                 auto ret = m_inf.show();
                 if (ret == msgbox::pick_yes) {
@@ -154,6 +154,9 @@ private:
                 }
             } else if (type == Update::updateType::mustUpdate) {
                 update();
+                msgbox m_inf{*this, u8"更新内容"};
+                m_inf << inf;
+                m_inf.show();
             } else if (type == Update::updateType::error) {
                 msgbox m_error{*this, u8"错误"};
                 m_error.icon(msgbox::icon_error);

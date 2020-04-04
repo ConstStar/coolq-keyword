@@ -462,8 +462,8 @@ public:
 
         //功能菜单
         if (!std::string(prefix + "功能").compare(msg) || !std::string(prefix + "菜单").compare(msg)
-            || !strcmp(msg, "群监控菜单") || !strcmp(msg, "群监控功能") || !strcmp(msg, "查看群监控菜单")
-            || !strcmp(msg, "查看群监控功能")) {
+            || !strcmp(msg, "关键词触发器菜单"))
+            {
             std::string menu =
                 "**设置类(自定义需加前缀)**\n"
                 "[CQ:emoji,id=9999]查看/添加/删除关键词\n"
@@ -483,12 +483,6 @@ public:
 
             mycq::send_private_message(m_fromQQ, menu);
             m_index = NONE;
-        }
-
-        //检测主人列表是否为空
-        else if (conf.admin.empty()) {
-            mycq::send_private_message(m_fromQQ, "暂无群监控主人，请先使用界面添加群监控主人");
-            return -1;
         }
 
         //回复类
