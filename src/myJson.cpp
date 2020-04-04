@@ -336,7 +336,8 @@ bool MyJson::json2alone() {
             readJson_vector({"alone", temp_key, "QQList"}, aloneTemp.QQList);
             readJson_vector({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
 
-            aloneTemp.keyWordGroupWarn = get<bool>({"alone", temp_key, "groupWarn"}, false);
+            aloneTemp.keyWordGroupWarn = get<bool>({"alone", temp_key, "keyWordGroupWarn"}, false);
+            aloneTemp.keyWordPrivateWarn = get<bool>({"alone", temp_key, "keyWordPrivateWarn"}, false);
             aloneTemp.deleteMsg = get<bool>({"alone", temp_key, "deleteMsg"}, false);
             aloneTemp.streng = get<bool>({"alone", temp_key, "streng"}, false);
             aloneTemp.use = get<bool>({"alone", temp_key, "use"}, false);
@@ -350,7 +351,8 @@ bool MyJson::json2alone() {
 
             aloneTemp.name = get<string>({"alone", temp_key, "name"}, "");
             aloneTemp.relayGroupWord = get<string>({"alone", temp_key, "relayGroupWord"}, "");
-            aloneTemp.keyWordGroupWarnWord = get<string>({"alone", temp_key, "keyWordGroupWarn"}, "");
+            aloneTemp.keyWordGroupWarnWord = get<string>({"alone", temp_key, "keyWordGroupWarnWord"}, "");
+            aloneTemp.keyWordPrivateWarnWord = get<string>({"alone", temp_key, "keyWordPrivateWarnWord"}, "");
         }
     } catch (exception& e) {
         cout << e.what() << endl;
@@ -400,7 +402,8 @@ bool MyJson::alone2json() {
             writeJson_vector({"alone", temp_key, "QQList"}, aloneTemp.QQList);
             writeJson_vector({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
 
-            put<bool>({"alone", temp_key, "groupWarn"}, aloneTemp.keyWordGroupWarn);
+            put<bool>({"alone", temp_key, "keyWordPrivateWarn"}, aloneTemp.keyWordPrivateWarn);
+            put<bool>({"alone", temp_key, "keyWordGroupWarn"}, aloneTemp.keyWordGroupWarn);
             put<bool>({"alone", temp_key, "deleteMsg"}, aloneTemp.deleteMsg);
             put<bool>({"alone", temp_key, "streng"}, aloneTemp.streng);
             put<bool>({"alone", temp_key, "use"}, aloneTemp.use);
@@ -414,7 +417,8 @@ bool MyJson::alone2json() {
 
             put<string>({"alone", temp_key, "name"}, aloneTemp.name);
             put<string>({"alone", temp_key, "relayGroupWord"}, aloneTemp.relayGroupWord);
-            put<string>({"alone", temp_key, "keyWordGroupWarn"}, aloneTemp.keyWordGroupWarnWord);
+            put<string>({"alone", temp_key, "keyWordGroupWarnWord"}, aloneTemp.keyWordGroupWarnWord);
+            put<string>({"alone", temp_key, "keyWordPrivateWarnWord"}, aloneTemp.keyWordPrivateWarnWord);
         }
     } catch (exception& e) {
         cout << e.what() << endl;

@@ -66,6 +66,7 @@ struct ConfAlone
 	int banTimeLen;					//禁言时长
 	int QQListType;					//特殊名单类型  白名单||监控名单
 	bool keyWordGroupWarn;			//触发后是否群内警告
+	bool keyWordPrivateWarn;		//触发后是否私聊警告
 	bool streng;					//强力检测
 	bool deleteMsg;					//消息撤回
 
@@ -74,6 +75,7 @@ struct ConfAlone
 	int relayGroupMsg_trimBack;		//发送到群 消息后几行删除
 
 	string keyWordGroupWarnWord;		//触发关键词群内警告
+	string keyWordPrivateWarnWord;		//触发关键词私聊警告
 };
 
 ////设置

@@ -485,17 +485,7 @@ public:
         }
 
         //回复类
-        else if (std::string(msg).find(prefix + "回复") != string::npos) {
-            m_ReplyQQ = atoll(msg + std::string(prefix + "回复").length());
-            if (m_ReplyQQ != 0) {
-                mycq::send_private_message(m_fromQQ, "请发送要回复的消息");
-                m_index = SEND_QQ;
-            } else {
-                mycq::send_private_message(m_fromQQ, "输入有误，请发送 回复+QQ号");
-                m_index = NONE;
-            }
-
-        } else if (!std::string(prefix + "回复群").compare(msg)) {
+        else if (!std::string(prefix + "回复群").compare(msg)) {
             mycq::send_private_message(m_fromQQ, "请发送要回复的QQ群号");
             m_index = SEND_GROUP_1;
         } else if (std::string(msg).find(prefix + "回复群") != string::npos) {
@@ -510,6 +500,16 @@ public:
             }
             mycq::send_private_message(m_fromQQ, "请发送回复内容");
             m_index = SEND_GROUP_END;
+        } else if (std::string(msg).find(prefix + "回复") != string::npos) {
+            m_ReplyQQ = atoll(msg + std::string(prefix + "回复").length());
+            if (m_ReplyQQ != 0) {
+                mycq::send_private_message(m_fromQQ, "请发送要回复的消息");
+                m_index = SEND_QQ;
+            } else {
+                mycq::send_private_message(m_fromQQ, "输入有误，请发送 回复+QQ号");
+                m_index = NONE;
+            }
+
         }
 
         //默认关键词
@@ -830,16 +830,27 @@ public:
             }
         }
 
+        //触发后回复群消息
         if (conf.alone[conf_index].keyWordGroupWarn) {
             if (!conf.alone[conf_index].keyWordGroupWarnWord.empty()) {
                 string SendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
-
                 //解析变量
                 KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
-
                 mycq::send_group_message(m_fromGroup, SendMsg);
             } else {
                 mycq::send_group_message(m_fromGroup, GroupAt);
+            }
+        }
+
+        //触发后回复私聊消息
+        if (conf.alone[conf_index].keyWordPrivateWarn) {
+            if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
+                string SendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
+                //解析变量
+                KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
+                mycq::send_private_message(m_fromQQ, SendMsg);
+            } else {
+                mycq::send_private_message(m_fromQQ, GroupAt);
             }
         }
 
@@ -854,13 +865,9 @@ public:
 
     //删除cq码
     void DelCQ(std::string& msg) {
-        //暂时 只删除Url
 
-        if (msg.find("[CQ:share,url=") != string::npos) {
-            regex e1("\\[CQ:share,url=");
-            msg = regex_replace(msg, e1, "");
-
-            e1 = ",title=.*\\]";
+        if (msg.find("[CQ:") != string::npos) {
+            regex e1("\\[CQ:.*\\]");
             msg = regex_replace(msg, e1, "");
         }
     }
@@ -1051,7 +1058,7 @@ public:
 
         //触发的群号码
         str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(group.group_id));
-        
+
         //触发的群名称
         str = OperateStr::replace_all_distinct(str, "{群名称}", group.group_name);
     }

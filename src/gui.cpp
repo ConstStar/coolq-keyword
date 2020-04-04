@@ -441,7 +441,6 @@ private:
 
         //一些开关
         checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
-        checkGroupWarn.check(conf.alone[conf_index].keyWordGroupWarn);
         checkStreng.check(conf.alone[conf_index].streng);
     }
 
@@ -589,10 +588,6 @@ private:
         labelSwitch.caption(u8"一些功能开关:");
         place_.field("labelSwitch") << labelSwitch;
 
-        checkGroupWarn.create(*this);
-        checkGroupWarn.caption(u8"触发关键词发送群消息提醒");
-        place_.field("checkSwitch") << checkGroupWarn;
-
         checkStreng.create(*this);
         checkStreng.caption(u8"关键词强力检测");
         place_.field("checkSwitch") << checkStreng;
@@ -627,7 +622,6 @@ private:
 
             //一些开关
             conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
-            conf.alone[conf_index].keyWordGroupWarn = checkGroupWarn.checked();
             conf.alone[conf_index].streng = checkStreng.checked();
 
             //写入配置
@@ -674,7 +668,6 @@ private:
 
     //一些功能开关
     label labelSwitch;
-    checkbox checkGroupWarn; //触发关键词发送群消息提醒
     checkbox checkStreng; //强力检测
     checkbox checkDeleteMsg; //撤回消息
 
@@ -1018,8 +1011,30 @@ private:
         conf.file2json();
         conf.json2all();
 
-        //触发回复
-        text_warnWord.reset(conf.alone[conf_index].keyWordGroupWarnWord);
+        //触发后回复群消息
+        check_groupWarn.check(conf.alone[conf_index].keyWordGroupWarn);
+        text_groupWarn.reset(conf.alone[conf_index].keyWordGroupWarnWord);
+
+        //触发后回复私聊消息
+        check_privateWarn.check(conf.alone[conf_index].keyWordPrivateWarn);
+        text_privateWarn.reset(conf.alone[conf_index].keyWordPrivateWarnWord);
+    }
+
+    //显示文本
+    void showText(string title, string word) {
+        form fm_temp;
+        fm_temp.caption(title);
+
+        textbox text{fm_temp};
+        text.caption(word);
+        text.editable(false);
+
+        fm_temp.div("<text>");
+        fm_temp["text"] << text;
+        fm_temp.collocate();
+
+        fm_temp.show();
+        exec();
     }
 
     void init() {
@@ -1029,14 +1044,18 @@ private:
             //整体边距
             "margin = [15,15,15,15] "
 
-            //自定义触发回复
-            "<vert <weight=25 lab_warnWord> <text_warnWord>>"
+            //触发后回复群消息
+            "<vert <weight=30 check_groupWarn> <weight=25 <lab_groupWarn> <weight = 40% margin = [0,0,7]  "
+            "button_groupVariable>> "
+            "<text_groupWarn>>"
             "<weight=10>"
 
             "<vert"
 
-            //变量
-            "<vert <weight=25 lab_variable> <text_variable>>"
+            //触发后回复私聊消息
+            "<vert <weight=30 check_privateWarn> <weight=25 <lab_privateWarn> <weight = 40% margin = [0,0,7]  "
+            "button_privateVariable>> "
+            "<text_privateWarn>>"
             "<weight=10>"
 
             //保存
@@ -1044,42 +1063,82 @@ private:
 
             ">");
 
-        //自定义触发回复
-        lab_warnWord.create(*this);
-        lab_warnWord.caption(u8"群内触发后回复内容:");
-        place_.field("lab_warnWord") << lab_warnWord;
+        //触发回复群消息开关
+        check_groupWarn.create(*this);
+        check_groupWarn.caption(u8"触发关键词发送群消息提醒");
+        place_.field("check_groupWarn") << check_groupWarn;
 
-        text_warnWord.create(*this);
-        place_.field("text_warnWord") << text_warnWord;
+        //触发后回复私聊消息开关
+        check_privateWarn.create(*this);
+        check_privateWarn.caption(u8"触发关键词发送私聊消息提醒");
+        place_.field("check_privateWarn") << check_privateWarn;
 
-        //变量
-        lab_variable.create(*this);
-        lab_variable.caption(u8"可用变量(仅参考，不可编辑):");
-        place_.field("lab_variable") << lab_variable;
+        //触发后回复群消息内容
+        lab_groupWarn.create(*this);
+        lab_groupWarn.caption(u8"触发后回复群消息内容:");
+        place_.field("lab_groupWarn") << lab_groupWarn;
 
-        string variable(
-            u8"{at}\t\t艾特\r\n"
-            u8"{日期}\t\t当前日期\r\n"
-            u8"{时间}\t\t当前时间\r\n"
-            u8"{星期}\t\t当前星期\r\n"
-            u8"{处理方式}\t触发后处理方式\r\n"
-            u8"{关键词}\t\t触发的关键词\r\n"
-            u8"{QQ号码}\t触发关键词的QQ号码\r\n"
-            u8"{QQ名称}\t触发关键词的QQ名称\r\n"
-            u8"{QQ名片}\t触发关键词的QQ名片\r\n"
-            u8"{群号码}\t触发关键词的群名称\r\n"
-            u8"{群名称}\t触发关键词的群名称\r\n"
-            u8"\r\n更多变量欢迎进群补充(群:839067703)");
-        text_variable.create(*this);
-        text_variable.editable(false);
-        text_variable.caption(variable);
-        place_.field("text_variable") << text_variable;
+        text_groupWarn.create(*this);
+        place_.field("text_groupWarn") << text_groupWarn;
+
+        //触发后发送私聊消息
+        lab_privateWarn.create(*this);
+        lab_privateWarn.caption(u8"触发后回复私聊消息内容:");
+        place_.field("lab_privateWarn") << lab_privateWarn;
+
+        text_privateWarn.create(*this);
+        place_.field("text_privateWarn") << text_privateWarn;
+
+        //变量按钮
+        button_groupVariable.create(*this);
+        button_groupVariable.caption(u8"可用变量");
+        button_groupVariable.events().click([this] {
+            string variable(
+                u8"{at}\t\t艾特\r\n"
+                u8"{日期}\t\t当前日期\r\n"
+                u8"{时间}\t\t当前时间\r\n"
+                u8"{星期}\t\t当前星期\r\n"
+                u8"{处理方式}\t触发后处理方式\r\n"
+                u8"{关键词}\t\t触发的关键词\r\n"
+                u8"{QQ号码}\t触发关键词的QQ号码\r\n"
+                u8"{QQ名称}\t触发关键词的QQ名称\r\n"
+                u8"{QQ名片}\t触发关键词的QQ名片\r\n"
+                u8"{群号码}\t触发关键词的群名称\r\n"
+                u8"{群名称}\t触发关键词的群名称\r\n"
+                u8"\r\n更多变量欢迎进群补充(群:839067703)");
+            showText("回复内容变量", variable);
+        });
+        place_.field("button_groupVariable") << button_groupVariable;
+
+        button_privateVariable.create(*this);
+        button_privateVariable.caption(u8"可用变量");
+        button_privateVariable.events().click([this] {
+            string variable(
+                u8"{at}\t\t艾特\r\n"
+                u8"{日期}\t\t当前日期\r\n"
+                u8"{时间}\t\t当前时间\r\n"
+                u8"{星期}\t\t当前星期\r\n"
+                u8"{处理方式}\t触发后处理方式\r\n"
+                u8"{关键词}\t\t触发的关键词\r\n"
+                u8"{QQ号码}\t触发关键词的QQ号码\r\n"
+                u8"{QQ名称}\t触发关键词的QQ名称\r\n"
+                u8"{QQ名片}\t触发关键词的QQ名片\r\n"
+                u8"{群号码}\t触发关键词的群名称\r\n"
+                u8"{群名称}\t触发关键词的群名称\r\n"
+                u8"\r\n更多变量欢迎进群补充(群:839067703)");
+            showText("回复内容变量", variable);
+        });
+        place_.field("button_privateVariable") << button_privateVariable;
 
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
         btn_save.events().click([this] {
-            conf.alone[conf_index].keyWordGroupWarnWord = text_warnWord.text();
+            conf.alone[conf_index].keyWordGroupWarnWord = text_groupWarn.text();
+            conf.alone[conf_index].keyWordGroupWarn = check_groupWarn.checked();
+
+            conf.alone[conf_index].keyWordPrivateWarnWord = text_privateWarn.text();
+            conf.alone[conf_index].keyWordPrivateWarn = check_privateWarn.checked();
 
             writeConf();
 
@@ -1103,13 +1162,23 @@ private:
     place place_;
     int conf_index;
 
-    //自定义触发回复
-    label lab_warnWord;
-    textbox text_warnWord;
+    //触发后回复群消息开关
+    checkbox check_groupWarn;
+
+    //触发后回复私聊消息开关
+    checkbox check_privateWarn;
+
+    //触发后回复群消息内容
+    label lab_groupWarn;
+    textbox text_groupWarn;
+
+    //触发后发送私聊消息
+    label lab_privateWarn;
+    textbox text_privateWarn;
 
     //变量
-    label lab_variable;
-    textbox text_variable;
+    button button_groupVariable;
+    button button_privateVariable;
 
     //保存
     button btn_save;
@@ -1267,7 +1336,7 @@ private:
 
         //变量按钮
         button_variable.create(*this);
-        button_variable.caption(u8"查看变量");
+        button_variable.caption(u8"可用变量");
         button_variable.events().click([this] {
             string variable(
                 u8"{msg}\t\t触发关键词的消息内容\r\n"
