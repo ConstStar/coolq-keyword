@@ -3,8 +3,8 @@
     "ret": 1,
     "apiver": 9,
     "name": "关键词触发器",
-    "version": "2.1.0",
-    "version_id": 17,
+    "version": "2.1.1",
+    "version_id": 18,
     "author": "布吉岛",
     "description": "发送 菜单 查看本插件命令\r\n欢迎加入插件内测群:839067703\r\n进群优先体验新功能",
     "event": [ // 可以修改 priority 来调整插件的优先级, 其它字段不可修改, 否则将无法使用
