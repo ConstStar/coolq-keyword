@@ -9,7 +9,6 @@
 #include <boost/tokenizer.hpp>
 
 
-//#define _DEBUG
 using namespace std;
 
 extern string appDir;
