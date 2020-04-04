@@ -96,7 +96,6 @@ CQ_INIT {
         // } catch (ApiError &e) {
         //     cq::logging::info("错误",e.what());
         // }
-        event.block(); // 阻止当前事件传递到下一个插件
     });
 }
 

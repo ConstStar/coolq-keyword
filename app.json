@@ -41,14 +41,14 @@
             "type": 21,
             "name": "私聊消息",
             "function": "cq_event_private_message",
-            "priority": 30000
+            "priority": 10000
         },
         {
             "id": 2,
             "type": 2,
             "name": "群消息",
             "function": "cq_event_group_message",
-            "priority": 30000
+            "priority": 10000
         }
     ],
     "menu": [ // name 字段为显示在酷Q应用菜单中的文字, function 字段对应 CQ_MENU 宏调用的参数
