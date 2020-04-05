@@ -27,7 +27,7 @@
 ## url
 
 > ### SDK
-  >> `cqcppsdk`: https://github.com/cqmoe/cqcppsd  
+  >> `cqcppsdk`: https://github.com/cqmoe/cqcppsdk  
   >> `cqcppsdk`文档: https://cqcppsdk.cqp.moe/  
 
 > ### 依赖项
@@ -41,7 +41,7 @@
 
 
 ## 感谢
-* 感谢 [cqcppsdk](https://github.com/cqmoe/cqcppsd) 提供基本框架（SDK）
+* 感谢 [cqcppsdk](https://github.com/cqmoe/cqcppsdk) 提供基本框架（SDK）
 * 感谢 [酷Q](https://cqp.cc/) 提供软件接口
 
 ## 问题反馈
