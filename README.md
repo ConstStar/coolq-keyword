@@ -16,9 +16,9 @@
 
 ## 依赖
 
-* [jsoncpp](https://github.com/open-source-parsers/jsoncpp) 作为配置项读写
-* [nana](http://nanapro.org/) 作为界面
-* [boost](https://www.boost.org/) 作为一些基本操作
+* [jsoncpp](https://github.com/open-source-parsers/jsoncpp)(v1.9.2) 作为配置项读写
+* [nana](http://nanapro.org/)(v1.7.3) 作为界面
+* [boost](https://www.boost.org/)(v1.72.0) 作为一些基本操作
 
 ## 构造
 
