@@ -25,16 +25,16 @@
 
 ## url
 
-> ### SDK 
+> ### SDK
   >> `cqcppsdk`: https://github.com/cqmoe/cqcppsd  
   >> `cqcppsdk`文档: https://cqcppsdk.cqp.moe/  
 
-> ### 依赖项  
+> ### 依赖项
   >> `nana`: http://nanapro.org/  
   >> `JsonCpp`: https://github.com/open-source-parsers/jsoncpp  
   >> `boost`: https://www.boost.org/  
 
-> ### 酷Q  
+> ### 酷Q
   >> 本插件帖子: https://cqp.cc/t/40793  
   >> `酷Q社区`: https://cqp.cc/  
 
