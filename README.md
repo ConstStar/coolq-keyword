@@ -40,7 +40,7 @@
 
 # 特别感谢
 * 感谢 [cqcppsdk](https://github.com/cqmoe/cqcppsd) 提供基本框架（SDK）
-* 感谢 [酷Q](https://cqp.cc/) 提供底层软件
+* 感谢 [酷Q](https://cqp.cc/) 提供软件接口
 
 # 问题反馈
 如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过issue反馈，感谢您的帮助。
