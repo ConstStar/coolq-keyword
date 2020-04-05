@@ -1,6 +1,7 @@
 # 关键词触发器
 
 [![QQ 群](https://img.shields.io/badge/qq%E7%BE%A4-839067703-orange.svg)](https://jq.qq.com/?_wv=1027&k=5mfe8TR)
+[![酷Q帖子](https://img.shields.io/badge/%E9%85%B7Q%E5%B8%96%E5%AD%90-blue.svg)](https://cqp.cc/t/40793)
 
 # 简单介绍
 
@@ -38,11 +39,11 @@
    >> `酷Q社区`: https://cqp.cc/  
 
 
-# 特别感谢
+# 感谢
 * 感谢 [cqcppsdk](https://github.com/cqmoe/cqcppsd) 提供基本框架（SDK）
 * 感谢 [酷Q](https://cqp.cc/) 提供软件接口
 
 # 问题反馈
-如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过issue反馈，感谢您的帮助。
+如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过[issue](https://github.com/zhaoguoqingit/KeyWord/issues)反馈，感谢您的帮助。
 
 插件QQ交流群：[839067703](https://jq.qq.com/?_wv=1027&k=5mfe8TR)
