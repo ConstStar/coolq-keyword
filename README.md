@@ -44,6 +44,6 @@
 * 感谢 [酷Q](https://cqp.cc/) 提供软件接口
 
 ## 问题反馈
-如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过[issue](https://github.com/zhaoguoqingit/KeyWord/issues)反馈，感谢您的帮助。
+如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过[issue](https://github.com/zhaoguoqingit/KeyWord/issues/new)反馈，感谢您的帮助。
 
 插件QQ交流群：[839067703](https://jq.qq.com/?_wv=1027&k=5mfe8TR)
