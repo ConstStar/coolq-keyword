@@ -28,12 +28,12 @@
     >> `cqcppsdk`: https://github.com/cqmoe/cqcppsd  
     >> `cqcppsdk`文档: https://cqcppsdk.cqp.moe/  
 
-> ## 依赖项
+> ## 依赖项  
     >> `nana`: http://nanapro.org/  
     >> `JsonCpp`: https://github.com/open-source-parsers/jsoncpp  
     >> `boost`: https://www.boost.org/  
 
-> ## 酷Q
+> ## 酷Q  
    >> 本插件帖子: https://cqp.cc/t/40793  
    >> `酷Q社区`: https://cqp.cc/  
 
@@ -45,4 +45,4 @@
 # 问题反馈
 如果在使用中遇到了问题、bug，或者有其他功能建议，欢迎通过issue反馈，感谢您的帮助。
 
-插件QQ交流群：839067703
+插件QQ交流群：[839067703](https://jq.qq.com/?_wv=1027&k=5mfe8TR)
