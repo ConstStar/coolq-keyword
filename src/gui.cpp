@@ -751,6 +751,7 @@ private:
         place_.field("lab_keyWordWhite") << lab_keyWordWhite;
 
         text_keyWordWhite.create(*this);
+        text_keyWordWhite.line_wrapped(true);
         text_keyWordWhite.tip_string(u8"包含这些关键词的消息将不会检测");
         place_.field("text_keyWordWhite") << text_keyWordWhite;
 
@@ -927,6 +928,7 @@ private:
         place_.field("lab_keyWord") << lab_keyWord;
 
         text_keyWord.create(*this);
+        text_keyWord.line_wrapped(true);
         place_.field("text_keyWord") << text_keyWord;
 
         //正则表达式关键词
@@ -935,6 +937,7 @@ private:
         place_.field("lab_keyWordRegex") << lab_keyWordRegex;
 
         text_keyWordRegex.create(*this);
+        text_keyWordRegex.line_wrapped(true);
         place_.field("text_keyWordRegex") << text_keyWordRegex;
 
         //正则表达式测试
@@ -1077,6 +1080,7 @@ private:
 
         //触发后回复私聊消息开关
         check_privateWarn.create(*this);
+        check_privateWarn.create(*this);
         check_privateWarn.caption(u8"触发关键词发送私聊消息提醒");
         place_.field("check_privateWarn") << check_privateWarn;
 
@@ -1086,6 +1090,7 @@ private:
         place_.field("lab_groupWarn") << lab_groupWarn;
 
         text_groupWarn.create(*this);
+        text_groupWarn.line_wrapped(true);
         place_.field("text_groupWarn") << text_groupWarn;
 
         //触发后发送私聊消息
@@ -1094,6 +1099,7 @@ private:
         place_.field("lab_privateWarn") << lab_privateWarn;
 
         text_privateWarn.create(*this);
+        text_privateWarn.line_wrapped(true);
         place_.field("text_privateWarn") << text_privateWarn;
 
         //变量按钮
@@ -1338,6 +1344,7 @@ private:
         place_.field("lab_relayGroupWord") << lab_relayGroupWord;
 
         text_relayGroupWord.create(*this);
+        text_relayGroupWord.line_wrapped(true);
         text_relayGroupWord.tip_string(u8"不填写则转发消息原格式 即 {msg}");
         place_.field("text_relayGroupWord") << text_relayGroupWord;
 
