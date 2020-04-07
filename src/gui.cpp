@@ -1103,6 +1103,7 @@ private:
 
         text_groupWarn.create(*this);
         text_groupWarn.line_wrapped(true);
+        text_groupWarn.tip_string("不填写默认值则为: {at} 触发关键词，处理方式:{处理方式}");
         place_.field("text_groupWarn") << text_groupWarn;
 
         //触发后发送私聊消息
