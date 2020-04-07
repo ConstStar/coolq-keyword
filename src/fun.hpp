@@ -61,8 +61,7 @@ public:
 
     //私聊消息处理
     void funthing(const char* msg) {
-        std::vector<int64_t>::iterator iter;
-        iter = find(conf.admin.begin(), conf.admin.end(), m_fromQQ);
+        auto iter = find(conf.admin.begin(), conf.admin.end(), m_fromQQ);
 
         if (iter == conf.admin.end()) {
             //不是主人时将消息转发给主人
@@ -120,12 +119,12 @@ public:
         case ADD_KEYWORD: //添加关键词
         {
             //支持批量添加 解析每行数据
-            vector<string> temp_vector;
+            unordered_set<string> temp_vector;
             OperateLine::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
-                conf.alone[0].keyWord.push_back(temp_add);
+                conf.alone[0].keyWord.insert(temp_add);
             }
 
             //重新构造json 并写入文件
@@ -169,11 +168,11 @@ public:
         case ADD_QQLIST: //添加白名单/监控名单
         {
             //支持批量添加 解析每行数据
-            vector<long long> temp_vector;
+            unordered_set<long long> temp_vector;
             OperateLine::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
-                conf.alone[0].QQList.push_back(temp_longlong);
+                conf.alone[0].QQList.insert(temp_longlong);
             }
 
             //重新构造json 并写入文件
@@ -226,11 +225,11 @@ public:
         case ADD_GROUPLIST: //添加监控群
         {
             //支持批量添加 解析每行数据
-            vector<long long> temp_vector;
+            unordered_set<long long> temp_vector;
             OperateLine::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
-                conf.alone[0].groupList.push_back(temp_longlong);
+                conf.alone[0].groupList.insert(temp_longlong);
             }
 
             //重新构造json 并写入文件
@@ -296,12 +295,12 @@ public:
         case ADD_KEYWORD_WHITE: //添加白名单关键词
         {
             //支持批量添加 解析每行数据
-            vector<string> temp_vector;
+            unordered_set<string> temp_vector;
             OperateLine::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
-                conf.alone[0].keyWordWhite.push_back(temp_add);
+                conf.alone[0].keyWordWhite.insert(temp_add);
             }
 
             //重新构造json 并写入文件
@@ -345,12 +344,12 @@ public:
         case ADD_KEYWORD_RE: //添加正则表达式关键词
         {
             //支持批量添加 解析每行数据
-            vector<string> temp_vector;
+            unordered_set<string> temp_vector;
             OperateLine::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
-                conf.alone[0].keyWordRegex.push_back(temp_add);
+                conf.alone[0].keyWordRegex.insert(temp_add);
             }
             //重新构造json 并写入文件
             conf.all2json();
@@ -393,11 +392,11 @@ public:
         case ADD_GROUPLIST_SEND: //添加转发到群号码
         {
             //支持批量添加 解析每行数据
-            vector<long long> temp_vector;
+            unordered_set<long long> temp_vector;
             OperateLine::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
-                conf.alone[0].relayGroupList.push_back(temp_longlong);
+                conf.alone[0].relayGroupList.insert(temp_longlong);
             }
 
             //重新构造json 并写入文件

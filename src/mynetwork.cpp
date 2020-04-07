@@ -34,6 +34,7 @@ Update::updateType Update::check(int version_id, string &inf) {
 
         reader.parse(json, root);
 
+
         int getVersion_id = root["version_id"].asInt();
         if (getVersion_id > version_id) {
             newVersion = root["version"].asString();
@@ -85,7 +86,7 @@ bool Update::getUpdate(string &inf) {
         if (!file.good()) throw exception("文件打开失败");
         file << ret->body;
         file.close();
-        inf = "更新完成";
+        inf = "更新完成，请重启酷Q载入新版本";
         return true;
 
     } catch (exception &e) {

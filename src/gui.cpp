@@ -211,7 +211,7 @@ private:
             for (int i = 0; i < line; i++) {
                 string buf;
                 text_admin.getline(i, buf);
-                if (!buf.empty()) conf.admin.push_back(atoll(buf.c_str()));
+                if (!buf.empty()) conf.admin.insert(atoll(buf.c_str()));
             }
 
             //消息前缀
@@ -452,14 +452,14 @@ private:
             //整体边距
             "margin = [15,15,15,15] "
 
-            //群名单
-            "<vert weight=250 <list> <weight=25 <text_addgroup><weight=80 button_addgroup>><weight=5><weight=30 "
+            //监控群
+            "<vert weight=250 <weight=25 lab_list> <list> <weight=25 <text_addgroup><weight=80 button_addgroup>><weight=5><weight=30 "
             "gap=[10,10] arrange=[40,40] button_list>>"
             "<weight=20>"
 
             "<vert"
             //处理方式
-            "<weight=20 labelDeal>"
+            "<weight=25 labelDeal>"
             "<vert weight=25% checkDeal>"
             "<weight=20 <weight=25% labelBanTimeLen> <weight=25% TextBanTimeLen><labelBanTimeLenTip>>"
             "<weight=10>"
@@ -474,7 +474,11 @@ private:
 
             ">");
 
-        //列表
+        //监控群
+        lab_list.create(*this);
+        lab_list.caption(u8"监控群:");
+        place_.field("lab_list") << lab_list;
+    
         listGroupList.create(*this);
         listGroupList.checkable(true);
         listGroupList.append_header(u8"群名");
@@ -594,7 +598,7 @@ private:
         place_.field("checkSwitch") << checkStreng;
 
         checkDeleteMsg.create(*this);
-        checkDeleteMsg.caption(u8"撤回触发关键词消息");
+        checkDeleteMsg.caption(u8"撤回触发关键词消息（需Pro）");
         place_.field("checkSwitch") << checkDeleteMsg;
 
         check_deleteCQCode.create(*this);
@@ -609,7 +613,7 @@ private:
             for (auto temp : listGroupList.checked()) {
                 string buf = listGroupList.at(temp).text(1);
 
-                conf.alone[conf_index].groupList.push_back(atoll(buf.c_str()));
+                conf.alone[conf_index].groupList.insert(atoll(buf.c_str()));
             }
 
             //处理方式
@@ -655,7 +659,8 @@ private:
     place place_;
     int conf_index;
 
-    //群名单
+    //监控群
+    label lab_list;
     listbox listGroupList; //群列表
 
     textbox textAddGroup; //手动添加群	文本框
@@ -809,7 +814,7 @@ private:
             for (int i = 0; i < QQList_line; i++) {
                 string buf;
                 text_QQList.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].QQList.push_back(atoll(buf.c_str()));
+                if (!buf.empty()) conf.alone[conf_index].QQList.insert(atoll(buf.c_str()));
             }
 
             //白名单关键词
@@ -818,7 +823,7 @@ private:
             for (int i = 0; i < keyWrodWhite_line; i++) {
                 string buf;
                 text_keyWordWhite.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWordWhite.push_back(buf.c_str());
+                if (!buf.empty()) conf.alone[conf_index].keyWordWhite.insert(buf.c_str());
             }
 
             //特殊名单类型  白名单||监控名单
@@ -956,7 +961,7 @@ private:
             for (int i = 0; i < keyWord_line; i++) {
                 string buf;
                 text_keyWord.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWord.push_back(buf.c_str());
+                if (!buf.empty()) conf.alone[conf_index].keyWord.insert(buf.c_str());
             }
 
             //正则表达式关键词
@@ -965,7 +970,7 @@ private:
             for (int i = 0; i < keyWordRegex_line; i++) {
                 string buf;
                 text_keyWordRegex.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWordRegex.push_back(buf.c_str());
+                if (!buf.empty()) conf.alone[conf_index].keyWordRegex.insert(buf.c_str());
             }
 
             //写入配置
@@ -1378,7 +1383,7 @@ private:
             for (auto temp : list_groupList.checked()) {
                 string buf = list_groupList.at(temp).text(1);
 
-                conf.alone[conf_index].relayGroupList.push_back(atoll(buf.c_str()));
+                conf.alone[conf_index].relayGroupList.insert(atoll(buf.c_str()));
             }
 
             //转发格式

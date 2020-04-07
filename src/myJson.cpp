@@ -112,7 +112,7 @@ bool MyJson::read_json(string path, Json::Value& root) {
 }
 
 //解析json中的数组
-bool MyJson::readJson_vector(vector<string> json_path, vector<string>& value) {
+bool MyJson::readJson_array(const initializer_list<string> json_path, unordered_set<string>& value) {
     try {
         Json::Value temp_json = conf_json;
         for (auto key : json_path) {
@@ -130,7 +130,7 @@ bool MyJson::readJson_vector(vector<string> json_path, vector<string>& value) {
         value.clear(); //清空原有数组
 
         for (auto temp : temp_json) {
-            value.push_back(temp.asString());
+            value.insert(temp.asString());
         }
 
     } catch (exception& e) {
@@ -143,7 +143,7 @@ bool MyJson::readJson_vector(vector<string> json_path, vector<string>& value) {
 }
 
 //解析json中的数组
-bool MyJson::readJson_vector(vector<string> json_path, vector<long long>& value) {
+bool MyJson::readJson_array(const initializer_list<string> json_path, unordered_set<long long>& value) {
     try {
         Json::Value temp_json = conf_json;
         for (auto key : json_path) {
@@ -161,7 +161,7 @@ bool MyJson::readJson_vector(vector<string> json_path, vector<long long>& value)
         value.clear(); //清空原有数组
 
         for (auto temp : temp_json) {
-            value.push_back(temp.asInt64());
+            value.insert(temp.asInt64());
         }
     } catch (exception& e) {
         cout << e.what() << endl;
@@ -173,7 +173,7 @@ bool MyJson::readJson_vector(vector<string> json_path, vector<long long>& value)
 }
 
 //构造json中的数组
-bool MyJson::writeJson_vector(vector<string> json_path, vector<string>& value) {
+bool MyJson::writeJson_array(const initializer_list<string> json_path, unordered_set<string>& value) {
     try {
         Json::Value* temp_json = &conf_json;
         for (auto key : json_path) {
@@ -197,7 +197,7 @@ bool MyJson::writeJson_vector(vector<string> json_path, vector<string>& value) {
 }
 
 //构造json中的数组
-bool MyJson::writeJson_vector(vector<string> json_path, vector<long long>& value) {
+bool MyJson::writeJson_array(const initializer_list<string> json_path, unordered_set<long long>& value) {
     try {
         Json::Value* temp_json = &conf_json;
         for (auto key : json_path) {
@@ -219,7 +219,7 @@ bool MyJson::writeJson_vector(vector<string> json_path, vector<long long>& value
 }
 
 //获取key列表
-vector<string> MyJson::getKeyList(vector<string> json_path) {
+vector<string> MyJson::getKeyList(const initializer_list<string> json_path) {
     Json::Value temp_json = conf_json;
     vector<string> keyList;
 
@@ -238,7 +238,7 @@ vector<string> MyJson::getKeyList(vector<string> json_path) {
 
 //获取json
 template <typename T>
-T MyJson::get(vector<string> json_path, T def) {
+T MyJson::get(const initializer_list<string> json_path, T def) {
     Json::Value temp_json = conf_json;
     for (auto key : json_path) {
         temp_json = temp_json[key];
@@ -255,7 +255,7 @@ T MyJson::get(vector<string> json_path, T def) {
 
 //放置json
 template <typename T>
-void MyJson::put(vector<string> json_path, T value) {
+void MyJson::put(const initializer_list<string> json_path, T value) {
     Json::Value* temp_json = &conf_json;
     for (auto key : json_path) {
         temp_json = &((*temp_json)[key]);
@@ -266,14 +266,14 @@ void MyJson::put(vector<string> json_path, T value) {
 
 //从 root 存放到json中的
 bool MyJson::admin2json() {
-    writeJson_vector({"main", "admin"}, admin);
+    writeJson_array({"main", "admin"}, admin);
     return true;
 }
 
 //从 json 存放到root中
 
 bool MyJson::json2admin() {
-    readJson_vector({"main", "admin"}, admin);
+    readJson_array({"main", "admin"}, admin);
 
     return true;
 }
@@ -305,36 +305,36 @@ bool MyJson::json2alone() {
             auto& aloneTemp = alone[atoi(temp_key.c_str())];
 
             //普通关键词
-            vector<string> temp_keyword;
+            unordered_set<string> temp_keyword;
             auto& keyWord = aloneTemp.keyWord;
-            readJson_vector({"alone", temp_key, "keyWord"}, temp_keyword);
+            readJson_array({"alone", temp_key, "keyWord"}, temp_keyword);
             keyWord.clear();
             for (auto temp_keyWord : temp_keyword) {
-                keyWord.push_back(temp_keyWord);
+                keyWord.insert(temp_keyWord);
             }
 
             //正则表达式关键词
-            vector<string> temp_keywordRegex;
+            unordered_set<string> temp_keywordRegex;
             auto& keyWordRegex = aloneTemp.keyWordRegex;
-            readJson_vector({"alone", temp_key, "keyWordRegex"}, temp_keywordRegex);
+            readJson_array({"alone", temp_key, "keyWordRegex"}, temp_keywordRegex);
 
             keyWordRegex.clear();
             for (auto temp_keyWordRegex : temp_keywordRegex) {
-                keyWordRegex.push_back(temp_keyWordRegex);
+                keyWordRegex.insert(temp_keyWordRegex);
             }
 
             //白名单关键词
-            vector<string> temp_keywordWhite;
+            unordered_set<string> temp_keywordWhite;
             auto& keyWordWhite = aloneTemp.keyWordWhite;
-            readJson_vector({"alone", temp_key, "keyWordWhite"}, temp_keywordWhite);
+            readJson_array({"alone", temp_key, "keyWordWhite"}, temp_keywordWhite);
             keyWordWhite.clear();
             for (auto temp_keyWordRegex : temp_keywordWhite) {
-                keyWordWhite.push_back(temp_keyWordRegex);
+                keyWordWhite.insert(temp_keyWordRegex);
             }
 
-            readJson_vector({"alone", temp_key, "groupList"}, aloneTemp.groupList);
-            readJson_vector({"alone", temp_key, "QQList"}, aloneTemp.QQList);
-            readJson_vector({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
+            readJson_array({"alone", temp_key, "groupList"}, aloneTemp.groupList);
+            readJson_array({"alone", temp_key, "QQList"}, aloneTemp.QQList);
+            readJson_array({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
 
             aloneTemp.keyWordGroupWarn = get<bool>({"alone", temp_key, "keyWordGroupWarn"}, false);
             aloneTemp.keyWordPrivateWarn = get<bool>({"alone", temp_key, "keyWordPrivateWarn"}, false);
@@ -377,31 +377,31 @@ bool MyJson::alone2json() {
             if (temp.first != 0) temp_key = to_string(index++);
 
             //普通关键词
-            vector<string> temp_keyword;
+            unordered_set<string> temp_keyword;
             for (auto temp_word : aloneTemp.keyWord) {
-                temp_keyword.push_back(temp_word.keyWord);
+                temp_keyword.insert(temp_word.keyWord);
             }
 
-            writeJson_vector({"alone", temp_key, "keyWord"}, temp_keyword);
+            writeJson_array({"alone", temp_key, "keyWord"}, temp_keyword);
 
             //正则表达式关键词
-            vector<string> temp_keyWordRegex;
+            unordered_set<string> temp_keyWordRegex;
             for (auto temp_wordRegex : aloneTemp.keyWordRegex) {
-                temp_keyWordRegex.push_back(temp_wordRegex.keyWord);
+                temp_keyWordRegex.insert(temp_wordRegex.keyWord);
             }
 
-            writeJson_vector({"alone", temp_key, "keyWordRegex"}, temp_keyWordRegex);
+            writeJson_array({"alone", temp_key, "keyWordRegex"}, temp_keyWordRegex);
 
             //白名单关键词
-            vector<string> temp_keyWordWhite;
+            unordered_set<string> temp_keyWordWhite;
             for (auto temp_wordWhite : aloneTemp.keyWordWhite) {
-                temp_keyWordWhite.push_back(temp_wordWhite.keyWord);
+                temp_keyWordWhite.insert(temp_wordWhite.keyWord);
             }
-            writeJson_vector({"alone", temp_key, "keyWordWhite"}, temp_keyWordWhite);
+            writeJson_array({"alone", temp_key, "keyWordWhite"}, temp_keyWordWhite);
 
-            writeJson_vector({"alone", temp_key, "groupList"}, aloneTemp.groupList);
-            writeJson_vector({"alone", temp_key, "QQList"}, aloneTemp.QQList);
-            writeJson_vector({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
+            writeJson_array({"alone", temp_key, "groupList"}, aloneTemp.groupList);
+            writeJson_array({"alone", temp_key, "QQList"}, aloneTemp.QQList);
+            writeJson_array({"alone", temp_key, "relayGroupList"}, aloneTemp.relayGroupList);
 
             put<bool>({"alone", temp_key, "keyWordPrivateWarn"}, aloneTemp.keyWordPrivateWarn);
             put<bool>({"alone", temp_key, "keyWordGroupWarn"}, aloneTemp.keyWordGroupWarn);
@@ -463,33 +463,33 @@ void MyJson::file2json() {
 }
 
 //获取 分割每行的字符串 json
-void OperateLine::line_get_str(string str, vector<string>& value) {
+void OperateLine::line_get_str(string str, unordered_set<string>& value) {
     value.clear();
  
-    vector<string> temp_vectorStr;
-    boost::split(temp_vectorStr, str, boost::is_any_of(L"\r\n"));
+    unordered_set<string> temp_array;
+    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
 
-    for (auto temp_str : temp_vectorStr) {
+    for (auto temp_str : temp_array) {
         //过滤无效值
         if (temp_str.empty()) continue;
 
-        value.push_back(temp_str);
+        value.insert(temp_str);
     }
 }
 
 //获取 分割每行的uint json
-void OperateLine::line_get_ll(string str, vector<long long>& value) {
+void OperateLine::line_get_ll(string str, unordered_set<long long>& value) {
     value.clear();
 
-    vector<string> temp_vectorStr;
-    boost::split(temp_vectorStr, str, boost::is_any_of(L"\r\n"));
+    unordered_set<string> temp_array;
+    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
 
-    for (auto temp_str : temp_vectorStr) {
+    for (auto temp_str : temp_array) {
         long long num = atoll(temp_str.c_str());
 
         //过滤无效值
         if (num == 0) continue;
 
-        value.push_back(num);
+        value.insert(num);
     }
 }
