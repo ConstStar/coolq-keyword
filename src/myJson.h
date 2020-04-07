@@ -58,7 +58,30 @@ struct WKEYWORD_hash { //指定hash函数，作为模板的第二个参数
 
 //具有单独设置的项目
 struct ConfAlone {
-    ConfAlone() : deleteCQCode(true), keyWordSendAdmin(true) {
+    ConfAlone()
+        : use(false),
+          priority(0),
+          name("默认"),
+          keyWord(),
+          keyWordRegex(),
+          keyWordWhite(),
+          groupList(),
+          QQList(),
+          relayGroupList(),
+          dealType(0),
+          banTimeLen(0),
+          QQListType(0),
+          keyWordGroupWarn(false),
+          keyWordPrivateWarn(false),
+          streng(false),
+          deleteMsg(false),
+          deleteCQCode(true),
+          keyWordSendAdmin(true),
+          relayGroupWord(),
+          relayGroupMsg_trimFront(0),
+          relayGroupMsg_trimBack(0),
+          keyWordGroupWarnWord(),
+          keyWordPrivateWarnWord() {
     }
 
     bool use; //开关
