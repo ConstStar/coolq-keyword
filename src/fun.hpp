@@ -672,18 +672,23 @@ public:
             m_index = NONE;
         }
 
-        //设置白名单
-        else if (!std::string(prefix + "添加白名单").compare(msg)
-                 || !std::string(prefix + "添加监控名单").compare(msg)) {
-            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
+        //设置监控名单
+        else if (!std::string(prefix + "添加监控名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                return 0;
+            }
 
             mycq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
             m_index = ADD_QQLIST;
-        } else if (!std::string(prefix + "删除白名单").compare(msg)
-                   || !std::string(prefix + "删除监控名单").compare(msg)) {
-            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
-
-            std::string SendMsg = "全局默认 白名单/监控名单：\n";
+        } else if (!std::string(prefix + "删除监控名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                return 0;
+            }
+            std::string SendMsg = "全局默认 监控名单：\n";
 
             for (auto id : conf.alone[0].QQList) {
                 auto QQinf = cq::get_stranger_info(id);
@@ -693,11 +698,52 @@ public:
             mycq::send_private_message(m_fromQQ, SendMsg);
             mycq::send_private_message(m_fromQQ, "请发送要删除白名单号码");
             m_index = DEL_QQLIST;
-        } else if (!std::string(prefix + "查看白名单").compare(msg)
-                   || !std::string(prefix + "查看监控名单").compare(msg)) {
-            mycq::send_private_message(m_fromQQ, "此处暂未优化，请自行查看是否设置为您需要的监控模式(白名单/监控名单)");
+        } else if (!std::string(prefix + "查看监控名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                return 0;
+            }
+            std::string SendMsg = "全局默认 监控名单：\n";
 
-            std::string SendMsg = "全局默认 白名单/监控名单：\n";
+            for (auto temp : conf.alone[0].QQList) {
+                auto QQinf = cq::get_stranger_info(temp);
+                SendMsg += QQinf.nickname + "(" + to_string(temp) + ")\n";
+            }
+        }
+        //设置白名单
+        else if (!std::string(prefix + "添加白名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                return 0;
+            }
+
+            mycq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
+            m_index = ADD_QQLIST;
+        } else if (!std::string(prefix + "删除白名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                return 0;
+            }
+            std::string SendMsg = "全局默认 白名单：\n";
+
+            for (auto id : conf.alone[0].QQList) {
+                auto QQinf = cq::get_stranger_info(id);
+                SendMsg += QQinf.nickname + "(" + to_string(id) + ")\n";
+            }
+
+            mycq::send_private_message(m_fromQQ, SendMsg);
+            mycq::send_private_message(m_fromQQ, "请发送要删除白名单号码");
+            m_index = DEL_QQLIST;
+        } else if (!std::string(prefix + "查看白名单").compare(msg)) {
+            if (conf.alone[0].QQListType == 0) {
+                mycq::send_private_message(m_fromQQ,
+                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                return 0;
+            }
+            std::string SendMsg = "全局默认 白名单：\n";
 
             for (auto temp : conf.alone[0].QQList) {
                 auto QQinf = cq::get_stranger_info(temp);
@@ -979,7 +1025,7 @@ public:
         //艾特
         str = OperateStr::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
 
-         //获取当前时间
+        //获取当前时间
         SYSTEMTIME sys;
         GetLocalTime(&sys);
 
