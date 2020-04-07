@@ -82,7 +82,8 @@ CQ_INIT {
     cq::on_private_message([](const cq::PrivateMessageEvent &event) {
         // try {
         insQQ[event.user_id].put_fromQQ(event.user_id);
-        insQQ[event.user_id].funthing(event.message.c_str());
+        insQQ[event.user_id].funthing(cq::message::unescape(event.message).c_str());
+        
         // } catch (ApiError &e) {
 
         //     cq::logging::info("错误",e.what());

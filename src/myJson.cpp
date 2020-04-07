@@ -341,6 +341,7 @@ bool MyJson::json2alone() {
             aloneTemp.streng = get<bool>({"alone", temp_key, "streng"}, false);
             aloneTemp.deleteCQCode = get<bool>({"alone", temp_key, "deleteCQCode"}, true);
             aloneTemp.keyWordSendAdmin = get<bool>({"alone", temp_key, "keyWordSendAdmin"}, true);
+
             aloneTemp.use = get<bool>({"alone", temp_key, "use"}, false);
 
             aloneTemp.relayGroupMsg_trimFront = get<int>({"alone", temp_key, "relayGroupMsg_trimFront"}, 0);
