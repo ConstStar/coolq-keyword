@@ -1181,7 +1181,7 @@ public:
     }
 
     //内容处理功能  触发true  未触发false
-    bool MsgOneFun(int conf_index) {
+    bool indexFun(int conf_index) {
         //查找是否为默认监控群
         auto list_bool =
             find(conf.alone[conf_index].groupList.begin(), conf.alone[conf_index].groupList.end(), m_fromGroup);
@@ -1214,14 +1214,12 @@ public:
         //如果触发了关键词
         if (KeyWordFun(conf_index)) {
             KeyWrodWarn(conf_index);
-
             return true;
         }
 
         //如果触发了正则表达式关键词
         if (KeyKordRegexFun(conf_index)) {
             KeyWrodWarn(conf_index);
-
             return true;
         }
 
@@ -1236,13 +1234,13 @@ public:
             if (temp.first == 0) continue;
 
             if (temp.second.use) {
-                bool ret = MsgOneFun(temp.first);
+                bool ret = indexFun(temp.first);
 
                 if (ret) return;
             }
         }
 
-        MsgOneFun(0);
+        indexFun(0);
     }
 
     OperateMsg(cq::GroupMessageEvent evet) : evet(evet) {
