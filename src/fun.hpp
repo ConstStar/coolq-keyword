@@ -165,7 +165,7 @@ public:
             m_index = NONE;
             break;
         }
-        case ADD_QQLIST: //添加白名单/监控名单
+        case ADD_QQLIST: //添加名单
         {
             //支持批量添加 解析每行数据
             unordered_set<long long> temp_vector;
@@ -179,12 +179,12 @@ public:
             conf.all2json();
             conf.json2file();
 
-            mycq::send_private_message(m_fromQQ, "添加默认 白名单/监控名单 成功");
+            mycq::send_private_message(m_fromQQ, "添加默认 名单 成功");
 
             m_index = NONE;
             break;
         }
-        case DEL_QQLIST: //删除白名单/监控名单
+        case DEL_QQLIST: //删除名单
         {
             bool del_bool = false;
 
@@ -215,9 +215,9 @@ public:
             conf.json2file();
 
             if (del_bool)
-                mycq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 成功");
+                mycq::send_private_message(m_fromQQ, "删除默认 名单 成功");
             else
-                mycq::send_private_message(m_fromQQ, "删除默认 白名单/监控名单 失败");
+                mycq::send_private_message(m_fromQQ, "删除默认 名单 失败");
 
             m_index = NONE;
             break;
@@ -676,16 +676,16 @@ public:
         else if (!std::string(prefix + "添加监控名单").compare(msg)) {
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                                           "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
                 return 0;
             }
 
-            mycq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的监控名单QQ(可批量添加，每行一个)");
             m_index = ADD_QQLIST;
         } else if (!std::string(prefix + "删除监控名单").compare(msg)) {
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                                           "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
                 return 0;
             }
             std::string SendMsg = "全局默认 监控名单：\n";
@@ -701,7 +701,7 @@ public:
         } else if (!std::string(prefix + "查看监控名单").compare(msg)) {
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为白名单，与您的命令不符，请在先界面中设置为监控名单模式");
+                                           "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
                 return 0;
             }
             std::string SendMsg = "全局默认 监控名单：\n";
@@ -710,21 +710,24 @@ public:
                 auto QQinf = cq::get_stranger_info(temp);
                 SendMsg += QQinf.nickname + "(" + to_string(temp) + ")\n";
             }
+            mycq::send_private_message(m_fromQQ, SendMsg);
+
+            m_index = NONE;
         }
         //设置白名单
         else if (!std::string(prefix + "添加白名单").compare(msg)) {
-            if (conf.alone[0].QQListType == 0) {
+            if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                                           "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
                 return 0;
             }
 
-            mycq::send_private_message(m_fromQQ, "请发送添加的白名单/监控名单QQ(可批量添加，每行一个)");
+            mycq::send_private_message(m_fromQQ, "请发送添加的白名单(可批量添加，每行一个)");
             m_index = ADD_QQLIST;
         } else if (!std::string(prefix + "删除白名单").compare(msg)) {
-            if (conf.alone[0].QQListType == 0) {
+            if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                                           "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
                 return 0;
             }
             std::string SendMsg = "全局默认 白名单：\n";
@@ -738,9 +741,9 @@ public:
             mycq::send_private_message(m_fromQQ, "请发送要删除白名单号码");
             m_index = DEL_QQLIST;
         } else if (!std::string(prefix + "查看白名单").compare(msg)) {
-            if (conf.alone[0].QQListType == 0) {
+            if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
-                                           "当前特殊名单模式为监控名单，与您的命令不符，请在先界面中设置为白名单模式");
+                                           "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
                 return 0;
             }
             std::string SendMsg = "全局默认 白名单：\n";
