@@ -45,7 +45,7 @@ Update::updateType Update::check(int version_id, string &inf) {
 
             int must = root["must_version_id"].asInt();
             if (must > version_id) {
-                inf = "重要更新" + newVersion + "更新内容:\r\n";
+                inf = "重要更新 " + newVersion + "更新内容:\r\n";
                 inf += root["inf"].asString();
                 return updateType::mustUpdate;
             }
@@ -80,9 +80,9 @@ bool Update::getUpdate(string &inf) {
             throw exception("插件下载失败 网络异常");
         }
 
-        string appPath = cq::utils::ansi(cq::dir::root()) + "app/" + cq::utils::ansi(appName);
-        ofstream file(appPath, ios::out | ios::binary);
-        if (!file.good()) throw exception("文件打开失败");
+        string appPath = cq::utils::ansi(cq::dir::root()) + "app\\" + cq::utils::ansi(appName);
+        ofstream file(appPath, ios::out | ios::binary | ios::trunc);
+        if (!file.good()) throw exception(("文件打开失败: " + appPath).c_str());
         file << ret->body;
         file.close();
         inf = "更新完成，请重启酷Q载入新版本";
