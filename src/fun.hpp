@@ -724,153 +724,154 @@ private:
 
 class OperateMsg {
 public:
-    //触发关键词操作
-    void KeyWrodWarn(stringstream& SendMsg_root, int conf_index, string& KeyWord, string REWord = "") {
-        string sendMsg_toGroup(conf.alone[conf_index].relayGroupWord);
+    //处理
+    void dealFun(int conf_index) {
+        int& dealType = conf.alone[conf_index].dealType;
 
-        //解析变量
-        sendGroupMsgWord(sendMsg_toGroup, conf_index, KeyWord);
+        //撤回
+        if (conf.alone[conf_index].deleteMsg) mycq::delete_message(m_msgId);
 
-        //发送 群消息
-        for (long long GroupId : conf.alone[conf_index].relayGroupList) {
-            mycq::send_group_message(GroupId, sendMsg_toGroup);
+        if (dealType == 1) {
+            if (evet.is_anonymous())
+                mycq::set_group_anonymous_ban(m_fromGroup, m_fromAnonymous, conf.alone[conf_index].banTimeLen * 60);
+            else
+                mycq::set_group_ban(m_fromGroup, m_fromQQ, conf.alone[conf_index].banTimeLen * 60);
+
+            std::string TimeStr;
+
+            int TimeDay = 0;
+            int TimeHour = 0;
+            int TimeMin = 0;
+
+            TimeDay = conf.alone[conf_index].banTimeLen / 1440;
+            TimeHour = (conf.alone[conf_index].banTimeLen - TimeDay * 1440) / 60;
+            TimeMin = conf.alone[conf_index].banTimeLen % 60;
+
+            if (TimeDay) {
+                TimeStr = std::to_string(TimeDay) + "天";
+            }
+
+            if (TimeHour) {
+                TimeStr += std::to_string(TimeHour) + "小时";
+            }
+
+            if (TimeMin) {
+                TimeStr += std::to_string(TimeMin) + "分钟";
+            }
+
+            dealTypeStr = "禁言";
+            dealTypeStr += TimeStr;
+
+        } else if (dealType == 2) {
+            mycq::set_group_kick(m_fromGroup, m_fromQQ, false);
+
+            dealTypeStr = "踢出";
+
+        } else if (dealType == 3) {
+            mycq::set_group_kick(m_fromGroup, m_fromQQ, true);
+
+            dealTypeStr = "踢出并拉黑";
+
+        } else {
+            dealTypeStr = "未做处理";
         }
+    }
 
-        //发送 私聊消息
-
-        std::string GroupAt; //群艾特
+    //构造提醒主人消息
+    string keyWordSendAdminFun(int conf_index) {
+        stringstream msg;
 
         if (m_fromQQ == 80000000) {
-            SendMsg_root << "来自群" << m_fromGroup << +"中\n";
-            SendMsg_root << "QQ号码:" << m_fromQQ << "(QQ匿名)"
-                         << "\n";
-            SendMsg_root << "QQ名称:"
-                         << "匿名消息"
-                         << "\n";
-            SendMsg_root << "QQ群名片:"
-                         << "匿名消息"
-                         << "\n";
-            SendMsg_root << "由于内容:\n\n" << m_msg << "\n";
+            msg << "来自群" << m_fromGroup << +"中\n";
+            msg << "QQ号码:" << m_fromQQ << "(QQ匿名)"
+                << "\n";
+            msg << "QQ名称:"
+                << "匿名消息"
+                << "\n";
+            msg << "QQ群名片:"
+                << "匿名消息"
+                << "\n";
+            msg << "由于内容:\n\n" << m_msg << "\n";
         } else {
             auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ);
 
-            SendMsg_root << "来自群" << m_fromGroup << +"中\n";
-            SendMsg_root << "QQ号码:" << m_fromQQ << "\n";
-            SendMsg_root << "QQ名称:" << QQInf.nickname << "\n";
-            SendMsg_root << "QQ群名片:" << QQInf.card << "\n";
-            SendMsg_root << "由于内容:\n\n" << m_msg << "\n";
+            msg << "来自群" << m_fromGroup << +"中\n";
+            msg << "QQ号码:" << m_fromQQ << "\n";
+            msg << "QQ名称:" << QQInf.nickname << "\n";
+            msg << "QQ群名片:" << QQInf.card << "\n";
+            msg << "由于内容:\n\n" << m_msg << "\n";
         }
 
-        if (!REWord.empty()) {
-            SendMsg_root << "\n正则表达式:" << REWord << "\n";
+        if (!keyWordRegex.empty()) {
+            msg << "\n正则表达式:" << keyWordRegex << "\n";
         }
 
-        SendMsg_root << "\n触发了关键词:" << KeyWord << "\n";
+        msg << "\n触发了关键词:" << keyWord << "\n";
+        msg << "\n本次处理总耗时:";
+        msg << m_time.elapsed() << "秒";
+        msg << "\n(回复请发送：回复群" << m_fromGroup << ")";
 
-        if (conf.alone[conf_index].deleteMsg) mycq::delete_message(m_msgId);
+        return msg.str();
+    }
 
-        if (m_fromQQ == 80000000) {
-            SendMsg_root << "处理方法：QQ匿名，暂不能做出处理";
+    //触发关键词操作
+    void KeyWrodWarn(int conf_index) {
+        //处理
+        dealFun(conf_index);
 
-            GroupAt = "@匿名 触发了关键词语";
-        } else {
-            int dealType = conf.alone[conf_index].dealType;
-            if (dealType == 1) {
-                if (m_fromQQ == 80000000)
-                    mycq::set_group_anonymous_ban(m_fromGroup, m_fromAnonymous, conf.alone[conf_index].banTimeLen * 60);
-                else
-                    mycq::set_group_ban(m_fromGroup, m_fromQQ, conf.alone[conf_index].banTimeLen * 60);
+        //转发到群
+        string relayGroupMsg(conf.alone[conf_index].relayGroupWord);
+        //变量
+        relayGroupMsgWord(relayGroupMsg, conf_index);
+        //发送
+        for (long long GroupId : conf.alone[conf_index].relayGroupList) {
+            mycq::send_group_message(GroupId, relayGroupMsg);
+        }
 
-                std::string TimeStr;
-
-                int TimeDay = 0;
-                int TimeHour = 0;
-                int TimeMin = 0;
-
-                TimeDay = conf.alone[conf_index].banTimeLen / 1440;
-                TimeHour = (conf.alone[conf_index].banTimeLen - TimeDay * 1440) / 60;
-                TimeMin = conf.alone[conf_index].banTimeLen % 60;
-
-                if (TimeDay) {
-                    TimeStr = std::to_string(TimeDay) + "天";
-                }
-
-                if (TimeHour) {
-                    TimeStr += std::to_string(TimeHour) + "小时";
-                }
-
-                if (TimeMin) {
-                    TimeStr += std::to_string(TimeMin) + "分钟";
-                }
-
-                SendMsg_root << "处理方法：禁言" + TimeStr;
-
-                GroupAt = "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]触发了关键词语，已被禁言" + TimeStr;
-
-            } else if (dealType == 2) {
-                mycq::set_group_kick(m_fromGroup, m_fromQQ, false);
-
-                SendMsg_root << "处理方法：踢出";
-
-                GroupAt = "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]触发了关键词语，已被踢出本群";
-            } else if (dealType == 3) {
-                mycq::set_group_kick(m_fromGroup, m_fromQQ, true);
-
-                SendMsg_root << "处理方法：踢出并拉黑";
-
-                GroupAt = "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]触发了关键词语，已被踢出本群并拉黑";
-            } else {
-                SendMsg_root << "处理方法：未做处理";
-
-                GroupAt = "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]触发了关键词语";
+        //群内警告（回复群内容消息）
+        if (conf.alone[conf_index].keyWordGroupWarn) //群内回复是否开启
+        {
+            string sendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
+            if (conf.alone[conf_index].keyWordGroupWarnWord.empty()) //自定义内容为空时使用默认提示
+            {
+                sendMsg = "{at} 触发关键词，处理方式:{处理方式}";
             }
-        }
-
-        //触发后回复群消息
-        if (conf.alone[conf_index].keyWordGroupWarn) {
-            if (!conf.alone[conf_index].keyWordGroupWarnWord.empty()) {
-                string SendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
-                //解析变量
-                KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
-                mycq::send_group_message(m_fromGroup, SendMsg);
-            } else {
-                mycq::send_group_message(m_fromGroup, GroupAt);
-            }
+            KeyWordWarnMsg(sendMsg, conf_index); //变量
+            mycq::send_group_message(m_fromGroup, sendMsg);
         }
 
         //触发后回复私聊消息
         if (conf.alone[conf_index].keyWordPrivateWarn) {
             if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
-                string SendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
+                string sendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
                 //解析变量
-                KeyWordWarnMsg(SendMsg, conf_index, KeyWord);
-                mycq::send_private_message(m_fromQQ, SendMsg);
-            } else {
-                mycq::send_private_message(m_fromQQ, GroupAt);
+                KeyWordWarnMsg(sendMsg, conf_index);
+                mycq::send_private_message(m_fromQQ, sendMsg);
             }
         }
 
-        SendMsg_root << "\n本次处理总耗时:";
-        SendMsg_root << m_time.elapsed() << "秒";
-        SendMsg_root << "\n(回复请发送：回复群" << m_fromGroup << ")";
-
-        for (long long root : conf.admin) {
-            mycq::send_private_message(root, SendMsg_root.str().c_str());
+        //提醒主人
+        if (conf.alone[conf_index].keyWordSendAdmin) //触发后提醒主人是否开启
+        {
+            string sendAdminMsg = keyWordSendAdminFun(conf_index);
+            for (long long root : conf.admin) {
+                mycq::send_private_message(root, sendAdminMsg);
+            }
         }
     }
 
     //删除cq码
-    std::string DelCQ(std::string msg) {
-        if (msg.find("[CQ:") != string::npos) {
-            regex e1("\\[CQ:.*\\]");
-            msg = regex_replace(msg, e1, "");
+    std::wstring DelCQ(std::wstring msg) {
+        if (msg.find(L"[CQ:") != wstring::npos) {
+            wregex e1(L"\\[CQ:.*\\]");
+            msg = regex_replace(msg, e1, L"");
         }
 
         return msg;
     }
 
     //转发到群格式
-    void sendGroupMsgWord(std::string& str, int conf_index, string keyword) {
+    void relayGroupMsgWord(std::string& str, int conf_index) {
         //默认内容为msg
         if (str.empty()) {
             str = "{msg}";
@@ -948,7 +949,7 @@ public:
         str = OperateStr::replace_all_distinct(str, "{星期}", Week);
 
         //触发的关键词
-        str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
+        str = OperateStr::replace_all_distinct(str, "{关键词}", keyWord);
 
         //触发的QQ号码
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
@@ -972,7 +973,7 @@ public:
     }
 
     //自定义触发关键词提醒
-    void KeyWordWarnMsg(std::string& str, int conf_index, string keyword) {
+    void KeyWordWarnMsg(std::string& str, int conf_index) {
         //艾特
         str = OperateStr::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
 
@@ -1033,7 +1034,7 @@ public:
         }
 
         //触发的关键词
-        str = OperateStr::replace_all_distinct(str, "{关键词}", keyword);
+        str = OperateStr::replace_all_distinct(str, "{关键词}", keyWord);
 
         //触发的QQ号码
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
@@ -1066,7 +1067,7 @@ public:
 
         wstring wmsg;
         if (conf.alone[conf_index].deleteCQCode) {
-            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+            wmsg = m_wmsg_delCQ;
         } else {
             wmsg = m_wmsg;
         }
@@ -1082,7 +1083,7 @@ public:
     }
 
     //关键词对比  KeyWord关键词容器 Streng强力检测 KeyWordWarn返回触发的关键词
-    bool KeyWordFun(int conf_index, string* KeyWordWarn) {
+    bool KeyWordFun(int conf_index) {
         //判断关键词是否为空
         if (conf.alone[conf_index].keyWord.empty()) {
             return false;
@@ -1090,7 +1091,7 @@ public:
 
         wstring wmsg;
         if (conf.alone[conf_index].deleteCQCode) {
-            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+            wmsg = m_wmsg_delCQ;
         } else {
             wmsg = m_wmsg;
         }
@@ -1098,8 +1099,8 @@ public:
         //普通关键词检测
         for (auto KeyWord_one : conf.alone[conf_index].keyWord) {
             if (wmsg.find(KeyWord_one.wkeyWrod) != std::wstring::npos) {
-                //返回触发的关键词
-                if (KeyWordWarn != NULL) *KeyWordWarn = KeyWord_one.keyWord;
+                //记录触发的关键词
+                keyWord = KeyWord_one.keyWord;
 
                 return true;
             }
@@ -1128,8 +1129,8 @@ public:
 
                 //触发强力检测后
                 if (temp_num_find >= temp_num) {
-                    //返回触发的关键词
-                    if (KeyWordWarn != NULL) *KeyWordWarn = KeyWord_one.keyWord;
+                    //记录触发的关键词
+                    keyWord = KeyWord_one.keyWord;
 
                     return true;
                 }
@@ -1139,26 +1140,25 @@ public:
         return false;
     }
 
-    //正则表达式  REKeyWord 正则表达式关键词 REKeyWordWarn返回触发的内容 REWord返回触发的关键词
-    bool REKeyKordFun(int conf_index, string* REKeyWordWarn, string* REWord) {
+    //正则表达式关键词检测
+    bool KeyKordRegexFun(int conf_index) {
         wstring wmsg;
         if (conf.alone[conf_index].deleteCQCode) {
-            wmsg = OperateStr::string2wstring(DelCQ(this->m_msg));
+            wmsg = m_wmsg_delCQ;
         } else {
             wmsg = m_wmsg;
         }
 
-        for (WKEYWORD alone : conf.alone[conf_index].keyWordRegex) {
+        for (WKEYWORD aloneRegex : conf.alone[conf_index].keyWordRegex) {
             try {
-                wregex re(alone.wkeyWrod);
+                wregex re(aloneRegex.wkeyWrod);
                 wsmatch RE;
 
                 bool rec = regex_search(wmsg, RE, re);
 
                 if (rec) {
-                    *REKeyWordWarn = OperateStr::wstring2string(RE.str());
-                    *REWord = alone.keyWord;
-
+                    keyWord = OperateStr::wstring2string(RE.str());
+                    keyWordRegex = aloneRegex.keyWord;
                     return true;
                 }
 
@@ -1166,7 +1166,7 @@ public:
                 string SendMsg;
                 SendMsg += "正则表达式崩溃\n";
                 SendMsg += "表达式:";
-                SendMsg += alone.keyWord;
+                SendMsg += aloneRegex.keyWord;
                 SendMsg += "消息:\n\n";
                 SendMsg += m_msg;
                 SendMsg += "exception返回的错误消息:";
@@ -1211,21 +1211,16 @@ public:
             return false;
         }
 
-        string KeyWordWarn;
-
         //如果触发了关键词
-        if (KeyWordFun(conf_index, &KeyWordWarn)) {
-            stringstream SendMsg_root("触发了关键词\n");
-            KeyWrodWarn(SendMsg_root, conf_index, KeyWordWarn);
+        if (KeyWordFun(conf_index)) {
+            KeyWrodWarn(conf_index);
 
             return true;
         }
 
-        string REWord;
         //如果触发了正则表达式关键词
-        if (REKeyKordFun(conf_index, &KeyWordWarn, &REWord)) {
-            stringstream SendMsg_root("触发了正则表达式\n");
-            KeyWrodWarn(SendMsg_root, conf_index, KeyWordWarn, REWord);
+        if (KeyKordRegexFun(conf_index)) {
+            KeyWrodWarn(conf_index);
 
             return true;
         }
@@ -1258,6 +1253,8 @@ public:
         m_msgId = evet.message_id;
         //将消息的宽字符串格式存放到对象中
         m_wmsg = OperateStr::string2wstring(evet.message);
+
+        m_wmsg_delCQ = DelCQ(m_wmsg);
     }
 
 private:
@@ -1269,5 +1266,11 @@ private:
     boost::timer m_time; //计算程序流失的时间
 
     wstring m_wmsg; //宽字节消息内容
+    wstring m_wmsg_delCQ; //删除CQ码
     cq::GroupMessageEvent& evet;
+
+    //触发后内容
+    string dealTypeStr; //处理方式
+    string keyWord; //普通关键词
+    string keyWordRegex; //正则表达式关键词
 };

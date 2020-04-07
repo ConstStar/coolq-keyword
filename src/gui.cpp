@@ -443,6 +443,7 @@ private:
         checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
         checkStreng.check(conf.alone[conf_index].streng);
         check_deleteCQCode.check(conf.alone[conf_index].deleteCQCode);
+        check_keyWordSendAdmin.check(conf.alone[conf_index].keyWordSendAdmin);
     }
 
     void init() {
@@ -605,6 +606,10 @@ private:
         check_deleteCQCode.caption(u8"过滤CQ码（如图片消息，签到消息等）");
         place_.field("checkSwitch") << check_deleteCQCode;
 
+        check_keyWordSendAdmin.create(*this);
+        check_keyWordSendAdmin.caption(u8"触发关键词提醒主人");
+        place_.field("checkSwitch") << check_keyWordSendAdmin;
+
         btnSave.create(*this);
         btnSave.caption(u8"保存");
         btnSave.events().click([this] {
@@ -633,6 +638,7 @@ private:
             conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
             conf.alone[conf_index].streng = checkStreng.checked();
             conf.alone[conf_index].deleteCQCode = check_deleteCQCode.checked();
+            conf.alone[conf_index].keyWordSendAdmin = check_keyWordSendAdmin.checked();
 
             //写入配置
             writeConf();
@@ -682,6 +688,7 @@ private:
     checkbox checkStreng; //强力检测
     checkbox checkDeleteMsg; //撤回消息
     checkbox check_deleteCQCode; //过滤CQ码
+    checkbox check_keyWordSendAdmin; //触发关键词提醒主人
 
     //保存
     button btnSave;

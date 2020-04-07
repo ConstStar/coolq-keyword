@@ -79,6 +79,7 @@ struct ConfAlone {
     bool streng; //强力检测
     bool deleteMsg; //消息撤回
     bool deleteCQCode; //过滤CQ码
+	bool keyWordSendAdmin;//提示主人
 
     string relayGroupWord; //发送到群 消息格式
     int relayGroupMsg_trimFront; //发送到群 消息前几行删除
