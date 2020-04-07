@@ -1,7 +1,7 @@
 #include <cqcppsdk/cqcppsdk.h>
 #pragma once
 #define APPNAME "群关键词监控"
-#define VERSION_ID 21
+#define VERSION_ID 22
 // namespace mycq::logging {
 //     void info(std::string word) {
 //         cq::logging::info(APPNAME, word);
