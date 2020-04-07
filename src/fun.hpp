@@ -806,10 +806,11 @@ public:
             msg << "\n正则表达式:" << keyWordRegex << "\n";
         }
 
-        msg << "\n触发了关键词:" << keyWord << "\n";
+        msg << "\n触发了关键词:" << keyWord;
+        msg << "\n处理方式:" << dealTypeStr;
         msg << "\n本次处理总耗时:";
         msg << m_time.elapsed() << "秒";
-        msg << "\n(回复请发送：回复群" << m_fromGroup << ")";
+        msg << "\n(回复请发送:回复群" << m_fromGroup << ")";
 
         return msg.str();
     }
@@ -934,10 +935,11 @@ public:
         char date[20];
         char time[20];
         char Week[20];
+        char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
 
         sprintf(date, "%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, "%02d:%02d:%02d.%03d", sys.wHour, sys.wMinute, sys.wSecond, sys.wMilliseconds);
-        sprintf(Week, "星期%d", sys.wDayOfWeek);
+        sprintf(time, "%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
+        sprintf(Week, "星期%s", weekStr[sys.wDayOfWeek]);
 
         //日期
         str = OperateStr::replace_all_distinct(str, "{日期}", date);
@@ -977,17 +979,18 @@ public:
         //艾特
         str = OperateStr::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
 
-        //获取当前时间
+         //获取当前时间
         SYSTEMTIME sys;
         GetLocalTime(&sys);
 
         char date[20];
         char time[20];
         char Week[20];
+        char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
 
         sprintf(date, "%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, "%02d:%02d:%02d.%03d", sys.wHour, sys.wMinute, sys.wSecond, sys.wMilliseconds);
-        sprintf(Week, "星期%d", sys.wDayOfWeek);
+        sprintf(time, "%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
+        sprintf(Week, "星期%s", weekStr[sys.wDayOfWeek]);
 
         //日期
         str = OperateStr::replace_all_distinct(str, "{日期}", date);
@@ -998,40 +1001,8 @@ public:
         //星期
         str = OperateStr::replace_all_distinct(str, "{星期}", Week);
 
-        int dealType = conf.alone[conf_index].dealType;
-        if (dealType == 1) {
-            std::string TimeStr = "禁言";
-
-            int banTimeLen = conf.alone[conf_index].banTimeLen;
-
-            int TimeDay = 0;
-            int TimeHour = 0;
-            int TimeMin = 0;
-
-            TimeDay = banTimeLen / 1440;
-            TimeHour = (banTimeLen - TimeDay * 1440) / 60;
-            TimeMin = banTimeLen % 60;
-
-            if (TimeDay) {
-                TimeStr += std::to_string(TimeDay) + "天";
-            }
-
-            if (TimeHour) {
-                TimeStr += std::to_string(TimeHour) + "小时";
-            }
-
-            if (TimeMin) {
-                TimeStr += std::to_string(TimeMin) + "分钟";
-            }
-
-            str = OperateStr::replace_all_distinct(str, "{处理方式}", TimeStr);
-        } else if (dealType == 2) {
-            str = OperateStr::replace_all_distinct(str, "{处理方式}", "踢出本群");
-        } else if (dealType == 3) {
-            str = OperateStr::replace_all_distinct(str, "{处理方式}", "踢出并拉黑");
-        } else {
-            str = OperateStr::replace_all_distinct(str, "{处理方式}", "未做处理");
-        }
+        //处理方式
+        str = OperateStr::replace_all_distinct(str, "{处理方式}", dealTypeStr);
 
         //触发的关键词
         str = OperateStr::replace_all_distinct(str, "{关键词}", keyWord);

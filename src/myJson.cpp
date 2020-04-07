@@ -8,7 +8,6 @@
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 
-
 using namespace std;
 
 extern string appDir;
@@ -341,7 +340,7 @@ bool MyJson::json2alone() {
             aloneTemp.deleteMsg = get<bool>({"alone", temp_key, "deleteMsg"}, false);
             aloneTemp.streng = get<bool>({"alone", temp_key, "streng"}, false);
             aloneTemp.deleteCQCode = get<bool>({"alone", temp_key, "deleteCQCode"}, true);
-            aloneTemp.keyWordSendAdmin = get<bool>({"alone", temp_key, "keyWordSendAdmin"}, false);
+            aloneTemp.keyWordSendAdmin = get<bool>({"alone", temp_key, "keyWordSendAdmin"}, true);
             aloneTemp.use = get<bool>({"alone", temp_key, "use"}, false);
 
             aloneTemp.relayGroupMsg_trimFront = get<int>({"alone", temp_key, "relayGroupMsg_trimFront"}, 0);
@@ -467,7 +466,7 @@ void MyJson::file2json() {
 //获取 分割每行的字符串 json
 void OperateLine::line_get_str(string str, unordered_set<string>& value) {
     value.clear();
- 
+
     unordered_set<string> temp_array;
     boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
 

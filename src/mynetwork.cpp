@@ -1,4 +1,5 @@
 #include "mycq.hpp"
+
 #include "httplib.h"
 
 #include <json/json.h>
@@ -34,7 +35,6 @@ Update::updateType Update::check(int version_id, string &inf) {
 
         reader.parse(json, root);
 
-
         int getVersion_id = root["version_id"].asInt();
         if (getVersion_id > version_id) {
             newVersion = root["version"].asString();
@@ -45,13 +45,12 @@ Update::updateType Update::check(int version_id, string &inf) {
 
             int must = root["must_version_id"].asInt();
             if (must > version_id) {
-                inf = "重要更新,更新内容:\r\n";
+                inf = "重要更新" + newVersion + "更新内容:\r\n";
                 inf += root["inf"].asString();
-
                 return updateType::mustUpdate;
             }
 
-            inf = "有新版本,更新内容:\r\n";
+            inf = "有新版本\r\n" + newVersion + "更新内容:\r\n";
             inf += root["inf"].asString();
             return updateType::update;
         }
