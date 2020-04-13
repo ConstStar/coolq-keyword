@@ -395,7 +395,7 @@ private:
         conf.json2all();
 
         //载入群名单
-        auto groupList = cq::get_group_list();
+        auto groupList = mycq::get_group_list_map();
 
         //清空原有
         listGroupList.erase();
@@ -403,21 +403,13 @@ private:
         auto& conf_groupList = conf.alone[conf_index].groupList;
         //先载入已选
         for (auto id : conf_groupList) {
-            string groupName;
-            for (auto& group : groupList) {
-                if (group.group_id == id) {
-                    groupName = group.group_name;
-                    break;
-                }
-            }
-
-            listGroupList.at(0).append({groupName, to_string(id)});
+            listGroupList.at(0).append({groupList[id].group_name, to_string(id)});
         }
 
         //再载入未选
         for (auto temp : groupList) {
-            if (find(conf_groupList.begin(), conf_groupList.end(), temp.group_id) == conf_groupList.end())
-                listGroupList.at(0).append({temp.group_name, to_string(temp.group_id)});
+            if (find(conf_groupList.begin(), conf_groupList.end(), temp.first) == conf_groupList.end())
+                listGroupList.at(0).append({temp.second.group_name, to_string(temp.first)});
         }
 
         //勾选已选的
@@ -1223,7 +1215,7 @@ private:
         conf.json2all();
 
         //载入群名单
-        auto groupList = cq::get_group_list();
+        auto groupList = mycq::get_group_list_map();
 
         //清空原有
         list_groupList.erase();
@@ -1231,21 +1223,13 @@ private:
         auto& conf_groupList = conf.alone[conf_index].relayGroupList;
         //先载入已选
         for (auto id : conf_groupList) {
-            string groupName;
-            for (auto& group : groupList) {
-                if (group.group_id == id) {
-                    groupName = group.group_name;
-                    break;
-                }
-            }
-
-            list_groupList.at(0).append({groupName, to_string(id)});
+            list_groupList.at(0).append({groupList[id].group_name, to_string(id)});
         }
 
         //再载入未选
         for (auto temp : groupList) {
-            if (find(conf_groupList.begin(), conf_groupList.end(), temp.group_id) == conf_groupList.end())
-                list_groupList.at(0).append({temp.group_name, to_string(temp.group_id)});
+            if (find(conf_groupList.begin(), conf_groupList.end(), temp.first) == conf_groupList.end())
+                list_groupList.at(0).append({temp.second.group_name, to_string(temp.first)});
         }
 
         //勾选已选的
@@ -1468,7 +1452,7 @@ private:
         conf.file2json();
         conf.json2all();
 
-        auto groupList = cq::get_group_list();
+        auto groupList = mycq::get_group_list_map();
 
         vector<string> dealTypeList{"不作处理", "禁言", "踢出", "踢出并拉黑"};
 
@@ -1481,15 +1465,7 @@ private:
 
             int i = 0;
             for (auto id : tempAlone.second.groupList) {
-                string groupName;
-                for (auto& group : groupList) {
-                    if (group.group_id == id) {
-                        groupName = group.group_name;
-                        break;
-                    }
-                }
-
-                groupListWord += groupName + " ";
+                groupListWord += groupList[id].group_name + " ";
                 if (i > 5) break;
 
                 i++;

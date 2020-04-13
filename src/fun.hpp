@@ -586,40 +586,27 @@ public:
         //设置转发群
         else if (!std::string(prefix + "查看转发群").compare(msg)) {
             std::string SendMsg = "全局默认 转发群：\n";
-            auto temp_GourpList = cq::get_group_list();
+            auto temp_GourpList = mycq::get_group_list_map();
 
             //列出监控群名单
             for (auto id : conf.alone[0].relayGroupList) {
-                string groupName;
-                for (auto& group : temp_GourpList) {
-                    if (group.group_id == id) {
-                        groupName = group.group_name;
-                        break;
-                    }
-                }
-                SendMsg += groupName + "(" + to_string(id) + ")\n";
+                SendMsg += temp_GourpList[id].group_name + "(" + to_string(id) + ")\n";
             }
 
             mycq::send_private_message(m_fromQQ, SendMsg);
 
+            m_index = NONE;
             m_index = NONE;
         } else if (!std::string(prefix + "添加转发群").compare(msg)) {
             mycq::send_private_message(m_fromQQ, "请发送添加的 群号码 (可批量添加，每行一个)");
             m_index = ADD_GROUPLIST_SEND;
         } else if (!std::string(prefix + "删除转发群").compare(msg)) {
             std::string SendMsg = "全局默认 转发群：\n";
-            auto temp_GourpList = cq::get_group_list();
+          auto temp_GourpList = mycq::get_group_list_map();
 
             //列出监控群名单
             for (auto id : conf.alone[0].relayGroupList) {
-                string groupName;
-                for (auto& group : temp_GourpList) {
-                    if (group.group_id == id) {
-                        groupName = group.group_name;
-                        break;
-                    }
-                }
-                SendMsg += groupName + "(" + to_string(id) + ")\n";
+                SendMsg += temp_GourpList[id].group_name + "(" + to_string(id) + ")\n";
             }
 
             mycq::send_private_message(m_fromQQ, SendMsg);
@@ -633,19 +620,11 @@ public:
             m_index = ADD_GROUPLIST;
         } else if (!std::string(prefix + "删除监控群").compare(msg)) {
             std::string SendMsg = "全局默认 监控群：\n";
-            auto temp_GourpList = cq::get_group_list();
+            auto temp_GourpList = mycq::get_group_list_map();
 
             //列出监控群名单
             for (auto id : conf.alone[0].groupList) {
-                string groupName;
-                for (auto group : temp_GourpList) {
-                    if (group.group_id == id) {
-                        groupName = group.group_name;
-                        break;
-                    }
-                }
-
-                SendMsg += groupName + "(" + to_string(id) + ")\n";
+                SendMsg += temp_GourpList[id].group_name + "(" + to_string(id) + ")\n";
             }
 
             mycq::send_private_message(m_fromQQ, SendMsg);
@@ -653,18 +632,11 @@ public:
             m_index = DEL_GROUPLIST;
         } else if (!std::string(prefix + "查看监控群").compare(msg)) {
             std::string SendMsg = "全局默认 监控群：\n";
-            auto temp_GourpList = cq::get_group_list();
+            auto temp_GourpList = mycq::get_group_list_map();
 
             //列出监控群名单
             for (auto id : conf.alone[0].groupList) {
-                string groupName;
-                for (auto group : temp_GourpList) {
-                    if (group.group_id == id) {
-                        groupName = group.group_name;
-                        break;
-                    }
-                }
-                SendMsg += groupName + "(" + to_string(id) + ")\n";
+                SendMsg += temp_GourpList[id].group_name + "(" + to_string(id) + ")\n";
             }
 
             mycq::send_private_message(m_fromQQ, SendMsg);
@@ -769,7 +741,7 @@ private:
     long long m_fromQQ; //消息来自的QQ号码
 };
 
-/*消息处理*/
+/*关键词触发*/
 
 class OperateMsg {
 public:
@@ -830,36 +802,35 @@ public:
     string keyWordSendAdminFun(int conf_index) {
         stringstream msg;
 
-        if (m_fromQQ == 80000000) {
-            msg << "来自群" << m_fromGroup << +"中\n";
-            msg << "QQ号码:" << m_fromQQ << "(QQ匿名)"
-                << "\n";
-            msg << "QQ名称:"
-                << "匿名消息"
-                << "\n";
-            msg << "QQ群名片:"
-                << "匿名消息"
-                << "\n";
-            msg << "由于内容:\n\n" << m_msg << "\n";
-        } else {
-            auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ);
+        auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
+        string name;
+        string card;
+        string QQid_str;
 
-            msg << "来自群" << m_fromGroup << +"中\n";
-            msg << "QQ号码:" << m_fromQQ << "\n";
-            msg << "QQ名称:" << QQInf.nickname << "\n";
-            msg << "QQ群名片:" << QQInf.card << "\n";
-            msg << "由于内容:\n\n" << m_msg << "\n";
+        if (evet.is_anonymous()) {
+            name = "匿名（" + evet.anonymous.name + "）";
+            card = name;
+            QQid_str = to_string(m_fromQQ) + "（匿名）";
+        } else {
+            name = QQInf.nickname;
+            card = QQInf.card;
+            QQid_str = to_string(m_fromQQ);
         }
+
+        msg << "来自群" << m_fromGroup << +"中" << endl;
+        msg << "QQ号码:" << QQid_str << endl;
+        msg << "QQ名称:" << name << "\n";
+        msg << "QQ群名片:" << card << "\n";
+        msg << "由于内容:" << endl << endl << m_msg << endl;
 
         if (!keyWordRegex.empty()) {
-            msg << "\n正则表达式:" << keyWordRegex << "\n";
+            msg << "正则表达式:" << keyWordRegex << endl;
         }
 
-        msg << "\n触发了关键词:" << keyWord;
-        msg << "\n处理方式:" << dealTypeStr;
-        msg << "\n本次处理总耗时:";
-        msg << m_time.elapsed() << "秒";
-        msg << "\n(回复请发送:回复群" << m_fromGroup << ")";
+        msg << "触发了关键词:" << keyWord << endl;
+        msg << "处理方式:" << dealTypeStr << endl;
+        msg << "本次处理总耗时:" << m_time.elapsed() << "秒" << endl;
+        msg << "(回复请发送:回复群" << m_fromGroup << ")";
 
         return msg.str();
     }
@@ -935,6 +906,7 @@ public:
 
             int i = 0;
 
+            //调整消息内容--删除前行数
             if (conf.alone[conf_index].relayGroupMsg_trimFront) {
                 for (auto it = temp_msg.begin(); it != temp_msg.end(); it++) {
                     frontLine++;
@@ -945,6 +917,7 @@ public:
                 }
             }
 
+            //调整消息内容--删除后行数
             if (conf.alone[conf_index].relayGroupMsg_trimBack) {
                 i = 0;
                 for (auto it = temp_msg.rbegin(); it != temp_msg.rend(); it++) {
@@ -1005,25 +978,34 @@ public:
         //触发的QQ号码
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
-        auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        auto GroupList = cq::get_group_list();
-        cq::Group group;
-        //触发的群名称
-        for (auto& temp : GroupList) {
-            group = temp;
+        auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
+        auto groupList = mycq::get_group_list_map();
+
+        string name;
+        string card;
+
+        if (evet.is_anonymous()) {
+            name = "匿名（" + evet.anonymous.name + "）";
+            card = name;
+        } else {
+            name = QQInf.nickname;
+            card = QQInf.card;
         }
 
         //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{QQ名称}", QQInf.nickname);
+        str = OperateStr::replace_all_distinct(str, "{QQ名称}", name);
 
         //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{QQ名片}", QQInf.card);
+        str = OperateStr::replace_all_distinct(str, "{QQ名片}", card);
 
-        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(group.group_id));
-        str = OperateStr::replace_all_distinct(str, "{群名称}", group.group_name);
+        //触发的群号码
+        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
+
+        //触发的群名称
+        str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
     }
 
-    //自定义触发关键词提醒
+    //自定义触发关键词提醒 变量
     void KeyWordWarnMsg(std::string& str, int conf_index) {
         //艾特
         str = OperateStr::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
@@ -1059,26 +1041,31 @@ public:
         //触发的QQ号码
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
-        auto QQInf = cq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        auto GroupList = cq::get_group_list();
-        cq::Group group;
+        auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
+        auto groupList = mycq::get_group_list_map();
 
-        //触发的群名称
-        for (auto& temp : GroupList) {
-            group = temp;
+        string name;
+        string card;
+
+        if (evet.is_anonymous()) {
+            name = "匿名（" + evet.anonymous.name + "）";
+            card = name;
+        } else {
+            name = QQInf.nickname;
+            card = QQInf.card;
         }
 
         //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{QQ名称}", QQInf.nickname);
+        str = OperateStr::replace_all_distinct(str, "{QQ名称}", name);
 
         //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{QQ名片}", QQInf.card);
+        str = OperateStr::replace_all_distinct(str, "{QQ名片}", card);
 
         //触发的群号码
-        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(group.group_id));
+        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
 
         //触发的群名称
-        str = OperateStr::replace_all_distinct(str, "{群名称}", group.group_name);
+        str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
     }
 
     //白名单关键词检测
@@ -1269,6 +1256,7 @@ public:
         m_fromAnonymous = evet.anonymous;
         m_msg = evet.message;
         m_msgId = evet.message_id;
+
         //将消息的宽字符串格式存放到对象中
         m_wmsg = OperateStr::string2wstring(evet.message);
 
@@ -1278,6 +1266,7 @@ public:
 private:
     int64_t m_fromQQ; //来自的QQ号码
     int64_t m_fromGroup; //来自的群号
+
     cq::Anonymous m_fromAnonymous; //来源的匿名信息
     string m_msg; //消息内容
     int64_t m_msgId; //消息id
@@ -1285,7 +1274,7 @@ private:
 
     wstring m_wmsg; //宽字节消息内容
     wstring m_wmsg_delCQ; //删除CQ码
-    cq::GroupMessageEvent& evet;
+    cq::GroupMessageEvent evet;
 
     //触发后内容
     string dealTypeStr; //处理方式
