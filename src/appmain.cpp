@@ -23,7 +23,7 @@ void init() try {
 
     auto sendAdmin = [](string msg) {
         for (auto id : conf.admin) {
-            cq::send_private_message(id, msg);
+            mycq::send_private_message(id, msg);
         }
     };
 
@@ -62,10 +62,11 @@ void init() try {
     }
 
 } catch (exception &e) {
-    string sendStr = e.what();
-    cq::logging::warning("初始化异常", sendStr.c_str());
+    string sendStr = "《关键词触发器》初始化异常: ";
+    sendStr += e.what();
+    cq::logging::warning("关键词触发器", sendStr);
     for (auto one_root : conf.admin) {
-        cq::send_private_message(one_root, sendStr);
+        mycq::send_private_message(one_root, sendStr + "\r\n请尝试重启酷Q");
     }
 }
 
@@ -83,7 +84,7 @@ CQ_INIT {
         // try {
         insQQ[event.user_id].put_fromQQ(event.user_id);
         insQQ[event.user_id].funthing(cq::message::unescape(event.message).c_str());
-        
+
         // } catch (ApiError &e) {
 
         //     cq::logging::info("错误",e.what());
