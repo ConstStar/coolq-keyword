@@ -33,6 +33,16 @@
 
 class mycq {
 public:
+    //获取匿名信息
+    static cq::User get_stranger_info(const int64_t user_id, const bool no_cache = true) {
+        try {
+            return get_stranger_info(user_id, no_cache);
+        } catch (cq::ApiError &e) {
+            cq::logging::info(APPNAME, e.what());
+        }
+        return cq::User();
+    }
+
     //获取群列表 map
     static std::map<long long, cq::Group> get_group_list_map() {
         std::map<long long, cq::Group> groupList_map;
@@ -56,7 +66,8 @@ public:
     }
 
     //获取群成员信息
-    static cq::GroupMember get_group_member_info(const int64_t group_id, const int64_t user_id, const bool no_cache) {
+    static cq::GroupMember get_group_member_info(const int64_t group_id, const int64_t user_id,
+                                                 const bool no_cache = true) {
         try {
             return cq::get_group_member_info(group_id, user_id, no_cache);
         } catch (cq::ApiError &e) {

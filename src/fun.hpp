@@ -78,7 +78,7 @@ public:
             std::string SendMsg;
 
             //获取QQ资料
-            auto QQInf = cq::get_stranger_info(m_fromQQ, true);
+            auto QQInf = mycq::get_stranger_info(m_fromQQ, true);
 
             //构造消息
             SendMsg = "来自" + QQInf.nickname + "(" + std::to_string(m_fromQQ) + ")的私聊消息:\n\n";
@@ -602,7 +602,7 @@ public:
             m_index = ADD_GROUPLIST_SEND;
         } else if (!std::string(prefix + "删除转发群").compare(msg)) {
             std::string SendMsg = "全局默认 转发群：\n";
-          auto temp_GourpList = mycq::get_group_list_map();
+            auto temp_GourpList = mycq::get_group_list_map();
 
             //列出监控群名单
             for (auto id : conf.alone[0].relayGroupList) {
@@ -663,7 +663,7 @@ public:
             std::string SendMsg = "全局默认 监控名单：\n";
 
             for (auto id : conf.alone[0].QQList) {
-                auto QQinf = cq::get_stranger_info(id);
+                auto QQinf = mycq::get_stranger_info(id);
                 SendMsg += QQinf.nickname + "(" + to_string(id) + ")\n";
             }
 
@@ -679,7 +679,7 @@ public:
             std::string SendMsg = "全局默认 监控名单：\n";
 
             for (auto temp : conf.alone[0].QQList) {
-                auto QQinf = cq::get_stranger_info(temp);
+                auto QQinf = mycq::get_stranger_info(temp);
                 SendMsg += QQinf.nickname + "(" + to_string(temp) + ")\n";
             }
             mycq::send_private_message(m_fromQQ, SendMsg);
@@ -705,7 +705,7 @@ public:
             std::string SendMsg = "全局默认 白名单：\n";
 
             for (auto id : conf.alone[0].QQList) {
-                auto QQinf = cq::get_stranger_info(id);
+                auto QQinf = mycq::get_stranger_info(id);
                 SendMsg += QQinf.nickname + "(" + to_string(id) + ")\n";
             }
 
@@ -721,7 +721,7 @@ public:
             std::string SendMsg = "全局默认 白名单：\n";
 
             for (auto temp : conf.alone[0].QQList) {
-                auto QQinf = cq::get_stranger_info(temp);
+                auto QQinf = mycq::get_stranger_info(temp);
                 SendMsg += QQinf.nickname + "(" + to_string(temp) + ")\n";
             }
 
@@ -821,7 +821,7 @@ public:
         msg << "QQ号码:" << QQid_str << endl;
         msg << "QQ名称:" << name << "\n";
         msg << "QQ群名片:" << card << "\n";
-        msg << "由于内容:" << endl << endl << m_msg << endl;
+        msg << "由于内容:" << endl << endl << m_msg << endl << endl;
 
         if (!keyWordRegex.empty()) {
             msg << "正则表达式:" << keyWordRegex << endl;
