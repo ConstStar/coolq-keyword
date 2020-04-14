@@ -1,7 +1,7 @@
 #include <cqcppsdk/cqcppsdk.h>
 #pragma once
 #define APPNAME "群关键词监控"
-#define VERSION_ID 24
+#define VERSION_ID 25
 // namespace mycq::logging {
 //     void info(std::string word) {
 //         cq::logging::info(APPNAME, word);
@@ -36,7 +36,7 @@ public:
     //获取匿名信息
     static cq::User get_stranger_info(const int64_t user_id, const bool no_cache = true) {
         try {
-            return get_stranger_info(user_id, no_cache);
+            return cq::get_stranger_info(user_id, no_cache);
         } catch (cq::ApiError &e) {
             cq::logging::info(APPNAME, e.what());
         }

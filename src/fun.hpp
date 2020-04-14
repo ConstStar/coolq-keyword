@@ -279,14 +279,14 @@ public:
         }
         case SEND_QQ: //回复QQ
         {
-            char buf[100] = {'\0'};
-            int t;
-            t = mycq::send_private_message(m_ReplyQQ, msg);
-            if (t > 0)
-                sprintf(buf, "发送给 QQ%lld 成功", m_ReplyQQ);
+            stringstream sendMsg;
+            int ret;
+            ret = mycq::send_private_message(m_ReplyQQ, msg);
+            if (ret > 0)
+                sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";
             else
-                sprintf(buf, "发送给 QQ%lld 失败\n错误代码：%d", m_ReplyQQ, t);
-            mycq::send_private_message(m_fromQQ, buf);
+                sendMsg << "发送给 QQ" << m_ReplyQQ << " 失败\n错误代码：" << ret;
+            mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyQQ = 0;
             m_index = NONE;
             break;
