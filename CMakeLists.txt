@@ -15,7 +15,6 @@ link_directories(lib)
 
 
 include_directories(${Boost_INCLUDE_DIRS})
-message("${Boost_INCLUDE_DIRS}")
 # link_libraries(${Boost_LIBRARIES})
 # message("${Boost_LIBRARIES}")
 
@@ -26,13 +25,14 @@ cq_set_app_id(${APP_ID}) # 设置 app id, 必须
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.hpp src/*.h) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
 
-
 if (CQ_CAN_BUILD_STD_MODE)
 cq_install_std_app()
 cq_add_std_app(${SOURCE_FILES}) # 添加 std 模式的动态链接库构建目标
-#target_link_libraries(app nana_v142_Release_MD_x86 jsoncpp_v142_Release_MD_x86)
-#target_link_libraries(app nana_v142_Debug_MDd_x86 jsoncpp_v142_Debug_MDd_x86)
+# target_link_libraries(app nana_v142_Release_MD_x86 jsoncpp_v142_Release_MD_x86)
+# target_link_libraries(app nana_v142_Debug_MDd_x86)
+#file(COPY "D:/同步盘/我的小程序/关键词触发器/build/app.dll" DESTINATION "D:/用户文档/桌面/桌面整理/酷Q/dev/cn.xiaoxiaoge.keyword/" FOLLOW_SYMLINK_CHAIN)
 endif ()
 
 # 添加 dev 模式的可执行文件构建目标
 cq_add_dev_app(${SOURCE_FILES})
+

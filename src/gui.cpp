@@ -9,6 +9,7 @@
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
+#include <nana/gui/widgets/group.hpp>
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/menu.hpp>
@@ -50,74 +51,88 @@ private:
 
     //初始化
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [15,15,15,15] "
 
             //主人QQ
-            "<vert <weight=25 lab_admin> <text_admin>>"
+            "<group_admin>"
             "<weight=10>"
 
+            //其他
             "<vert"
-            "<weight=25>"
-
-            //指令前缀
-            "<weight=25 <weight=65 lab_prefix><text_prefix>>"
-            "<weight=10>"
-
-            //开关
-            "<check>"
-            "<>"
-
-            //使用教程 //在线更新 //反馈
-            "<weight=60 <button_document> <button_update> <button_feedback>>"
-            "<>"
+            "<weight=40% group_other>"
 
             // //绑定秘钥
             // "<weight=25 lab_usingKey>"
             // "<weight=25 <text_usingKey><weight=60 button_usingKey>>"
-            // "<>"
+            "<>"
 
             //保存
-            "<weight=30% button_save>"
+            "<margin = [15,15,15,15] button_save>"
 
             ">");
 
         //主人QQ
-        lab_admin.create(*this);
-        lab_admin.caption(u8"主人QQ(每行一个):");
-        place_.field("lab_admin") << lab_admin;
+        group_admin.create(*this);
+        group_admin.bgcolor(color_group);
+        group_admin.caption(u8"主人QQ(每行一个):");
+        group_admin.div("<margin = [5,5,5,5] text_admin>");
+        place_.field("group_admin") << group_admin;
 
-        text_admin.create(*this);
-        place_.field("text_admin") << text_admin;
+        text_admin.create(group_admin);
+        group_admin["text_admin"] << text_admin;
+
+        //其他
+        group_other.create(*this);
+        group_other.bgcolor(color_group);
+        group_other.caption(u8"其他");
+        group_other.div(
+            " margin = [10,10,10,10] <vert "
+
+            //指令前缀
+            "<weight=25 <weight=30% lab_prefix><text_prefix>>"
+            //"<weight=10>"
+
+            //开关
+            "<check>"
+
+            //使用教程 //在线更新 //反馈
+            "<<button_document> <button_update> <button_feedback>>"
+            ">");
+        place_.field("group_other") << group_other;
 
         //指令前缀
-        lab_prefix.create(*this);
+        lab_prefix.create(group_other);
+        lab_prefix.bgcolor(color_group);
         lab_prefix.caption(u8"指令前缀：");
-        place_.field("lab_prefix") << lab_prefix;
+        group_other["lab_prefix"] << lab_prefix;
 
         //收到私聊消息转发给主人
-        check_relayPrivateMsg.create(*this);
+        check_relayPrivateMsg.create(group_other);
+        check_relayPrivateMsg.bgcolor(color_group);
         check_relayPrivateMsg.caption(u8"收到的私聊消息转发给主人");
-        place_.field("check") << check_relayPrivateMsg;
+        group_other["check"] << check_relayPrivateMsg;
 
-        text_prefix.create(*this);
+        text_prefix.create(group_other);
         text_prefix.line_wrapped(false);
         text_prefix.multi_lines(false);
-        place_.field("text_prefix") << text_prefix;
+        group_other["text_prefix"] << text_prefix;
 
-        button_document.create(*this);
+        button_document.create(group_other);
         button_document.caption(u8"使用教程");
         button_document.events().click([this] {
             msgbox m_inf{*this, u8"提示"};
             m_inf << u8"待开发";
             m_inf.show();
         });
-        place_.field("button_document") << button_document;
+        group_other["button_document"] << button_document;
 
-        button_update.create(*this);
+        button_update.create(group_other);
         button_update.caption(u8"检查更新");
         button_update.events().click([this] {
             Update up;
@@ -164,16 +179,16 @@ private:
                 m_error.show();
             }
         });
-        place_.field("button_update") << button_update;
+        group_other["button_update"] << button_update;
 
-        button_feedback.create(*this);
+        button_feedback.create(group_other);
         button_feedback.caption(u8"问题反馈");
         button_feedback.events().click([this] {
             msgbox m_inf{*this, u8"提示"};
             m_inf << u8"待开发";
             m_inf.show();
         });
-        place_.field("button_feedback") << button_feedback;
+        group_other["button_feedback"] << button_feedback;
 
         // //使用秘钥
         // lab_usingKey.create(*this);
@@ -242,11 +257,15 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //主人QQ
-    label lab_admin;
+    group group_admin;
     textbox text_admin;
+
+    //其他
+    group group_other;
 
     //指令前缀
     label lab_prefix;
@@ -288,6 +307,8 @@ private:
 
     //初始化
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
@@ -312,6 +333,7 @@ private:
 
         //设置名称
         lab_priority.create(*this);
+        lab_priority.bgcolor(color_group);
         lab_priority.caption(u8"优先级：");
         place_.field("lab_priority") << lab_priority;
 
@@ -322,6 +344,7 @@ private:
 
         //设置名称
         lab_name.create(*this);
+        lab_name.bgcolor(color_group);
         lab_name.caption(u8"设置名称：");
         place_.field("lab_name") << lab_name;
 
@@ -368,6 +391,7 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //优先级
@@ -398,96 +422,99 @@ private:
         auto groupList = mycq::get_group_list_map();
 
         //清空原有
-        listGroupList.erase();
+        list_groupList.erase();
 
         auto& conf_groupList = conf.alone[conf_index].groupList;
         //先载入已选
         for (auto id : conf_groupList) {
-            listGroupList.at(0).append({groupList[id].group_name, to_string(id)});
+            list_groupList.at(0).append({groupList[id].group_name, to_string(id)});
         }
 
         //再载入未选
         for (auto temp : groupList) {
             if (find(conf_groupList.begin(), conf_groupList.end(), temp.first) == conf_groupList.end())
-                listGroupList.at(0).append({temp.second.group_name, to_string(temp.first)});
+                list_groupList.at(0).append({temp.second.group_name, to_string(temp.first)});
         }
 
         //勾选已选的
-        auto size = listGroupList.size_item(0);
+        auto size = list_groupList.size_item(0);
         for (int i = 0; i < size; i++) {
-            string buf = listGroupList.at(0).at(i).text(1);
+            string buf = list_groupList.at(0).at(i).text(1);
 
             if (find(conf.alone[conf_index].groupList.begin(),
                      conf.alone[conf_index].groupList.end(),
                      atoll(buf.c_str()))
                 != conf.alone[conf_index].groupList.end()) {
-                listGroupList.at(0).at(i).check(true);
+                list_groupList.at(0).at(i).check(true);
             }
         }
 
         //处理方式
-        checkDeal.at(conf.alone[conf_index].dealType)->check(true);
+        check_deal.at(conf.alone[conf_index].dealType)->check(true);
 
         //禁言时长
-        textBenTimeLen.reset(to_string(conf.alone[conf_index].banTimeLen));
+        text_banTimeLen.reset(to_string(conf.alone[conf_index].banTimeLen));
 
         //一些开关
-        checkDeleteMsg.check(conf.alone[conf_index].deleteMsg);
-        checkStreng.check(conf.alone[conf_index].streng);
+        check_deleteMsg.check(conf.alone[conf_index].deleteMsg);
+        check_streng.check(conf.alone[conf_index].streng);
         check_deleteCQCode.check(conf.alone[conf_index].deleteCQCode);
         check_keyWordSendAdmin.check(conf.alone[conf_index].keyWordSendAdmin);
     }
 
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [5,5,5,5] "
 
             //监控群
-            "<vert weight=250 <weight=25 lab_list> <list> <weight=25 <text_addgroup><weight=80 button_addgroup>><weight=5><weight=30 "
-            "gap=[10,10] arrange=[40,40] button_list>>"
-            "<weight=20>"
+            "<group_list>"
+            //"<weight=20>"
 
             "<vert"
             //处理方式
-            "<weight=25 labelDeal>"
-            "<vert weight=25% checkDeal>"
-            "<weight=20 <weight=25% labelBanTimeLen> <weight=25% TextBanTimeLen><labelBanTimeLenTip>>"
-            "<weight=10>"
+            "<weight=40% group_deal>"
+            //"<weight=10>"
 
             //一些开关
-            "<weight=25 labelSwitch>"
-            "<weight=20% vert checkSwitch>"
-            "<weight=10>"
+            "<weight=40% group_switch>"
+            //"<weight=10>"
 
             //保存按钮
-            "<weight=10% btnSave>"
+            "<margin = [10,10,10,10]  weight=10% button_save>"
 
             ">");
 
         //监控群
-        lab_list.create(*this);
-        lab_list.caption(u8"监控群:");
-        place_.field("lab_list") << lab_list;
-    
-        listGroupList.create(*this);
-        listGroupList.checkable(true);
-        listGroupList.append_header(u8"群名");
-        listGroupList.append_header(u8"群号码");
-        place_.field("list") << listGroupList;
+        group_list.create(*this);
+        group_list.bgcolor(color_group);
+        group_list.caption(u8"监控群:");
+        group_list.div(
+            "margin = [5,5,5,5] <vert <list_groupList>"
+            "<weight=25 <text_groupAdd><weight=40% button_groupAdd>><weight=5>"
+            "<weight=30 gap=[10,10] arrange=[40,40] button_list> >");
+        place_.field("group_list") << group_list;
+
+        list_groupList.create(group_list);
+        list_groupList.checkable(true);
+        list_groupList.append_header(u8"群名");
+        list_groupList.append_header(u8"群号码");
+        group_list["list_groupList"] << list_groupList;
 
         //手动添加群
-        textAddGroup.create(*this);
-        textAddGroup.line_wrapped(false);
-        textAddGroup.multi_lines(false);
-        place_.field("text_addgroup") << textAddGroup;
+        text_groupAdd.create(group_list);
+        text_groupAdd.line_wrapped(false);
+        text_groupAdd.multi_lines(false);
+        group_list["text_groupAdd"] << text_groupAdd;
 
-        btnGroupAdd.create(*this);
-        btnGroupAdd.caption(u8"手动添加");
-        btnGroupAdd.events().click([this] {
-            bool ok = regex_match(textAddGroup.text(), regex("[1-9][0-9]*"));
+        button_groupAdd.create(group_list);
+        button_groupAdd.caption(u8"手动添加");
+        button_groupAdd.events().click([this] {
+            bool ok = regex_match(text_groupAdd.text(), regex("[1-9][0-9]*"));
             if (!ok) {
                 msgbox m_error{*this, u8"错误"};
                 m_error.icon(msgbox::icon_error);
@@ -496,50 +523,55 @@ private:
                 return;
             }
 
-            listGroupList.at(0).append({"", textAddGroup.text()});
+            list_groupList.at(0).append({"", text_groupAdd.text()});
 
             //查找添加项并勾选
-            auto size = listGroupList.size_item(0);
+            auto size = list_groupList.size_item(0);
             for (int i = 0; i < size; i++) {
-                string buf = listGroupList.at(0).at(i).text(1);
+                string buf = list_groupList.at(0).at(i).text(1);
 
-                if (buf == textAddGroup.text()) {
-                    listGroupList.at(0).at(i).check(true);
+                if (buf == text_groupAdd.text()) {
+                    list_groupList.at(0).at(i).check(true);
                     break;
                 }
             }
         });
-        place_.field("button_addgroup") << btnGroupAdd;
+        group_list["button_groupAdd"] << button_groupAdd;
 
         //列表按钮
         //全选
-        btnListAll.create(*this);
-        btnListAll.caption(u8"全选");
-        btnListAll.events().click([this] {
-            auto size = listGroupList.size_item(0);
+        button_listAll.create(group_list);
+        button_listAll.caption(u8"全选");
+        button_listAll.events().click([this] {
+            auto size = list_groupList.size_item(0);
 
             for (int i = 0; i < size; i++) {
-                listGroupList.at(listbox::index_pair(0, i)).check(true);
+                list_groupList.at(listbox::index_pair(0, i)).check(true);
             }
         });
         //反选
-        btnListReverse.create(*this);
-        btnListReverse.caption(u8"反选");
-        btnListReverse.events().click([this] {
-            auto size = listGroupList.size_item(0);
+        button_listReverse.create(group_list);
+        button_listReverse.caption(u8"反选");
+        button_listReverse.events().click([this] {
+            auto size = list_groupList.size_item(0);
 
             for (int i = 0; i < size; i++) {
-                auto p = listGroupList.at(listbox::index_pair(0, i));
+                auto p = list_groupList.at(listbox::index_pair(0, i));
 
                 p.check(!p.checked());
             }
         });
-        place_.field("button_list") << btnListAll << btnListReverse;
+        group_list["button_list"] << button_listAll << button_listReverse;
 
         //处理方式
-        labelDeal.create(*this);
-        labelDeal.caption(u8"处理方式:");
-        place_.field("labelDeal") << labelDeal;
+        group_deal.create(*this);
+        group_deal.bgcolor(color_group);
+        group_deal.caption(u8"处理方式:");
+        group_deal.div(
+            "margin = [5,5,5,5] <vert"
+            "<vert check_deal>"
+            "<weight=25 <weight=45% label_banTimeLen> <weight=5% text_banTimeLen> <label_banTimeLenTip>> >");
+        place_["group_deal"] << group_deal;
 
         vector<string> groupStr;
         groupStr.push_back(u8"不做处理");
@@ -547,76 +579,85 @@ private:
         groupStr.push_back(u8"踢出");
         groupStr.push_back(u8"拉黑并踢出");
         for (int i = 0; i < groupStr.size(); i++) {
-            auto p = std::make_shared<checkbox>(*this);
-            checkDeal.push_back(p);
+            auto p = std::make_shared<checkbox>(group_deal);
+            p->bgcolor(color_group);
+            check_deal.push_back(p);
 
             // Add the checkbox to the radio group. The radio group does not
             // manage the life of checkboxs.
-            groupDeal.add(*p);
-            place_.field("checkDeal") << *p;
+            radio_group_deal.add(*p);
+            group_deal["check_deal"] << *p;
 
             p->caption(groupStr[i]);
             p->events().click([this]() {
-                std::size_t index = this->groupDeal.checked();
-                std::string str = this->checkDeal[index]->caption();
+                std::size_t index = this->radio_group_deal.checked();
+                std::string str = this->check_deal[index]->caption();
 
                 if (str == u8"禁言") {
-                    labelBanTimeLenTip.caption(u8"分钟");
+                    label_banTimeLenTip.caption(u8"分钟");
                 } else {
-                    labelBanTimeLenTip.caption(u8"分钟(禁言方式下生效)");
+                    label_banTimeLenTip.caption(u8"分钟(禁言方式下生效)");
                 }
             });
         }
 
-        labelBenTimeLen.create(*this);
-        labelBenTimeLen.caption(u8"禁言时长:");
-        place_.field("labelBanTimeLen") << labelBenTimeLen;
+        label_banTimeLen.create(group_deal);
+        label_banTimeLen.bgcolor(color_group);
+        label_banTimeLen.caption(u8"禁言时长:");
+        group_deal["label_banTimeLen"] << label_banTimeLen;
 
-        textBenTimeLen.create(*this);
-        textBenTimeLen.line_wrapped(false);
-        textBenTimeLen.multi_lines(false);
-        place_.field("TextBanTimeLen") << textBenTimeLen;
+        text_banTimeLen.create(group_deal);
+        text_banTimeLen.line_wrapped(false);
+        text_banTimeLen.multi_lines(false);
+        group_deal["label_banTimeLen"] << text_banTimeLen;
 
-        labelBanTimeLenTip.create(*this);
-        labelBanTimeLenTip.caption(u8"分钟");
-        place_.field("labelBanTimeLenTip") << labelBanTimeLenTip;
+        label_banTimeLenTip.create(group_deal);
+        label_banTimeLenTip.bgcolor(color_group);
+        label_banTimeLenTip.caption(u8"分钟");
+        group_deal["label_banTimeLenTip"] << label_banTimeLenTip;
 
         //一些功能开关
-        labelSwitch.create(*this);
-        labelSwitch.caption(u8"一些功能开关:");
-        place_.field("labelSwitch") << labelSwitch;
+        group_switch.create(*this);
+        group_switch.bgcolor(color_group);
+        group_switch.caption(u8"一些功能开关:");
+        group_switch.div("<vert margin = [5,5,5,5] check_switch>");
+        place_.field("group_switch") << group_switch;
 
-        checkStreng.create(*this);
-        checkStreng.caption(u8"关键词强力检测");
-        place_.field("checkSwitch") << checkStreng;
+        check_streng.create(group_switch);
+        check_streng.bgcolor(color_group);
+        check_streng.caption(u8"关键词强力检测");
+        group_switch["check_switch"] << check_streng;
 
-        checkDeleteMsg.create(*this);
-        checkDeleteMsg.caption(u8"撤回触发关键词消息（需Pro）");
-        place_.field("checkSwitch") << checkDeleteMsg;
+        check_deleteMsg.create(group_switch);
+        check_deleteMsg.bgcolor(color_group);
+        check_deleteMsg.caption(u8"撤回触发关键词消息（需Pro）");
+        group_switch["check_switch"] << check_deleteMsg;
 
-        check_deleteCQCode.create(*this);
+        check_deleteCQCode.create(group_switch);
+        check_deleteCQCode.bgcolor(color_group);
         check_deleteCQCode.caption(u8"过滤CQ码（如图片消息，签到消息等）");
-        place_.field("checkSwitch") << check_deleteCQCode;
+        group_switch["check_switch"] << check_deleteCQCode;
 
-        check_keyWordSendAdmin.create(*this);
+        check_keyWordSendAdmin.create(group_switch);
+        check_keyWordSendAdmin.bgcolor(color_group);
         check_keyWordSendAdmin.caption(u8"触发关键词提醒主人");
-        place_.field("checkSwitch") << check_keyWordSendAdmin;
+        group_switch["check_switch"] << check_keyWordSendAdmin;
 
-        btnSave.create(*this);
-        btnSave.caption(u8"保存");
-        btnSave.events().click([this] {
+        button_save.create(*this);
+        button_save.caption(u8"保存");
+        button_save.events().click([this] {
             //群名单
             conf.alone[conf_index].groupList.clear();
-            for (auto temp : listGroupList.checked()) {
-                string buf = listGroupList.at(temp).text(1);
+            for (auto temp : list_groupList.checked()) {
+                string buf = list_groupList.at(temp).text(1);
 
                 conf.alone[conf_index].groupList.insert(atoll(buf.c_str()));
             }
 
             //处理方式
             int dealType = 0;
-            for (int i = 0; i < checkDeal.size(); i++) {
-                if (checkDeal.at(i)->checked()) {
+            for (int i = 0; i < check_deal.size(); i++) {
+                if (check_deal.at(i)->checked()) {
                     dealType = i;
                     break;
                 }
@@ -624,11 +665,11 @@ private:
             conf.alone[conf_index].dealType = dealType;
 
             //禁言时长
-            conf.alone[conf_index].banTimeLen = atoll(textBenTimeLen.text().c_str());
+            conf.alone[conf_index].banTimeLen = atoll(text_banTimeLen.text().c_str());
 
             //一些开关
-            conf.alone[conf_index].deleteMsg = checkDeleteMsg.checked();
-            conf.alone[conf_index].streng = checkStreng.checked();
+            conf.alone[conf_index].deleteMsg = check_deleteMsg.checked();
+            conf.alone[conf_index].streng = check_streng.checked();
             conf.alone[conf_index].deleteCQCode = check_deleteCQCode.checked();
             conf.alone[conf_index].keyWordSendAdmin = check_keyWordSendAdmin.checked();
 
@@ -642,7 +683,8 @@ private:
             //重新载入配置
             readConf();
         });
-        place_.field("btnSave") << btnSave;
+        place_.field("button_save") << button_save;
+        group_list.collocate();
 
         //读取配置
         readConf();
@@ -655,35 +697,36 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //监控群
-    label lab_list;
-    listbox listGroupList; //群列表
+    group group_list;
+    listbox list_groupList; //群列表
 
-    textbox textAddGroup; //手动添加群	文本框
-    button btnGroupAdd; //手动添加群	按钮
+    textbox text_groupAdd; //手动添加群	文本框
+    button button_groupAdd; //手动添加群	按钮
 
-    button btnListReverse; //反选
-    button btnListAll; //全选
+    button button_listReverse; //反选
+    button button_listAll; //全选
 
     //处理方式
-    label labelDeal;
-    std::vector<std::shared_ptr<checkbox>> checkDeal;
-    radio_group groupDeal;
-    label labelBenTimeLen; //禁言时间 标签
-    label labelBanTimeLenTip; //禁言时间 提示标签
-    textbox textBenTimeLen; //禁言时间 文本框
+    group group_deal;
+    std::vector<std::shared_ptr<checkbox>> check_deal;
+    radio_group radio_group_deal;
+    label label_banTimeLen; //禁言时间 标签
+    label label_banTimeLenTip; //禁言时间 提示标签
+    textbox text_banTimeLen; //禁言时间 文本框
 
     //一些功能开关
-    label labelSwitch;
-    checkbox checkStreng; //强力检测
-    checkbox checkDeleteMsg; //撤回消息
+    group group_switch;
+    checkbox check_streng; //强力检测
+    checkbox check_deleteMsg; //撤回消息
     checkbox check_deleteCQCode; //过滤CQ码
     checkbox check_keyWordSendAdmin; //触发关键词提醒主人
 
     //保存
-    button btnSave;
+    button button_save;
 };
 
 //列表
@@ -714,77 +757,82 @@ private:
 
         //特殊名单类型
         check_QQListType.at(conf.alone[conf_index].QQListType)->check(true);
+        if (conf.alone[conf_index].QQListType == 0) {
+            lab_QQListTypeTip.caption(u8"当前为白名单模式，不会监控名单中的QQ");
+            group_QQList.caption(u8"QQ白名单(每行一个):");
+        } else if (conf.alone[conf_index].QQListType == 1) {
+            lab_QQListTypeTip.caption(u8"当前为监控名单模式，只监控名单中的QQ");
+            group_QQList.caption(u8"QQ监控名单(每行一个):");
+        }
     }
 
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [15,15,15,15]"
 
             //左边
             "<vert"
 
-            //白名单关键词
-            "<vert <weight=25 lab_keyWordWhite> <text_keyWordWhite>>"
-            "<weight=10>"
-
-            //设置特殊名单为  白名单 || 监控名单
-            "<vert weight=30% <eight=30% lab_QQListType> <eight=30% check_QQListType> <lab_QQListTypeTip>>"
-
+            //特殊QQ名单
+            "<group_QQList>"
+            //"<weight=10>"
             ">"
-
-            "<weight=10>"
 
             //右边
             "<vert"
 
-            //特殊QQ名单
-            "<vert <weight=25 <lab_QQList>> <text_QQList>>"
-            "<weight=10>"
+            //白名单关键词
+            "<group_keyWordWhite>"
+            //"<weight=10>"
 
             //保存
-            "<weight=25% button_save>"
+            "<margin = [10,10,10,10] weight=20% button_save>"
 
             ">");
 
         //白名单关键词
-        lab_keyWordWhite.create(*this);
-        lab_keyWordWhite.caption(u8"白名单关键词(每行一个):");
-        place_.field("lab_keyWordWhite") << lab_keyWordWhite;
+        group_keyWordWhite.create(*this);
+        group_keyWordWhite.bgcolor(color_group);
+        group_keyWordWhite.caption(u8"白名单关键词(每行一个):");
+        group_keyWordWhite.div("margin = [5,5,5,5] <text_keyWordWhite>");
+        place_.field("group_keyWordWhite") << group_keyWordWhite;
 
-        text_keyWordWhite.create(*this);
+        text_keyWordWhite.create(group_keyWordWhite);
         text_keyWordWhite.line_wrapped(true);
         text_keyWordWhite.tip_string(u8"包含这些关键词的消息将不会检测");
-        place_.field("text_keyWordWhite") << text_keyWordWhite;
+        group_keyWordWhite["text_keyWordWhite"] << text_keyWordWhite;
 
         //特殊QQ名单
-        lab_QQList.create(*this);
-        lab_QQList.caption(u8"QQ 白名单/监控名单(每行一个):");
-        place_.field("lab_QQList") << lab_QQList;
+        group_QQList.create(*this);
+        group_QQList.bgcolor(color_group);
+        group_QQList.caption(u8"QQ 白名单/监控名单(每行一个):");
+        group_QQList.div("vert margin = [5,5,5,5] <text_QQList> <weight=25 check_QQListType> <weight=25 lab_QQListTypeTip>");
+        place_.field("group_QQList") << group_QQList;
 
-        text_QQList.create(*this);
-        place_.field("text_QQList") << text_QQList;
+        text_QQList.create(group_QQList);
+        group_QQList["text_QQList"] << text_QQList;
 
         //设置特殊名单为  白名单 || 监控名单
-        lab_QQListType.create(*this);
-        lab_QQListType.caption(u8"设置名单类型为:");
-        place_.field("lab_QQListType") << lab_QQListType;
-
-        lab_QQListTypeTip.create(*this);
-        place_.field("lab_QQListTypeTip") << lab_QQListTypeTip;
+        lab_QQListTypeTip.create(group_QQList);
+        lab_QQListTypeTip.bgcolor(color_group);
+        group_QQList["lab_QQListTypeTip"] << lab_QQListTypeTip;
 
         vector<string> groupStr;
         groupStr.push_back(u8"白名单");
         groupStr.push_back(u8"监控名单");
 
         for (int i = 0; i < groupStr.size(); i++) {
-            auto p = std::make_shared<checkbox>(*this);
+            auto p = std::make_shared<checkbox>(group_QQList);
+            p->bgcolor(color_group);
             check_QQListType.push_back(p);
 
             group_QQListType.add(*p);
-            place_.field("check_QQListType") << *p;
+            group_QQList["check_QQListType"] << *p;
 
             p->caption(groupStr[i]);
             p->events().click([this]() {
@@ -793,10 +841,10 @@ private:
 
                 if (str == u8"白名单") {
                     lab_QQListTypeTip.caption(u8"当前为白名单模式，不会监控名单中的QQ");
-                    lab_QQList.caption(u8"QQ白名单(每行一个):");
+                    group_QQList.caption(u8"QQ白名单(每行一个):");
                 } else if (str == u8"监控名单") {
                     lab_QQListTypeTip.caption(u8"当前为监控名单模式，只监控名单中的QQ");
-                    lab_QQList.caption(u8"QQ监控名单(每行一个):");
+                    group_QQList.caption(u8"QQ监控名单(每行一个):");
                 } else {
                     lab_QQListTypeTip.caption("");
                 }
@@ -857,18 +905,18 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //白名单关键词
-    label lab_keyWordWhite;
+    group group_keyWordWhite;
     textbox text_keyWordWhite;
 
     // QQ列表
-    label lab_QQList;
+    group group_QQList;
     textbox text_QQList;
 
     //特殊QQ名单类型
-    label lab_QQListType;
     std::vector<std::shared_ptr<checkbox>> check_QQListType;
     radio_group group_QQListType;
     label lab_QQListTypeTip;
