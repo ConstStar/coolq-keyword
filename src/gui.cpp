@@ -119,7 +119,7 @@ public:
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
-            m_error << u8"主人QQ格式有误";
+            m_error << u8"主人QQ 格式有误";
             m_error.show();
             return false;
         }
@@ -371,7 +371,7 @@ public:
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
-            m_error << u8"优先级格式有误";
+            m_error << u8"优先级 格式有误";
             m_error.show();
             return false;
         }
@@ -526,6 +526,15 @@ protected:
 
 public:
     bool save() {
+        bool ok = boost::regex_match(text_banTimeLen.text(), boost::regex("[0-9]*"));
+        if (!ok) {
+            msgbox m_error{*this, u8"错误"};
+            m_error.icon(msgbox::icon_error);
+            m_error << u8"禁言时长 格式有误";
+            m_error.show();
+            return false;
+        }
+
         //群名单
         conf.alone[conf_index].groupList.clear();
         for (auto temp : list_groupList.checked()) {
@@ -743,13 +752,13 @@ private:
         check_deleteMsg.create(group_switch);
         check_deleteMsg.bgcolor(color_group);
         check_deleteMsg.caption(u8"撤回触发关键词消息（需Pro）");
-        check_streng.events().checked([this]() { isSave = false; });
+        check_deleteMsg.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_deleteMsg;
 
         check_deleteCQCode.create(group_switch);
         check_deleteCQCode.bgcolor(color_group);
         check_deleteCQCode.caption(u8"过滤CQ码（如图片消息，签到消息等）");
-        check_streng.events().checked([this]() { isSave = false; });
+        check_deleteCQCode.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_deleteCQCode;
 
         check_keyWordSendAdmin.create(group_switch);
@@ -842,6 +851,15 @@ protected:
 
 public:
     bool save() {
+        bool ok = boost::regex_match(text_QQList.text(), boost::regex("[\\n\\d\\r]*"));
+        if (!ok) {
+            msgbox m_error{*this, u8"错误"};
+            m_error.icon(msgbox::icon_error);
+            m_error << u8"QQ白名单/监控名单 格式有误";
+            m_error.show();
+            return false;
+        }
+
         // QQ特殊名单
         auto QQList_line = text_QQList.text_line_count();
         conf.alone[conf_index].QQList.clear();
@@ -948,7 +966,7 @@ private:
         for (int i = 0; i < groupStr.size(); i++) {
             auto p = std::make_shared<checkbox>(group_QQList);
             p->bgcolor(color_group);
-            p->events().checked([this]() { isSave = true; });
+            p->events().checked([this]() { isSave = false; });
             check_QQListType.push_back(p);
 
             group_QQListType.add(*p);
@@ -1389,6 +1407,19 @@ protected:
 
 public:
     bool save() {
+        bool ok_text_relayGroupMsg_trimFront =
+            boost::regex_match(text_relayGroupMsg_trimFront.text(), boost::regex("[0-9]*"));
+        bool ok_text_relayGroupMsg_trimBack =
+            boost::regex_match(text_relayGroupMsg_trimBack.text(), boost::regex("[0-9]*"));
+
+        if (!ok_text_relayGroupMsg_trimFront || !ok_text_relayGroupMsg_trimBack) {
+            msgbox m_error{*this, u8"错误"};
+            m_error.icon(msgbox::icon_error);
+            m_error << u8"消息修剪 格式有误";
+            m_error.show();
+            return false;
+        }
+
         //群名单
         conf.alone[conf_index].relayGroupList.clear();
         for (auto temp : list_groupList.checked()) {
@@ -1456,7 +1487,7 @@ private:
         list_groupList.checkable(true);
         list_groupList.append_header(u8"群名");
         list_groupList.append_header(u8"群号码");
-        list_groupList.events().checked([this]() { isSave = true; });
+        list_groupList.events().checked([this]() { isSave = false; });
         group_groupList["list_groupList"] << list_groupList;
 
         //转发消息格式
