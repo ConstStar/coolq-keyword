@@ -32,15 +32,67 @@ void openUrl(std::string url) {
     ShellExecuteA(NULL, "open", "explorer.exe", temp.c_str(), NULL, SW_SHOW);
 }
 
-//主要设置
-class tab_page_main : public panel<false> {
-private:
+//窗口父类
+class tab_father : public panel<false> {
+protected:
     //写入配置
     void writeConf() {
         conf.all2json();
         conf.json2file();
     }
 
+    //显示文本
+    void showText(string title, string word) {
+        form fm_temp;
+        fm_temp.caption(title);
+
+        textbox text{fm_temp};
+        text.caption(word);
+        text.editable(false);
+
+        fm_temp.div("<text>");
+        fm_temp["text"] << text;
+        fm_temp.collocate();
+
+        fm_temp.show();
+        exec();
+    }
+
+public:
+    tab_father(window wd) : panel<false>(wd), isSave(true) {
+        color_group.from_rgb(201.4, 197.6, 190);
+    }
+
+    //获取保存状态
+    bool getSave() {
+        return isSave;
+    }
+
+    //读取配置
+    virtual void readConf() {
+        msgbox m_error{*this, u8"错误"};
+        m_error.icon(msgbox::icon_error);
+        m_error << u8"非法访问";
+        m_error.show();
+    }
+
+    //保存
+    virtual bool save() {
+        msgbox m_error{*this, u8"错误"};
+        m_error.icon(msgbox::icon_error);
+        m_error << u8"非法访问";
+        m_error.show();
+        return false;
+    }
+
+protected:
+    bool isSave;
+    color color_group;
+};
+
+//主要设置
+class tab_page_main : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -57,12 +109,53 @@ private:
 
         //私聊消息转发给主人
         check_relayPrivateMsg.check(conf.relayPrivateMsg);
+
+        isSave = true;
     }
 
+public:
+    bool save() {
+        bool ok = boost::regex_match(text_admin.text(), boost::regex("[\\n\\d\\r]*"));
+        if (!ok) {
+            msgbox m_error{*this, u8"错误"};
+            m_error.icon(msgbox::icon_error);
+            m_error << u8"主人QQ格式有误";
+            m_error.show();
+            return false;
+        }
+
+        //主人QQ
+        auto line = text_admin.text_line_count();
+        conf.admin.clear();
+        for (int i = 0; i < line; i++) {
+            string buf;
+            text_admin.getline(i, buf);
+            if (!buf.empty()) conf.admin.insert(atoll(buf.c_str()));
+        }
+
+        //消息前缀
+        conf.prefix = text_prefix.text();
+
+        //收到的私聊消息转发给主人
+        conf.relayPrivateMsg = check_relayPrivateMsg.checked();
+
+        //写入配置
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新载入配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
     //初始化
     void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
-
         place_.bind(*this);
         place_.div(
 
@@ -95,6 +188,7 @@ private:
         place_.field("group_admin") << group_admin;
 
         text_admin.create(group_admin);
+        text_admin.events().text_changed([this]() { isSave = false; });
         group_admin["text_admin"] << text_admin;
 
         //其他
@@ -105,7 +199,7 @@ private:
             "<vert "
 
             //指令前缀
-            "<weight=25 <weight=30% lab_prefix><text_prefix>>"
+            "<weight=25 <weight=25% lab_prefix><text_prefix><weight=20%>>"
             //"<weight=10>"
 
             //开关
@@ -125,12 +219,14 @@ private:
         text_prefix.create(group_other);
         text_prefix.line_wrapped(false);
         text_prefix.multi_lines(false);
+        text_prefix.events().text_changed([this]() { isSave = false; });
         group_other["text_prefix"] << text_prefix;
 
         //收到私聊消息转发给主人
         check_relayPrivateMsg.create(group_other);
         check_relayPrivateMsg.bgcolor(color_group);
         check_relayPrivateMsg.caption(u8"收到的私聊消息转发给主人");
+        check_relayPrivateMsg.events().click([this]() { isSave = false; });
         group_other["check"] << check_relayPrivateMsg;
 
         button_document.create(group_other);
@@ -212,54 +308,19 @@ private:
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            bool ok = boost::regex_match(text_admin.text(), boost::regex("[\\n\\d\\r]*"));
-            if (!ok) {
-                msgbox m_error{*this, u8"错误"};
-                m_error.icon(msgbox::icon_error);
-                m_error << u8"主人QQ格式有误";
-                m_error.show();
-                return;
-            }
-
-            //主人QQ
-            auto line = text_admin.text_line_count();
-            conf.admin.clear();
-            for (int i = 0; i < line; i++) {
-                string buf;
-                text_admin.getline(i, buf);
-                if (!buf.empty()) conf.admin.insert(atoll(buf.c_str()));
-            }
-
-            //消息前缀
-            conf.prefix = text_prefix.text();
-
-            //收到的私聊消息转发给主人
-            conf.relayPrivateMsg = check_relayPrivateMsg.checked();
-
-            //写入配置
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            //重新载入配置
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
         place_.field("button_save") << btn_save;
 
         readConf();
     }
 
 public:
-    tab_page_main(window wd) : panel<false>(wd) {
+    tab_page_main(window wd) : tab_father(wd) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //主人QQ
@@ -290,14 +351,8 @@ private:
 };
 
 //单独设置中的主要设置
-class tab_page_aloneMain : public panel<false> {
-private:
-    //写入配置
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_aloneMain : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -305,12 +360,41 @@ private:
 
         text_name.reset(conf.alone[conf_index].name);
         text_priority.from(conf.alone[conf_index].priority);
+
+        isSave = true;
     }
 
+public:
+    bool save() {
+        string priority_temp = text_priority.text();
+        bool ok = boost::regex_match(priority_temp, boost::regex("[0-9]+"));
+        if (!ok) {
+            msgbox m_error{*this, u8"错误"};
+            m_error.icon(msgbox::icon_error);
+            m_error << u8"优先级格式有误";
+            m_error.show();
+            return false;
+        }
+
+        conf.alone[conf_index].priority = atoi(priority_temp.c_str());
+        conf.alone[conf_index].name = text_name.text();
+
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新载入配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
     //初始化
     void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
-
         place_.bind(*this);
         place_.div(
 
@@ -335,65 +419,44 @@ private:
 
         //设置名称
         lab_priority.create(*this);
-        lab_priority.bgcolor(color_group);
+        // lab_priority.bgcolor(color_group);
         lab_priority.caption(u8"优先级：");
         place_.field("lab_priority") << lab_priority;
 
         text_priority.create(*this);
         text_priority.line_wrapped(false);
         text_priority.multi_lines(false);
+        text_priority.events().text_changed([this]() { isSave = false; });
         place_.field("text_priority") << text_priority;
 
         //设置名称
         lab_name.create(*this);
-        lab_name.bgcolor(color_group);
+        // lab_name.bgcolor(color_group);
         lab_name.caption(u8"设置名称：");
         place_.field("lab_name") << lab_name;
 
         text_name.create(*this);
         text_name.line_wrapped(false);
         text_name.multi_lines(false);
+        text_name.events().text_changed([this]() { isSave = false; });
         place_.field("text_name") << text_name;
 
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            int priority_temp = text_priority.to_int();
-            // if (priority_temp <= 0) {
-            //     msgbox m_error{*this, u8"错误"};
-            //     m_error.icon(msgbox::icon_error);
-            //     m_error << u8"优先级必须为正数";
-            //     m_error.show();
-
-            //     return;
-            // }
-
-            conf.alone[conf_index].priority = priority_temp;
-            conf.alone[conf_index].name = text_name.text();
-
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            //重新载入配置
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
         place_.field("button_save") << btn_save;
 
         readConf();
     }
 
 public:
-    tab_page_aloneMain(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_aloneMain(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //优先级
@@ -409,13 +472,8 @@ private:
 };
 
 //全局设置
-class tab_page_overall : public panel<false> {
-private:
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_overall : public tab_father {
+protected:
     void readConf() {
         conf.file2json();
         conf.json2all();
@@ -462,11 +520,55 @@ private:
         check_streng.check(conf.alone[conf_index].streng);
         check_deleteCQCode.check(conf.alone[conf_index].deleteCQCode);
         check_keyWordSendAdmin.check(conf.alone[conf_index].keyWordSendAdmin);
+
+        isSave = true;
     }
 
-    void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
+public:
+    bool save() {
+        //群名单
+        conf.alone[conf_index].groupList.clear();
+        for (auto temp : list_groupList.checked()) {
+            string buf = list_groupList.at(temp).text(1);
 
+            conf.alone[conf_index].groupList.insert(atoll(buf.c_str()));
+        }
+
+        //处理方式
+        int dealType = 0;
+        for (int i = 0; i < check_deal.size(); i++) {
+            if (check_deal.at(i)->checked()) {
+                dealType = i;
+                break;
+            }
+        }
+        conf.alone[conf_index].dealType = dealType;
+
+        //禁言时长
+        conf.alone[conf_index].banTimeLen = atoll(text_banTimeLen.text().c_str());
+
+        //一些开关
+        conf.alone[conf_index].deleteMsg = check_deleteMsg.checked();
+        conf.alone[conf_index].streng = check_streng.checked();
+        conf.alone[conf_index].deleteCQCode = check_deleteCQCode.checked();
+        conf.alone[conf_index].keyWordSendAdmin = check_keyWordSendAdmin.checked();
+
+        //写入配置
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新载入配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
+    void init() {
         place_.bind(*this);
         place_.div(
 
@@ -505,6 +607,7 @@ private:
         list_groupList.checkable(true);
         list_groupList.append_header(u8"群名");
         list_groupList.append_header(u8"群号码");
+        list_groupList.events().checked([this]() { isSave = false; });
         group_list["list_groupList"] << list_groupList;
 
         //手动添加群
@@ -516,6 +619,8 @@ private:
         button_groupAdd.create(group_list);
         button_groupAdd.caption(u8"手动添加");
         button_groupAdd.events().click([this] {
+            isSave = false;
+
             bool ok = boost::regex_match(text_groupAdd.text(), boost::regex("[1-9][0-9]*"));
             if (!ok) {
                 msgbox m_error{*this, u8"错误"};
@@ -545,8 +650,9 @@ private:
         button_listAll.create(group_list);
         button_listAll.caption(u8"全选");
         button_listAll.events().click([this] {
-            auto size = list_groupList.size_item(0);
+            isSave = false;
 
+            auto size = list_groupList.size_item(0);
             for (int i = 0; i < size; i++) {
                 list_groupList.at(listbox::index_pair(0, i)).check(true);
             }
@@ -555,8 +661,9 @@ private:
         button_listReverse.create(group_list);
         button_listReverse.caption(u8"反选");
         button_listReverse.events().click([this] {
-            auto size = list_groupList.size_item(0);
+            isSave = false;
 
+            auto size = list_groupList.size_item(0);
             for (int i = 0; i < size; i++) {
                 auto p = list_groupList.at(listbox::index_pair(0, i));
 
@@ -583,6 +690,7 @@ private:
         for (int i = 0; i < groupStr.size(); i++) {
             auto p = std::make_shared<checkbox>(group_deal);
             p->bgcolor(color_group);
+            p->events().checked([this]() { isSave = false; });
             check_deal.push_back(p);
 
             // Add the checkbox to the radio group. The radio group does not
@@ -611,6 +719,7 @@ private:
         text_banTimeLen.create(group_deal);
         text_banTimeLen.line_wrapped(false);
         text_banTimeLen.multi_lines(false);
+        text_banTimeLen.events().text_changed([this]() { isSave = false; });
         group_deal["label_banTimeLen"] << text_banTimeLen;
 
         label_banTimeLenTip.create(group_deal);
@@ -628,63 +737,30 @@ private:
         check_streng.create(group_switch);
         check_streng.bgcolor(color_group);
         check_streng.caption(u8"关键词强力检测");
+        check_streng.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_streng;
 
         check_deleteMsg.create(group_switch);
         check_deleteMsg.bgcolor(color_group);
         check_deleteMsg.caption(u8"撤回触发关键词消息（需Pro）");
+        check_streng.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_deleteMsg;
 
         check_deleteCQCode.create(group_switch);
         check_deleteCQCode.bgcolor(color_group);
         check_deleteCQCode.caption(u8"过滤CQ码（如图片消息，签到消息等）");
+        check_streng.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_deleteCQCode;
 
         check_keyWordSendAdmin.create(group_switch);
         check_keyWordSendAdmin.bgcolor(color_group);
         check_keyWordSendAdmin.caption(u8"触发关键词提醒主人");
+        check_keyWordSendAdmin.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_keyWordSendAdmin;
 
         button_save.create(*this);
         button_save.caption(u8"保存");
-        button_save.events().click([this] {
-            //群名单
-            conf.alone[conf_index].groupList.clear();
-            for (auto temp : list_groupList.checked()) {
-                string buf = list_groupList.at(temp).text(1);
-
-                conf.alone[conf_index].groupList.insert(atoll(buf.c_str()));
-            }
-
-            //处理方式
-            int dealType = 0;
-            for (int i = 0; i < check_deal.size(); i++) {
-                if (check_deal.at(i)->checked()) {
-                    dealType = i;
-                    break;
-                }
-            }
-            conf.alone[conf_index].dealType = dealType;
-
-            //禁言时长
-            conf.alone[conf_index].banTimeLen = atoll(text_banTimeLen.text().c_str());
-
-            //一些开关
-            conf.alone[conf_index].deleteMsg = check_deleteMsg.checked();
-            conf.alone[conf_index].streng = check_streng.checked();
-            conf.alone[conf_index].deleteCQCode = check_deleteCQCode.checked();
-            conf.alone[conf_index].keyWordSendAdmin = check_keyWordSendAdmin.checked();
-
-            //写入配置
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            //重新载入配置
-            readConf();
-        });
+        button_save.events().click([this] { save(); });
         place_.field("button_save") << button_save;
         group_list.collocate();
 
@@ -693,13 +769,12 @@ private:
     }
 
 public:
-    tab_page_overall(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_overall(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //监控群
@@ -722,6 +797,7 @@ private:
 
     //一些功能开关
     group group_switch;
+    // vector<std::shared_ptr<checkbox>> check_switchs;
     checkbox check_streng; //强力检测
     checkbox check_deleteMsg; //撤回消息
     checkbox check_deleteCQCode; //过滤CQ码
@@ -732,14 +808,8 @@ private:
 };
 
 //列表
-class tab_page_list : public panel<false> {
-private:
-    //写入配置
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_list : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -766,11 +836,55 @@ private:
             lab_QQListTypeTip.caption(u8"当前为监控名单模式，只监控名单中的QQ");
             group_QQList.caption(u8"QQ监控名单(每行一个):");
         }
+
+        isSave = true;
     }
 
-    void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
+public:
+    bool save() {
+        // QQ特殊名单
+        auto QQList_line = text_QQList.text_line_count();
+        conf.alone[conf_index].QQList.clear();
+        for (int i = 0; i < QQList_line; i++) {
+            string buf;
+            text_QQList.getline(i, buf);
+            if (!buf.empty()) conf.alone[conf_index].QQList.insert(atoll(buf.c_str()));
+        }
 
+        //白名单关键词
+        auto keyWrodWhite_line = text_keyWordWhite.text_line_count();
+        conf.alone[conf_index].keyWordWhite.clear();
+        for (int i = 0; i < keyWrodWhite_line; i++) {
+            string buf;
+            text_keyWordWhite.getline(i, buf);
+            if (!buf.empty()) conf.alone[conf_index].keyWordWhite.insert(buf.c_str());
+        }
+
+        //特殊名单类型  白名单||监控名单
+        int listType = 0;
+        for (int i = 0; i < check_QQListType.size(); i++) {
+            if (check_QQListType.at(i)->checked()) {
+                listType = i;
+                break;
+            }
+        }
+        conf.alone[conf_index].QQListType = listType;
+
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新读取配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
+    void init() {
         place_.bind(*this);
         place_.div(
 
@@ -807,6 +921,7 @@ private:
         text_keyWordWhite.create(group_keyWordWhite);
         text_keyWordWhite.line_wrapped(true);
         text_keyWordWhite.tip_string(u8"包含这些关键词的消息将不会检测");
+        text_keyWordWhite.events().text_changed([this]() { isSave = false; });
         group_keyWordWhite["text_keyWordWhite"] << text_keyWordWhite;
 
         //特殊QQ名单
@@ -817,6 +932,8 @@ private:
         place_.field("group_QQList") << group_QQList;
 
         text_QQList.create(group_QQList);
+        text_QQList.line_wrapped(true);
+        text_QQList.events().text_changed([this]() { isSave = false; });
         group_QQList["text_QQList"] << text_QQList;
 
         //设置特殊名单为  白名单 || 监控名单
@@ -831,6 +948,7 @@ private:
         for (int i = 0; i < groupStr.size(); i++) {
             auto p = std::make_shared<checkbox>(group_QQList);
             p->bgcolor(color_group);
+            p->events().checked([this]() { isSave = true; });
             check_QQListType.push_back(p);
 
             group_QQListType.add(*p);
@@ -856,44 +974,7 @@ private:
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            // QQ特殊名单
-            auto QQList_line = text_QQList.text_line_count();
-            conf.alone[conf_index].QQList.clear();
-            for (int i = 0; i < QQList_line; i++) {
-                string buf;
-                text_QQList.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].QQList.insert(atoll(buf.c_str()));
-            }
-
-            //白名单关键词
-            auto keyWrodWhite_line = text_keyWordWhite.text_line_count();
-            conf.alone[conf_index].keyWordWhite.clear();
-            for (int i = 0; i < keyWrodWhite_line; i++) {
-                string buf;
-                text_keyWordWhite.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWordWhite.insert(buf.c_str());
-            }
-
-            //特殊名单类型  白名单||监控名单
-            int listType = 0;
-            for (int i = 0; i < check_QQListType.size(); i++) {
-                if (check_QQListType.at(i)->checked()) {
-                    listType = i;
-                    break;
-                }
-            }
-            conf.alone[conf_index].QQListType = listType;
-
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            //重新读取配置
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
 
         place_.field("button_save") << btn_save;
 
@@ -901,13 +982,12 @@ private:
     }
 
 public:
-    tab_page_list(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_list(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //白名单关键词
@@ -928,14 +1008,8 @@ private:
 };
 
 //关键词
-class tab_page_keyWord : public panel<false> {
-private:
-    //写入配置
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_keyWord : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -952,11 +1026,46 @@ private:
         for (auto keyword : conf.alone[conf_index].keyWordRegex) {
             text_keyWordRegex.append(keyword.keyWord + "\n", true);
         }
+
+        isSave = true;
     }
 
-    void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
+public:
+    bool save() {
+        //关键词
+        auto keyWord_line = text_keyWord.text_line_count();
+        conf.alone[conf_index].keyWord.clear();
+        for (int i = 0; i < keyWord_line; i++) {
+            string buf;
+            text_keyWord.getline(i, buf);
+            if (!buf.empty()) conf.alone[conf_index].keyWord.insert(buf.c_str());
+        }
 
+        //正则表达式关键词
+        auto keyWordRegex_line = text_keyWordRegex.text_line_count();
+        conf.alone[conf_index].keyWordRegex.clear();
+        for (int i = 0; i < keyWordRegex_line; i++) {
+            string buf;
+            text_keyWordRegex.getline(i, buf);
+            if (!buf.empty()) conf.alone[conf_index].keyWordRegex.insert(buf.c_str());
+        }
+
+        //写入配置
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新读取配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
+    void init() {
         place_.bind(*this);
         place_.div(
 
@@ -988,6 +1097,7 @@ private:
 
         text_keyWord.create(group_keyWord);
         text_keyWord.line_wrapped(true);
+        text_keyWord.events().text_changed([this]() { isSave = false; });
         group_keyWord["text_keyWord"] << text_keyWord;
 
         //正则表达式关键词
@@ -999,6 +1109,7 @@ private:
 
         text_keyWordRegex.create(group_keyWordRegex);
         text_keyWordRegex.line_wrapped(true);
+        text_keyWordRegex.events().text_changed([this]() { isSave = false; });
         group_keyWordRegex["text_keyWordRegex"] << text_keyWordRegex;
 
         //正则表达式测试
@@ -1010,48 +1121,19 @@ private:
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            //关键词
-            auto keyWord_line = text_keyWord.text_line_count();
-            conf.alone[conf_index].keyWord.clear();
-            for (int i = 0; i < keyWord_line; i++) {
-                string buf;
-                text_keyWord.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWord.insert(buf.c_str());
-            }
-
-            //正则表达式关键词
-            auto keyWordRegex_line = text_keyWordRegex.text_line_count();
-            conf.alone[conf_index].keyWordRegex.clear();
-            for (int i = 0; i < keyWordRegex_line; i++) {
-                string buf;
-                text_keyWordRegex.getline(i, buf);
-                if (!buf.empty()) conf.alone[conf_index].keyWordRegex.insert(buf.c_str());
-            }
-
-            //写入配置
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            //重新读取配置
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
         place_.field("button_save") << btn_save;
 
         readConf();
     }
 
 public:
-    tab_page_keyWord(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_keyWord(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //主人QQ
@@ -1070,14 +1152,8 @@ private:
 };
 
 //自定义触发回复
-class tab_page_groupWarnWord : public panel<false> {
-private:
-    //写入配置
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_groupWarnWord : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -1090,28 +1166,32 @@ private:
         //触发后回复私聊消息
         check_privateWarn.check(conf.alone[conf_index].keyWordPrivateWarn);
         text_privateWarn.reset(conf.alone[conf_index].keyWordPrivateWarnWord);
+
+        isSave = true;
     }
 
-    //显示文本
-    void showText(string title, string word) {
-        form fm_temp;
-        fm_temp.caption(title);
+public:
+    bool save() {
+        conf.alone[conf_index].keyWordGroupWarnWord = text_groupWarn.text();
+        conf.alone[conf_index].keyWordGroupWarn = check_groupWarn.checked();
 
-        textbox text{fm_temp};
-        text.caption(word);
-        text.editable(false);
+        conf.alone[conf_index].keyWordPrivateWarnWord = text_privateWarn.text();
+        conf.alone[conf_index].keyWordPrivateWarn = check_privateWarn.checked();
 
-        fm_temp.div("<text>");
-        fm_temp["text"] << text;
-        fm_temp.collocate();
+        writeConf();
 
-        fm_temp.show();
-        exec();
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        readConf();
+
+        isSave = true;
+        return true;
     }
 
+private:
     void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
-
         place_.bind(*this);
         place_.div(
 
@@ -1147,12 +1227,14 @@ private:
         check_groupWarn.create(group_groupWarn);
         check_groupWarn.bgcolor(color_group);
         check_groupWarn.caption(u8"触发关键词发送群消息提醒");
+        check_groupWarn.events().checked([this]() { isSave = false; });
         group_groupWarn["check_groupWarn"] << check_groupWarn;
 
         //内容
         text_groupWarn.create(group_groupWarn);
         text_groupWarn.line_wrapped(true);
         text_groupWarn.tip_string("默认值：\r\n{at} 触发关键词，处理方式:{处理方式}");
+        text_groupWarn.events().text_changed([this]() { isSave = false; });
         group_groupWarn["text_groupWarn"] << text_groupWarn;
 
         //变量按钮
@@ -1188,11 +1270,13 @@ private:
         check_privateWarn.create(group_privateWarn);
         check_privateWarn.bgcolor(color_group);
         check_privateWarn.caption(u8"触发关键词发送私聊消息提醒");
+        check_privateWarn.events().checked([this]() { isSave = false; });
         group_privateWarn["check_privateWarn"] << check_privateWarn;
 
         //内容
         text_privateWarn.create(group_privateWarn);
         text_privateWarn.line_wrapped(true);
+        text_privateWarn.events().text_changed([this]() { isSave = false; });
         group_privateWarn["text_privateWarn"] << text_privateWarn;
 
         //变量按钮
@@ -1219,34 +1303,19 @@ private:
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            conf.alone[conf_index].keyWordGroupWarnWord = text_groupWarn.text();
-            conf.alone[conf_index].keyWordGroupWarn = check_groupWarn.checked();
-
-            conf.alone[conf_index].keyWordPrivateWarnWord = text_privateWarn.text();
-            conf.alone[conf_index].keyWordPrivateWarn = check_privateWarn.checked();
-
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
         place_.field("button_save") << btn_save;
 
         readConf();
     }
 
 public:
-    tab_page_groupWarnWord(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_groupWarnWord(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //触发后回复群消息开关
@@ -1272,13 +1341,8 @@ private:
 };
 
 //转发到群
-class tab_page_relayGroupMsg : public panel<false> {
-private:
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
+class tab_page_relayGroupMsg : public tab_father {
+protected:
     void readConf() {
         conf.file2json();
         conf.json2all();
@@ -1319,28 +1383,40 @@ private:
 
         text_relayGroupMsg_trimFront.reset(to_string(conf.alone[conf_index].relayGroupMsg_trimFront));
         text_relayGroupMsg_trimBack.reset(to_string(conf.alone[conf_index].relayGroupMsg_trimBack));
+
+        isSave = true;
     }
 
-    //显示文本
-    void showText(string title, string word) {
-        form fm_temp;
-        fm_temp.caption(title);
+public:
+    bool save() {
+        //群名单
+        conf.alone[conf_index].relayGroupList.clear();
+        for (auto temp : list_groupList.checked()) {
+            string buf = list_groupList.at(temp).text(1);
 
-        textbox text{fm_temp};
-        text.caption(word);
-        text.editable(false);
+            conf.alone[conf_index].relayGroupList.insert(atoll(buf.c_str()));
+        }
 
-        fm_temp.div("<text>");
-        fm_temp["text"] << text;
-        fm_temp.collocate();
+        //转发格式
+        conf.alone[conf_index].relayGroupWord = text_relayGroupWord.text();
 
-        fm_temp.show();
-        exec();
+        conf.alone[conf_index].relayGroupMsg_trimFront = atoi(text_relayGroupMsg_trimFront.text().c_str());
+        conf.alone[conf_index].relayGroupMsg_trimBack = atoi(text_relayGroupMsg_trimBack.text().c_str());
+
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        readConf();
+
+        isSave = true;
+        return true;
     }
 
+private:
     void init() {
-        color_group.from_rgb(201.4, 197.6, 190);
-
         place_.bind(*this);
         place_.div(
 
@@ -1380,6 +1456,7 @@ private:
         list_groupList.checkable(true);
         list_groupList.append_header(u8"群名");
         list_groupList.append_header(u8"群号码");
+        list_groupList.events().checked([this]() { isSave = true; });
         group_groupList["list_groupList"] << list_groupList;
 
         //转发消息格式
@@ -1392,6 +1469,7 @@ private:
         text_relayGroupWord.create(group_relayGroupWord);
         text_relayGroupWord.line_wrapped(true);
         text_relayGroupWord.tip_string(u8"不填写则转发消息原格式 即 {msg}");
+        text_relayGroupWord.events().text_changed([this]() { isSave = false; });
         group_relayGroupWord["text_relayGroupWord"] << text_relayGroupWord;
 
         //变量按钮
@@ -1432,6 +1510,7 @@ private:
         text_relayGroupMsg_trimFront.create(group_relayGroupMsg_trim);
         text_relayGroupMsg_trimFront.line_wrapped(false);
         text_relayGroupMsg_trimFront.multi_lines(false);
+        text_relayGroupMsg_trimFront.events().text_changed([this]() { isSave = false; });
         group_relayGroupMsg_trim["text_relayGroupMsg_trimFront"] << text_relayGroupMsg_trimFront;
 
         lab_relayGroupMsg_trimBack.create(group_relayGroupMsg_trim);
@@ -1442,47 +1521,25 @@ private:
         text_relayGroupMsg_trimBack.create(group_relayGroupMsg_trim);
         text_relayGroupMsg_trimBack.line_wrapped(false);
         text_relayGroupMsg_trimBack.multi_lines(false);
+        text_relayGroupMsg_trimBack.events().text_changed([this]() { isSave = false; });
         group_relayGroupMsg_trim["text_relayGroupMsg_trimBack"] << text_relayGroupMsg_trimBack;
 
         //保存按钮
         btn_save.create(*this);
         btn_save.caption(u8"保存");
-        btn_save.events().click([this] {
-            //群名单
-            conf.alone[conf_index].relayGroupList.clear();
-            for (auto temp : list_groupList.checked()) {
-                string buf = list_groupList.at(temp).text(1);
-
-                conf.alone[conf_index].relayGroupList.insert(atoll(buf.c_str()));
-            }
-
-            //转发格式
-            conf.alone[conf_index].relayGroupWord = text_relayGroupWord.text();
-
-            conf.alone[conf_index].relayGroupMsg_trimFront = atoi(text_relayGroupMsg_trimFront.text().c_str());
-            conf.alone[conf_index].relayGroupMsg_trimBack = atoi(text_relayGroupMsg_trimBack.text().c_str());
-
-            writeConf();
-
-            msgbox m_save{*this, u8"成功"};
-            m_save << u8"保存成功";
-            m_save.show();
-
-            readConf();
-        });
+        btn_save.events().click([this] { save(); });
         place_.field("button_save") << btn_save;
 
         readConf();
     }
 
 public:
-    tab_page_relayGroupMsg(window wd, int index = 0) : panel<false>(wd), conf_index(index) {
+    tab_page_relayGroupMsg(window wd, int index = 0) : tab_father(wd), conf_index(index) {
         init();
     }
 
 private:
     place place_;
-    color color_group;
     int conf_index;
 
     //群列表
@@ -1508,24 +1565,8 @@ private:
 };
 
 //单独设置
-class tab_page_alone : public panel<false> {
-private:
-    //写入配置
-    void writeConf() {
-        conf.all2json();
-        conf.json2file();
-    }
-
-    void writeList() {
-        auto size = list_aloneList.size_item(0);
-        for (int i = 0; i < size; i++) {
-            string buf = list_aloneList.at(0).at(i).text(0);
-            int id = atoi(buf.c_str());
-
-            conf.alone[id].use = list_aloneList.at(0).at(i).checked();
-        }
-    }
-
+class tab_page_alone : public tab_father {
+protected:
     //读取配置
     void readConf() {
         conf.file2json();
@@ -1567,6 +1608,31 @@ private:
                 list_aloneList.at(0).at(i).check(true);
             }
         }
+
+        isSave = true;
+    }
+
+public:
+    bool save() {
+        isSave = true;
+        return true;
+    }
+
+private:
+    //写入配置
+    void writeConf() {
+        conf.all2json();
+        conf.json2file();
+    }
+
+    void writeList() {
+        auto size = list_aloneList.size_item(0);
+        for (int i = 0; i < size; i++) {
+            string buf = list_aloneList.at(0).at(i).text(0);
+            int id = atoi(buf.c_str());
+
+            conf.alone[id].use = list_aloneList.at(0).at(i).checked();
+        }
     }
 
     void openAlone(int conf_index) {
@@ -1578,35 +1644,84 @@ private:
         place.bind(fm);
         place.div("<vert <weight=30 tabbar> <tab_frame>>");
 
-        std::vector<std::shared_ptr<panel<false>>> tabpages;
-        tabbar<std::string> tabbar{fm};
+        std::vector<std::shared_ptr<tab_father>> tabpages;
+        tabbar<std::string> tabbar_{fm};
 
         //不知道为啥 在添加前禁用scroll 就可以实现显示最前面的scroll页面
-        tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, false);
+        tabbar_.toolbox(nana::tabbar<std::string>::kits::scroll, false);
 
-        tabbar.push_back(u8"主要设置");
+        tabbar_.push_back(u8"主要设置");
         tabpages.push_back(std::make_shared<tab_page_aloneMain>(fm, conf_index));
-        tabbar.push_back(u8"全局设置");
+        tabbar_.push_back(u8"全局设置");
         tabpages.push_back(std::make_shared<tab_page_overall>(fm, conf_index));
-        tabbar.push_back(u8"关键词");
+        tabbar_.push_back(u8"关键词");
         tabpages.push_back(std::make_shared<tab_page_keyWord>(fm, conf_index));
-        tabbar.push_back(u8"过滤名单");
+        tabbar_.push_back(u8"过滤名单");
         tabpages.push_back(std::make_shared<tab_page_list>(fm, conf_index));
-        tabbar.push_back(u8"触发回复");
+        tabbar_.push_back(u8"触发回复");
         tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm, conf_index));
-        tabbar.push_back(u8"转发到群");
+        tabbar_.push_back(u8"转发到群");
         tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm, conf_index));
 
         std::size_t index = 0;
         for (auto& i : tabpages) {
-            tabbar.attach(index++, *i);
+            tabbar_.attach(index++, *i);
             place.field("tab_frame").fasten(*i);
         }
 
-        tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, true);
-        tabbar.toolbox(nana::tabbar<std::string>::kits::list, true);
-        tabbar.activated(0);
-        place.field("tabbar") << tabbar;
+        tabbar_.toolbox(nana::tabbar<std::string>::kits::scroll, true);
+        tabbar_.toolbox(nana::tabbar<std::string>::kits::list, true);
+
+        tabbar_.events().click([&fm, &tabpages, &tabbar_, this]() {
+            // msgbox m{fm, u8"Test"};
+            // m << tabpages.at(_tab.item_pos)->getSave();
+            // m.show();
+            static int lastItem = 0;
+            int tempItem = tabbar_.activated();
+
+            //点击列表标签时
+            if (!tabpages.at(lastItem)->getSave()) {
+                tabbar_.activated(lastItem);
+
+                msgbox inf{fm, u8"未保存", nana::msgbox::yes_no_cancel};
+                inf << u8"是否保存已修改的内容";
+                auto res = inf.show();
+
+                if (res == nana::msgbox::pick_yes) {
+                    if (!tabpages.at(lastItem)->save()) return; //保存失败时
+                } else if (res == nana::msgbox::pick_no) {
+                    tabpages.at(lastItem)->readConf();
+                } else if (res == nana::msgbox::pick_cancel) {
+                    return;
+                }
+
+                tabbar_.activated(tempItem);
+            }
+
+            lastItem = tempItem;
+        });
+
+        //窗口关闭时
+        fm.events().unload([&fm, &tabpages, &tabbar_, this](const arg_unload& un) {
+            int item = tabbar_.activated();
+
+            if (!tabpages.at(item)->getSave()) {
+                msgbox inf{fm, u8"未保存", nana::msgbox::yes_no_cancel};
+                inf << u8"是否保存已修改的内容";
+                auto res = inf.show();
+
+                if (res == nana::msgbox::pick_yes) {
+                    if (!tabpages.at(item)->save()) un.cancel = true; //当保存失败时
+                } else if (res == nana::msgbox::pick_no) {
+                    tabpages.at(item)->readConf();
+                } else if (res == nana::msgbox::pick_cancel) {
+                    un.cancel = true;
+                }
+            }
+        });
+
+        tabbar_.activated(0);
+        place.field("tabbar") << tabbar_;
         place.collocate();
 
         fm.modality();
@@ -1730,7 +1845,7 @@ private:
     }
 
 public:
-    tab_page_alone(window wd) : panel<false>(wd) {
+    tab_page_alone(window wd) : tab_father(wd) {
         init();
     }
 
@@ -1757,37 +1872,82 @@ void Gui::openMain() {
     place.bind(fm);
     place.div("<vert <weight=30 tabbar> <tab_frame>>");
 
-    std::vector<std::shared_ptr<panel<false>>> tabpages;
-    tabbar<std::string> tabbar{fm};
+    std::vector<std::shared_ptr<tab_father>> tabpages;
+    tabbar<std::string> tabbar_{fm};
 
     //不知道为啥 在添加前禁用scroll 就可以实现显示最前面的scroll页面
-    tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, false);
+    tabbar_.toolbox(nana::tabbar<std::string>::kits::scroll, false);
 
-    tabbar.push_back(u8"主要设置");
+    tabbar_.push_back(u8"主要设置");
     tabpages.push_back(std::make_shared<tab_page_main>(fm));
-    tabbar.push_back(u8"全局设置");
+    tabbar_.push_back(u8"全局设置");
     tabpages.push_back(std::make_shared<tab_page_overall>(fm));
-    tabbar.push_back(u8"关键词");
+    tabbar_.push_back(u8"关键词");
     tabpages.push_back(std::make_shared<tab_page_keyWord>(fm));
-    tabbar.push_back(u8"过滤名单");
+    tabbar_.push_back(u8"过滤名单");
     tabpages.push_back(std::make_shared<tab_page_list>(fm));
-    tabbar.push_back(u8"触发回复");
+    tabbar_.push_back(u8"触发回复");
     tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm));
-    tabbar.push_back(u8"转发到群");
+    tabbar_.push_back(u8"转发到群");
     tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm));
-    tabbar.push_back(u8"单独设置");
+    tabbar_.push_back(u8"单独设置");
     tabpages.push_back(std::make_shared<tab_page_alone>(fm));
 
     std::size_t index = 0;
     for (auto& i : tabpages) {
-        tabbar.attach(index++, *i);
+        tabbar_.attach(index++, *i);
         place.field("tab_frame").fasten(*i);
     }
+    tabbar_.toolbox(nana::tabbar<std::string>::kits::scroll, true);
+    tabbar_.toolbox(nana::tabbar<std::string>::kits::list, true);
 
-    tabbar.toolbox(nana::tabbar<std::string>::kits::scroll, true);
-    tabbar.toolbox(nana::tabbar<std::string>::kits::list, true);
-    tabbar.activated(0);
-    place.field("tabbar") << tabbar;
+    //点击列表标签时
+    tabbar_.events().click([&fm, &tabpages, &tabbar_, this]() {
+        static int lastItem = 0;
+        int tempItem = tabbar_.activated();
+
+        if (!tabpages.at(lastItem)->getSave()) {
+            tabbar_.activated(lastItem);
+
+            msgbox inf{fm, u8"未保存", nana::msgbox::yes_no_cancel};
+            inf << u8"是否保存已修改的内容";
+            auto res = inf.show();
+
+            if (res == nana::msgbox::pick_yes) {
+                if (!tabpages.at(lastItem)->save()) return; //保存失败时
+            } else if (res == nana::msgbox::pick_no) {
+                tabpages.at(lastItem)->readConf();
+            } else if (res == nana::msgbox::pick_cancel) {
+                return;
+            }
+
+            tabbar_.activated(tempItem);
+        }
+
+        lastItem = tempItem;
+    });
+
+    //窗口关闭时
+    fm.events().unload([&fm, &tabpages, &tabbar_, this](const arg_unload& un) {
+        int item = tabbar_.activated();
+
+        if (!tabpages.at(item)->getSave()) {
+            msgbox inf{fm, u8"未保存", nana::msgbox::yes_no_cancel};
+            inf << u8"是否保存已修改的内容";
+            auto res = inf.show();
+
+            if (res == nana::msgbox::pick_yes) {
+                if (!tabpages.at(item)->save()) un.cancel = true; //当保存失败时
+            } else if (res == nana::msgbox::pick_no) {
+                tabpages.at(item)->readConf();
+            } else if (res == nana::msgbox::pick_cancel) {
+                un.cancel = true;
+            }
+        }
+    });
+
+    tabbar_.activated(0);
+    place.field("tabbar") << tabbar_;
     place.collocate();
     fm.show();
     exec();

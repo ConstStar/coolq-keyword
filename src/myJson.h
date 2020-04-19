@@ -61,7 +61,7 @@ struct ConfAlone {
     ConfAlone()
         : use(false),
           priority(0),
-          name("默认"),
+          name("默认名称"),
           keyWord(),
           keyWordRegex(),
           keyWordWhite(),
