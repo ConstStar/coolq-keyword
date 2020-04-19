@@ -13,8 +13,8 @@
 #include <fstream>
 #include <thread>
 
+#include <boost/regex.hpp>
 #include <boost/timer.hpp>
-#include <regex>
 
 #include "myJson.h"
 
@@ -884,8 +884,8 @@ public:
     //删除cq码
     std::wstring DelCQ(std::wstring msg) {
         if (msg.find(L"[CQ:") != wstring::npos) {
-            wregex e1(L"\\[CQ:.*\\]");
-            msg = regex_replace(msg, e1, L"");
+            boost::wregex e1(L"\\[CQ:.*\\]");
+            msg = boost::regex_replace(msg, e1, L"");
         }
 
         return msg;
@@ -1158,10 +1158,10 @@ public:
 
         for (WKEYWORD aloneRegex : conf.alone[conf_index].keyWordRegex) {
             try {
-                wregex re(aloneRegex.wkeyWrod);
-                wsmatch RE;
+                boost::wregex re(aloneRegex.wkeyWrod);
+                boost::wsmatch RE;
 
-                bool rec = regex_search(wmsg, RE, re);
+                bool rec = boost::regex_search(wmsg, RE, re);
 
                 if (rec) {
                     keyWord = OperateStr::wstring2string(RE.str());
@@ -1170,17 +1170,17 @@ public:
                 }
 
             } catch (exception& e) {
-                string SendMsg;
-                SendMsg += "正则表达式崩溃\n";
-                SendMsg += "表达式:";
-                SendMsg += aloneRegex.keyWord;
-                SendMsg += "消息:\n\n";
-                SendMsg += m_msg;
-                SendMsg += "exception返回的错误消息:";
-                SendMsg += e.what();
+                stringstream SendMsg;
+                SendMsg << "正则表达式崩溃" << endl;
+                SendMsg << "表达式:";
+                SendMsg << aloneRegex.keyWord << endl;
+                SendMsg << "崩溃消息:" << endl << endl;
+                SendMsg << m_msg << endl << endl;
+                SendMsg << "返回的错误消息:" << endl;
+                SendMsg << e.what();
 
                 for (long long root : conf.admin) {
-                    mycq::send_private_message(root, SendMsg);
+                    mycq::send_private_message(root, SendMsg.str());
                 }
             }
         }

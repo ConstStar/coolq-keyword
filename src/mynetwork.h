@@ -1,10 +1,6 @@
 #pragma once
 #include <string>
 
-class mynetwork {
-public:
-    static void openUrl(std::string url);
-};
 
 class Update {
 public:

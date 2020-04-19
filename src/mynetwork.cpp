@@ -13,13 +13,6 @@ using namespace std;
 #define PORT 80
 #define PATH_UPDATE_CHECK "/api/version"
 
-void mynetwork::openUrl(std::string url) {
-    string temp = "\"" + url;
-    temp += "\"";
-
-    ShellExecuteA(NULL, "open", "explorer.exe", temp.c_str(), NULL, SW_SHOW);
-}
-
 Update::updateType Update::check(int version_id, string &inf) {
     try {
         httplib::Client cli(HOST, PORT);

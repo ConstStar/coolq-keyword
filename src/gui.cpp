@@ -1,9 +1,12 @@
 #include "gui.h"
-#include "myJson.h"
 #include "mycq.hpp"
+
+#include <Windows.h>
+
+#include "myJson.h"
 #include "mynetwork.h"
 
-#include <regex>
+#include <boost/regex.hpp>
 
 #include <nana/gui.hpp>
 #include <nana/gui/widgets/button.hpp>
@@ -21,6 +24,13 @@ using namespace nana;
 using namespace std;
 
 extern MyJson conf;
+
+void openUrl(std::string url) {
+    string temp = "\"" + url;
+    temp += "\"";
+
+    ShellExecuteA(NULL, "open", "explorer.exe", temp.c_str(), NULL, SW_SHOW);
+}
 
 //主要设置
 class tab_page_main : public panel<false> {
@@ -61,7 +71,7 @@ private:
 
             //主人QQ
             "<group_admin>"
-            "<weight=10>"
+            //"<weight=10>"
 
             //其他
             "<vert"
@@ -81,7 +91,7 @@ private:
         group_admin.create(*this);
         group_admin.bgcolor(color_group);
         group_admin.caption(u8"主人QQ(每行一个):");
-        group_admin.div("<margin = [5,5,5,5] text_admin>");
+        group_admin.div("margin = [5] <text_admin>");
         place_.field("group_admin") << group_admin;
 
         text_admin.create(group_admin);
@@ -92,14 +102,14 @@ private:
         group_other.bgcolor(color_group);
         group_other.caption(u8"其他");
         group_other.div(
-            " margin = [10,10,10,10] <vert "
+            "<vert "
 
             //指令前缀
             "<weight=25 <weight=30% lab_prefix><text_prefix>>"
             //"<weight=10>"
 
             //开关
-            "<check>"
+            "<vert <><check><>>"
 
             //使用教程 //在线更新 //反馈
             "<<button_document> <button_update> <button_feedback>>"
@@ -112,24 +122,20 @@ private:
         lab_prefix.caption(u8"指令前缀：");
         group_other["lab_prefix"] << lab_prefix;
 
+        text_prefix.create(group_other);
+        text_prefix.line_wrapped(false);
+        text_prefix.multi_lines(false);
+        group_other["text_prefix"] << text_prefix;
+
         //收到私聊消息转发给主人
         check_relayPrivateMsg.create(group_other);
         check_relayPrivateMsg.bgcolor(color_group);
         check_relayPrivateMsg.caption(u8"收到的私聊消息转发给主人");
         group_other["check"] << check_relayPrivateMsg;
 
-        text_prefix.create(group_other);
-        text_prefix.line_wrapped(false);
-        text_prefix.multi_lines(false);
-        group_other["text_prefix"] << text_prefix;
-
         button_document.create(group_other);
-        button_document.caption(u8"使用教程");
-        button_document.events().click([this] {
-            msgbox m_inf{*this, u8"提示"};
-            m_inf << u8"待开发";
-            m_inf.show();
-        });
+        button_document.caption(u8"使用教程 待开发");
+        button_document.events().click([this] { openUrl("https://jq.qq.com/?_wv=1027&k=5Q20l6I"); });
         group_other["button_document"] << button_document;
 
         button_update.create(group_other);
@@ -182,12 +188,8 @@ private:
         group_other["button_update"] << button_update;
 
         button_feedback.create(group_other);
-        button_feedback.caption(u8"问题反馈");
-        button_feedback.events().click([this] {
-            msgbox m_inf{*this, u8"提示"};
-            m_inf << u8"待开发";
-            m_inf.show();
-        });
+        button_feedback.caption(u8"问题反馈 待开发");
+        button_feedback.events().click([this] { openUrl("https://jq.qq.com/?_wv=1027&k=5Q20l6I"); });
         group_other["button_feedback"] << button_feedback;
 
         // //使用秘钥
@@ -211,7 +213,7 @@ private:
         btn_save.create(*this);
         btn_save.caption(u8"保存");
         btn_save.events().click([this] {
-            bool ok = regex_match(text_admin.text(), regex("[\\n\\d\\r]*"));
+            bool ok = boost::regex_match(text_admin.text(), boost::regex("[\\n\\d\\r]*"));
             if (!ok) {
                 msgbox m_error{*this, u8"错误"};
                 m_error.icon(msgbox::icon_error);
@@ -469,7 +471,7 @@ private:
         place_.div(
 
             //整体边距
-            //"margin = [5,5,5,5] "
+            //"margin = [5] "
 
             //监控群
             "<group_list>"
@@ -485,7 +487,7 @@ private:
             //"<weight=10>"
 
             //保存按钮
-            "<margin = [10,10,10,10]  weight=10% button_save>"
+            "<weight=10% button_save>"
 
             ">");
 
@@ -494,7 +496,7 @@ private:
         group_list.bgcolor(color_group);
         group_list.caption(u8"监控群:");
         group_list.div(
-            "margin = [5,5,5,5] <vert <list_groupList>"
+            "margin = [5] <vert <list_groupList>"
             "<weight=25 <text_groupAdd><weight=40% button_groupAdd>><weight=5>"
             "<weight=30 gap=[10,10] arrange=[40,40] button_list> >");
         place_.field("group_list") << group_list;
@@ -514,7 +516,7 @@ private:
         button_groupAdd.create(group_list);
         button_groupAdd.caption(u8"手动添加");
         button_groupAdd.events().click([this] {
-            bool ok = regex_match(text_groupAdd.text(), regex("[1-9][0-9]*"));
+            bool ok = boost::regex_match(text_groupAdd.text(), boost::regex("[1-9][0-9]*"));
             if (!ok) {
                 msgbox m_error{*this, u8"错误"};
                 m_error.icon(msgbox::icon_error);
@@ -568,7 +570,7 @@ private:
         group_deal.bgcolor(color_group);
         group_deal.caption(u8"处理方式:");
         group_deal.div(
-            "margin = [5,5,5,5] <vert"
+            "margin = [5] <vert"
             "<vert check_deal>"
             "<weight=25 <weight=45% label_banTimeLen> <weight=5% text_banTimeLen> <label_banTimeLenTip>> >");
         place_["group_deal"] << group_deal;
@@ -620,7 +622,7 @@ private:
         group_switch.create(*this);
         group_switch.bgcolor(color_group);
         group_switch.caption(u8"一些功能开关:");
-        group_switch.div("<vert margin = [5,5,5,5] check_switch>");
+        group_switch.div("<vert margin = [5] check_switch>");
         place_.field("group_switch") << group_switch;
 
         check_streng.create(group_switch);
@@ -791,7 +793,7 @@ private:
             //"<weight=10>"
 
             //保存
-            "<margin = [10,10,10,10] weight=20% button_save>"
+            "<weight=20% button_save>"
 
             ">");
 
@@ -799,7 +801,7 @@ private:
         group_keyWordWhite.create(*this);
         group_keyWordWhite.bgcolor(color_group);
         group_keyWordWhite.caption(u8"白名单关键词(每行一个):");
-        group_keyWordWhite.div("margin = [5,5,5,5] <text_keyWordWhite>");
+        group_keyWordWhite.div("margin = [5] <text_keyWordWhite>");
         place_.field("group_keyWordWhite") << group_keyWordWhite;
 
         text_keyWordWhite.create(group_keyWordWhite);
@@ -811,7 +813,7 @@ private:
         group_QQList.create(*this);
         group_QQList.bgcolor(color_group);
         group_QQList.caption(u8"QQ 白名单/监控名单(每行一个):");
-        group_QQList.div("vert margin = [5,5,5,5] <text_QQList> <weight=25 check_QQListType> <weight=25 lab_QQListTypeTip>");
+        group_QQList.div("vert margin = [5] <text_QQList> <weight=25 check_QQListType> <weight=25 lab_QQListTypeTip>");
         place_.field("group_QQList") << group_QQList;
 
         text_QQList.create(group_QQList);
@@ -953,21 +955,24 @@ private:
     }
 
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [15,15,15,15] "
 
             //普通关键词
-            "<vert <weight=25 lab_keyWord> <text_keyWord>>"
-            "<weight=10>"
+            "<group_keyWord>"
+            //"<weight=10>"
 
+            //右边
             "<vert"
 
             //正则表达式关键词
-            "<vert <weight=25 <lab_keyWordRegex> <weight=30% margin = [0,0,7] btn_regexTest>> <text_keyWordRegex>>"
-            "<weight=10>"
+            "<group_keyWordRegex>"
+            //"<weight=10>"
 
             //保存
             "<weight=25% button_save>"
@@ -975,28 +980,32 @@ private:
             ">");
 
         //普通关键词
-        lab_keyWord.create(*this);
-        lab_keyWord.caption(u8"普通关键词(每行一个):");
-        place_.field("lab_keyWord") << lab_keyWord;
+        group_keyWord.create(*this);
+        group_keyWord.bgcolor(color_group);
+        group_keyWord.caption(u8"普通关键词(每行一个):");
+        group_keyWord.div("margin = [5] <text_keyWord>");
+        place_.field("group_keyWord") << group_keyWord;
 
-        text_keyWord.create(*this);
+        text_keyWord.create(group_keyWord);
         text_keyWord.line_wrapped(true);
-        place_.field("text_keyWord") << text_keyWord;
+        group_keyWord["text_keyWord"] << text_keyWord;
 
         //正则表达式关键词
-        lab_keyWordRegex.create(*this);
-        lab_keyWordRegex.caption(u8"正则表达式关键词(每行一个):");
-        place_.field("lab_keyWordRegex") << lab_keyWordRegex;
+        group_keyWordRegex.create(*this);
+        group_keyWordRegex.bgcolor(color_group);
+        group_keyWordRegex.caption(u8"正则表达式关键词(每行一个):");
+        group_keyWordRegex.div("margin = [5] <vert <text_keyWordRegex> <weight=20 <><weight=30% btn_regexTest>> >");
+        place_.field("group_keyWordRegex") << group_keyWordRegex;
 
-        text_keyWordRegex.create(*this);
+        text_keyWordRegex.create(group_keyWordRegex);
         text_keyWordRegex.line_wrapped(true);
-        place_.field("text_keyWordRegex") << text_keyWordRegex;
+        group_keyWordRegex["text_keyWordRegex"] << text_keyWordRegex;
 
         //正则表达式测试
-        btn_regexTest.create(*this);
+        btn_regexTest.create(group_keyWordRegex);
         btn_regexTest.caption(u8"测试正则");
-        btn_regexTest.events().click([this] { mynetwork::openUrl("https://c.runoob.com/front-end/854"); });
-        place_.field("btn_regexTest") << btn_regexTest;
+        btn_regexTest.events().click([this] { openUrl("https://c.runoob.com/front-end/854"); });
+        group_keyWordRegex["btn_regexTest"] << btn_regexTest;
 
         //保存按钮
         btn_save.create(*this);
@@ -1042,14 +1051,15 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //主人QQ
-    label lab_keyWord;
+    group group_keyWord;
     textbox text_keyWord;
 
     //正则表达式关键词
-    label lab_keyWordRegex;
+    group group_keyWordRegex;
     textbox text_keyWordRegex;
 
     //正则表达式测试
@@ -1100,67 +1110,56 @@ private:
     }
 
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [15,15,15,15] "
 
             //触发后回复群消息
-            "<vert <weight=30 check_groupWarn> <weight=25 <lab_groupWarn> <weight = 40% margin = [0,0,7]  "
-            "button_groupVariable>> "
-            "<text_groupWarn>>"
-            "<weight=10>"
+            "<group_groupWarn>"
+            //"<weight=10>"
 
+            //右边
             "<vert"
 
             //触发后回复私聊消息
-            "<vert <weight=30 check_privateWarn> <weight=25 <lab_privateWarn> <weight = 40% margin = [0,0,7]  "
-            "button_privateVariable>> "
-            "<text_privateWarn>>"
-            "<weight=10>"
+            "<group_privateWarn>"
+            //"<weight=10>"
 
             //保存
             "<weight=25% button_save>"
 
             ">");
 
+        //触发后回复群消息
+        group_groupWarn.create(*this);
+        group_groupWarn.bgcolor(color_group);
+        group_groupWarn.caption(u8"触发后回复群消息内容:");
+        group_groupWarn.div(
+            "<vert margin = [5] <weight=25 <weight=70% check_groupWarn> <margin = [0,0,7] button_groupVariable>> "
+            "<text_groupWarn>>");
+        place_.field("group_groupWarn") << group_groupWarn;
+
         //触发回复群消息开关
-        check_groupWarn.create(*this);
+        check_groupWarn.create(group_groupWarn);
+        check_groupWarn.bgcolor(color_group);
         check_groupWarn.caption(u8"触发关键词发送群消息提醒");
-        place_.field("check_groupWarn") << check_groupWarn;
+        group_groupWarn["check_groupWarn"] << check_groupWarn;
 
-        //触发后回复私聊消息开关
-        check_privateWarn.create(*this);
-        check_privateWarn.create(*this);
-        check_privateWarn.caption(u8"触发关键词发送私聊消息提醒");
-        place_.field("check_privateWarn") << check_privateWarn;
-
-        //触发后回复群消息内容
-        lab_groupWarn.create(*this);
-        lab_groupWarn.caption(u8"触发后回复群消息内容:");
-        place_.field("lab_groupWarn") << lab_groupWarn;
-
-        text_groupWarn.create(*this);
+        //内容
+        text_groupWarn.create(group_groupWarn);
         text_groupWarn.line_wrapped(true);
         text_groupWarn.tip_string("默认值：\r\n{at} 触发关键词，处理方式:{处理方式}");
-        place_.field("text_groupWarn") << text_groupWarn;
-
-        //触发后发送私聊消息
-        lab_privateWarn.create(*this);
-        lab_privateWarn.caption(u8"触发后回复私聊消息内容:");
-        place_.field("lab_privateWarn") << lab_privateWarn;
-
-        text_privateWarn.create(*this);
-        text_privateWarn.line_wrapped(true);
-        place_.field("text_privateWarn") << text_privateWarn;
+        group_groupWarn["text_groupWarn"] << text_groupWarn;
 
         //变量按钮
-        button_groupVariable.create(*this);
+        button_groupVariable.create(group_groupWarn);
         button_groupVariable.caption(u8"可用变量");
         button_groupVariable.events().click([this] {
             string variable(
-                u8"{at}\t\t艾特\r\n"
                 u8"{日期}\t\t当前日期\r\n"
                 u8"{时间}\t\t当前时间\r\n"
                 u8"{星期}\t\t当前星期\r\n"
@@ -1174,9 +1173,30 @@ private:
                 u8"\r\n更多变量欢迎进群补充(群:839067703)");
             showText("回复内容变量", variable);
         });
-        place_.field("button_groupVariable") << button_groupVariable;
+        group_groupWarn["button_groupVariable"] << button_groupVariable;
 
-        button_privateVariable.create(*this);
+        //触发后发送私聊消息
+        group_privateWarn.create(*this);
+        group_privateWarn.bgcolor(color_group);
+        group_privateWarn.caption(u8"触发后回复私聊消息内容:");
+        group_privateWarn.div(
+            "<vert <weight=25 <weight=70% check_privateWarn> <margin = [0,0,7] button_privateVariable>> "
+            "<text_privateWarn>>");
+        place_.field("group_privateWarn") << group_privateWarn;
+
+        //触发后回复私聊消息开关
+        check_privateWarn.create(group_privateWarn);
+        check_privateWarn.bgcolor(color_group);
+        check_privateWarn.caption(u8"触发关键词发送私聊消息提醒");
+        group_privateWarn["check_privateWarn"] << check_privateWarn;
+
+        //内容
+        text_privateWarn.create(group_privateWarn);
+        text_privateWarn.line_wrapped(true);
+        group_privateWarn["text_privateWarn"] << text_privateWarn;
+
+        //变量按钮
+        button_privateVariable.create(group_privateWarn);
         button_privateVariable.caption(u8"可用变量");
         button_privateVariable.events().click([this] {
             string variable(
@@ -1194,7 +1214,7 @@ private:
                 u8"\r\n更多变量欢迎进群补充(群:839067703)");
             showText("回复内容变量", variable);
         });
-        place_.field("button_privateVariable") << button_privateVariable;
+        group_privateWarn["button_privateVariable"] << button_privateVariable;
 
         //保存按钮
         btn_save.create(*this);
@@ -1226,6 +1246,7 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //触发后回复群消息开关
@@ -1235,11 +1256,11 @@ private:
     checkbox check_privateWarn;
 
     //触发后回复群消息内容
-    label lab_groupWarn;
+    group group_groupWarn;
     textbox text_groupWarn;
 
     //触发后发送私聊消息
-    label lab_privateWarn;
+    group group_privateWarn;
     textbox text_privateWarn;
 
     //变量
@@ -1318,31 +1339,30 @@ private:
     }
 
     void init() {
+        color_group.from_rgb(201.4, 197.6, 190);
+
         place_.bind(*this);
         place_.div(
 
             //整体边距
-            "margin = [15,15,15,15] "
+            //"margin = [15,15,15,15] "
 
             "<vert"
             "<"
             //群列表
-            "<vert <weight=25 lab_groupList> <list_groupList>>"
-            "<weight=10>"
+            "<group_groupList>"
+            //"<weight=10>"
 
             //转发格式
-            "<vert <weight=25 <lab_relayGroupWord> <margin = [0,0,7] button_variable>> <text_relayGroupWord>>"
-            "<weight=10>"
+            "<group_relayGroupWord>"
             ">"
 
-            "<weight=20>"
+            //"<weight=20>"
             "<weight=25%"
             //消息修剪
-            "<vert <weight=25 lab_relayGroupMsg_trim> <vert <weight=25 <weight=80 "
-            "lab_relayGroupMsg_trimFront><text_relayGroupMsg_trimFront>> <weight=25 <weight=80 "
-            "lab_relayGroupMsg_trimBack><text_relayGroupMsg_trimBack>>>>"
+            "<group_relayGroupMsg_trim>"
 
-            "<weight=10%>"
+            //"<weight=10%>"
 
             //保存
             "<weight=40% button_save>"
@@ -1350,51 +1370,32 @@ private:
             ">");
 
         //群列表
-        lab_groupList.create(*this);
-        lab_groupList.caption(u8"触发后转发到群:");
-        place_.field("lab_groupList") << lab_groupList;
+        group_groupList.create(*this);
+        group_groupList.bgcolor(color_group);
+        group_groupList.caption(u8"触发后转发到群:");
+        group_groupList.div("vert <list_groupList>");
+        place_.field("group_groupList") << group_groupList;
 
-        list_groupList.create(*this);
+        list_groupList.create(group_groupList);
         list_groupList.checkable(true);
         list_groupList.append_header(u8"群名");
         list_groupList.append_header(u8"群号码");
-        place_.field("list_groupList") << list_groupList;
-
-        //消息修剪
-        lab_relayGroupMsg_trim.create(*this);
-        lab_relayGroupMsg_trim.caption(u8"消息修剪（去广告尾巴专用）");
-        place_.field("lab_relayGroupMsg_trim") << lab_relayGroupMsg_trim;
-
-        lab_relayGroupMsg_trimFront.create(*this);
-        lab_relayGroupMsg_trimFront.caption(u8"删除前面行数:");
-        place_.field("lab_relayGroupMsg_trimFront") << lab_relayGroupMsg_trimFront;
-
-        text_relayGroupMsg_trimFront.create(*this);
-        text_relayGroupMsg_trimFront.line_wrapped(false);
-        text_relayGroupMsg_trimFront.multi_lines(false);
-        place_.field("text_relayGroupMsg_trimFront") << text_relayGroupMsg_trimFront;
-
-        lab_relayGroupMsg_trimBack.create(*this);
-        lab_relayGroupMsg_trimBack.caption(u8"删除后面行数:");
-        place_.field("lab_relayGroupMsg_trimBack") << lab_relayGroupMsg_trimBack;
-
-        text_relayGroupMsg_trimBack.create(*this);
-        text_relayGroupMsg_trimBack.line_wrapped(false);
-        text_relayGroupMsg_trimBack.multi_lines(false);
-        place_.field("text_relayGroupMsg_trimBack") << text_relayGroupMsg_trimBack;
+        group_groupList["list_groupList"] << list_groupList;
 
         //转发消息格式
-        lab_relayGroupWord.create(*this);
-        lab_relayGroupWord.caption(u8"转发消息格式:");
-        place_.field("lab_relayGroupWord") << lab_relayGroupWord;
+        group_relayGroupWord.create(*this);
+        group_relayGroupWord.bgcolor(color_group);
+        group_relayGroupWord.caption(u8"转发消息格式:");
+        group_relayGroupWord.div("vert margin = [5] <text_relayGroupWord> <weight=20 <> <weight=40% button_variable>>");
+        place_.field("group_relayGroupWord") << group_relayGroupWord;
 
-        text_relayGroupWord.create(*this);
+        text_relayGroupWord.create(group_relayGroupWord);
         text_relayGroupWord.line_wrapped(true);
         text_relayGroupWord.tip_string(u8"不填写则转发消息原格式 即 {msg}");
-        place_.field("text_relayGroupWord") << text_relayGroupWord;
+        group_relayGroupWord["text_relayGroupWord"] << text_relayGroupWord;
 
         //变量按钮
-        button_variable.create(*this);
+        button_variable.create(group_relayGroupWord);
         button_variable.caption(u8"可用变量");
         button_variable.events().click([this] {
             string variable(
@@ -1412,7 +1413,36 @@ private:
 
             showText(u8"转发群消息变量", variable);
         });
-        place_.field("button_variable") << button_variable;
+        group_relayGroupWord["button_variable"] << button_variable;
+
+        //消息修剪
+        group_relayGroupMsg_trim.create(*this);
+        group_relayGroupMsg_trim.bgcolor(color_group);
+        group_relayGroupMsg_trim.caption(u8"消息修剪（去广告尾巴专用）");
+        group_relayGroupMsg_trim.div(
+            "vert <weight=25 <weight=30% lab_relayGroupMsg_trimFront><text_relayGroupMsg_trimFront><weight=15%>> "
+            "<weight=25 <weight=30% lab_relayGroupMsg_trimBack><text_relayGroupMsg_trimBack><weight=15%>>");
+        place_.field("group_relayGroupMsg_trim") << group_relayGroupMsg_trim;
+
+        lab_relayGroupMsg_trimFront.create(group_relayGroupMsg_trim);
+        lab_relayGroupMsg_trimFront.bgcolor(color_group);
+        lab_relayGroupMsg_trimFront.caption(u8"删除前面行数:");
+        group_relayGroupMsg_trim["lab_relayGroupMsg_trimFront"] << lab_relayGroupMsg_trimFront;
+
+        text_relayGroupMsg_trimFront.create(group_relayGroupMsg_trim);
+        text_relayGroupMsg_trimFront.line_wrapped(false);
+        text_relayGroupMsg_trimFront.multi_lines(false);
+        group_relayGroupMsg_trim["text_relayGroupMsg_trimFront"] << text_relayGroupMsg_trimFront;
+
+        lab_relayGroupMsg_trimBack.create(group_relayGroupMsg_trim);
+        lab_relayGroupMsg_trimBack.bgcolor(color_group);
+        lab_relayGroupMsg_trimBack.caption(u8"删除后面行数:");
+        group_relayGroupMsg_trim["lab_relayGroupMsg_trimBack"] << lab_relayGroupMsg_trimBack;
+
+        text_relayGroupMsg_trimBack.create(group_relayGroupMsg_trim);
+        text_relayGroupMsg_trimBack.line_wrapped(false);
+        text_relayGroupMsg_trimBack.multi_lines(false);
+        group_relayGroupMsg_trim["text_relayGroupMsg_trimBack"] << text_relayGroupMsg_trimBack;
 
         //保存按钮
         btn_save.create(*this);
@@ -1452,21 +1482,22 @@ public:
 
 private:
     place place_;
+    color color_group;
     int conf_index;
 
     //群列表
-    label lab_groupList;
+    group group_groupList;
     listbox list_groupList;
 
     //消息修建
-    label lab_relayGroupMsg_trim;
+    group group_relayGroupMsg_trim;
     label lab_relayGroupMsg_trimFront;
     label lab_relayGroupMsg_trimBack;
     textbox text_relayGroupMsg_trimFront;
     textbox text_relayGroupMsg_trimBack;
 
-    //变量
-    label lab_relayGroupWord;
+    //转发格式
+    group group_relayGroupWord;
     textbox text_relayGroupWord;
 
     //变量按钮
@@ -1692,7 +1723,7 @@ private:
 
         //优先级提示
         lab_priorityTip.create(*this);
-        lab_priorityTip.caption(u8"提示:   优先级数值小 > 优先级数值大 > 默认的设置");
+        lab_priorityTip.caption(u8"提示:   优先级数值小 > 优先级数值大 > 默认的设置\t\t\t\t\t\t\t\t\t\t右击编辑");
         place_.field("lab_priorityTip") << lab_priorityTip;
 
         readConf();
