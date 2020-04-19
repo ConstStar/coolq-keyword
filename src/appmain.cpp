@@ -32,11 +32,11 @@ void init() try {
         string inf;
         bool ret = up.getUpdate(inf);
         if (ret) {
-            string sendStr = "关键词触发器\r\n";
+            string sendStr = "《关键词触发器》\r\n";
             sendStr += inf;
             sendAdmin(sendStr);
         } else {
-            string sendStr = "关键词触发器\r\n";
+            string sendStr = "《关键词触发器》\r\n";
             sendStr += inf + "\r\n\r\n有重大更新但更新时出现错误";
             sendAdmin(sendStr);
         }
@@ -44,16 +44,16 @@ void init() try {
 
     //有更新则提示更新消息  无更新则提示插件开启
     if (type == Update::updateType::update) {
-        string sendStr = "关键词触发器\r\n";
+        string sendStr = "《关键词触发器》\r\n";
         sendStr += inf + "\r\n\r\n请在界面上下载更新";
         sendAdmin(sendStr);
     } else if (type == Update::updateType::mustUpdate) {
         update();
-        string sendStr = "关键词触发器\r\n";
+        string sendStr = "《关键词触发器》\r\n";
         sendStr += inf + "\r\n\r\n更新执行完成";
         sendAdmin(sendStr);
     } else {
-        string sendStr = "关键词触发器已开启";
+        string sendStr = "《关键词触发器》已开启";
         sendAdmin(sendStr);
     }
 
