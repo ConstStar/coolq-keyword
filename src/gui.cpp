@@ -23,6 +23,9 @@
 using namespace nana;
 using namespace std;
 
+//#define BG_COLOE 0xe6e6e6
+#define GROUP_COLOE 0xc9c5be
+
 extern MyJson conf;
 
 void openUrl(std::string url) {
@@ -45,6 +48,7 @@ protected:
     void showText(string title, string word) {
         form fm_temp;
         fm_temp.caption(title);
+        //fm_temp.bgcolor(color_rgb(BG_COLOE));
 
         textbox text{fm_temp};
         text.caption(word);
@@ -60,7 +64,8 @@ protected:
 
 public:
     tab_father(window wd) : panel<false>(wd), isSave(true) {
-        color_group.from_rgb(201.4, 197.6, 190);
+        color_group=color_rgb(GROUP_COLOE);
+        // this->bgcolor(color_rgb(BG_COLOE));
     }
 
     //获取保存状态
@@ -1670,6 +1675,7 @@ private:
         form fm(*this);
         fm.caption(u8"单独设置");
         fm.size(nana::size(550, 400));
+        // fm.bgcolor(color_rgb(BG_COLOE));
 
         place place;
         place.bind(fm);
@@ -1729,6 +1735,7 @@ private:
                 tabbar_.activated(tempItem);
             }
 
+            tabpages.at(tempItem)->readConf();
             lastItem = tempItem;
         });
 
@@ -1898,6 +1905,7 @@ void Gui::openMain() {
     form fm;
     fm.caption(u8"设置");
     fm.size(nana::size(550, 400));
+    // fm.bgcolor(color_rgb(BG_COLOE));
 
     place place;
     place.bind(fm);
@@ -1955,6 +1963,7 @@ void Gui::openMain() {
             tabbar_.activated(tempItem);
         }
 
+        tabpages.at(tempItem)->readConf();
         lastItem = tempItem;
     });
 

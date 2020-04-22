@@ -463,23 +463,108 @@ public:
         if (!std::string(prefix + "功能").compare(msg) || !std::string(prefix + "菜单").compare(msg)
             || !strcmp(msg, "关键词触发器菜单")) {
             std::string menu =
-                "**设置类(自定义需加前缀)**\n"
-                "[CQ:emoji,id=9999]查看/添加/删除关键词\n"
-                "[CQ:emoji,id=9999]查看/添加/删除白名单关键词\n"
-                "[CQ:emoji,id=9999]查看/添加/删除正则表达式关键词\n"
-                "[CQ:emoji,id=127984]查看/添加/删除监控群\n"
-                "[CQ:emoji,id=127984]查看/添加/删除转发群\n"
-                "[CQ:emoji,id=128203]查看/添加/删除监控名单\n"
-                "[CQ:emoji,id=128203]查看/添加/删除白名单\n"
+                "******设置类*******\n"
+                "查看/添加/删除关键词\n" //[CQ:emoji,id=9999]
+                "查看/添加/删除白名单关键词\n"
+                "查看/添加/删除正则表达式关键词\n"
+                "查看/添加/删除监控群\n" //[CQ:emoji,id=127984]
+                "查看/添加/删除转发群\n"
+                "查看/添加/删除监控名单\n" //[CQ:emoji,id=128203]
+                "查看/添加/删除白名单\n"
+                "\n"
 
-                "\n**其他类(自定义需加前缀)**\n"
-                "[CQ:emoji,id=127380]回复群+QQ群号\n"
-                "[CQ:emoji,id=127380]回复+QQ号\n"
-                //"[CQ:emoji,id=127380]退出群+QQ群号\n"
-                "\n请发送功能名称（不包括表情）\n"
+                "******开关类*****\n"
+                "开启/关闭强力检测\n"
+                "开启/关闭提醒主人\n"
+                "开启/关闭撤回消息\n"
+                "开启/关闭群内提醒\n"
+                "开启/关闭私聊提醒\n"
+                "\n"
+
+                "******回复类******\n"
+                "回复群+QQ群号\n" //[CQ:emoji,id=127380]
+                "回复+QQ号\n"
+                //"退出群+QQ群号\n"
+                "\n"
+
+                "只能修改默认设置，无法对单独设置进行修改\n"
+                "请发送功能名称（不包括表情）\n"
                 "如: 查看关键词";
 
             mycq::send_private_message(m_fromQQ, menu);
+            m_index = NONE;
+        }
+
+        //开关类
+        else if (!std::string(prefix + "开启强力检测").compare(msg)) {
+            conf.alone[0].streng = true;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 强力检测");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "关闭强力检测").compare(msg)) {
+            conf.alone[0].streng = false;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 强力检测");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "开启提醒主人").compare(msg)) {
+            conf.alone[0].keyWordSendAdmin = true;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 触发关键词提醒主人");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "关闭提醒主人").compare(msg)) {
+            conf.alone[0].keyWordSendAdmin = false;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 触发关键词提醒主人");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "开启群内提醒").compare(msg)) {
+            conf.alone[0].keyWordGroupWarn = true;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 触发关键词后发送群消息提醒");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "关闭群内提醒").compare(msg)) {
+            conf.alone[0].keyWordGroupWarn = false;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 触发关键词后发送群消息提醒");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "开启私聊提醒").compare(msg)) {
+            conf.alone[0].keyWordPrivateWarn = true;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 触发关键词后发送私聊提醒");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "关闭私聊提醒").compare(msg)) {
+            conf.alone[0].keyWordPrivateWarn = false;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 触发关键词后发送私聊提醒");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "开启撤回消息").compare(msg)) {
+            conf.alone[0].deleteMsg = true;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 撤回触发关键词消息（需Pro）");
+
+            m_index = NONE;
+        } else if (!std::string(prefix + "关闭撤回消息").compare(msg)) {
+            conf.alone[0].deleteMsg = false;
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 撤回触发关键词消息（需Pro）");
+
             m_index = NONE;
         }
 
@@ -803,6 +888,7 @@ public:
         stringstream msg;
 
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
+        auto groupList = mycq::get_group_list_map();
         string name;
         string card;
         string QQid_str;
@@ -817,20 +903,21 @@ public:
             QQid_str = to_string(m_fromQQ);
         }
 
-        msg << "来自群" << m_fromGroup << +"中" << endl;
-        msg << "QQ号码:" << QQid_str << endl;
-        msg << "QQ名称:" << name << "\n";
-        msg << "QQ群名片:" << card << "\n";
-        msg << "由于内容:" << endl << endl << m_msg << endl << endl;
+        msg << "群号码：" << m_fromGroup << endl;
+        msg << "群名称：" << groupList[m_fromGroup].group_name << endl;
+        msg << "QQ号码：" << QQid_str << endl;
+        msg << "QQ名称：" << name << "\n";
+        msg << "QQ群名片：" << card << "\n";
+        msg << "由于内容：" << endl << endl << m_msg << endl << endl;
 
         if (!keyWordRegex.empty()) {
-            msg << "正则表达式:" << keyWordRegex << endl;
+            msg << "正则表达式：" << keyWordRegex << endl;
         }
 
-        msg << "触发了关键词:" << keyWord << endl;
-        msg << "处理方式:" << dealTypeStr << endl;
-        msg << "本次处理总耗时:" << m_time.elapsed() << "秒" << endl;
-        msg << "(回复请发送:回复群" << m_fromGroup << ")";
+        msg << "触发了关键词：" << keyWord << endl;
+        msg << "处理方式：" << dealTypeStr << endl;
+        msg << "本次处理总耗时：" << m_time.elapsed() << "秒" << endl;
+        msg << "(回复请发送：回复群" << m_fromGroup << ")";
 
         return msg.str();
     }
