@@ -17,28 +17,32 @@ configuration:
 install:
   - git submodule update --init --recursive # 下载子模块
   - set /p APP_ID=<app_id.txt # 如果你没有使用 app_id.txt 存放 app id，需在此手动设置
-  - dir
-  - git -C C:\Tools\vcpkg pull
-  - C:\Tools\vcpkg\bootstrap-vcpkg.bat
+
+  - cd C:\Tools\vcpkg
+  - git pull
+  - .\bootstrap-vcpkg.bat
 
   - echo set(VCPKG_TARGET_ARCHITECTURE x86) > C:\Tools\vcpkg\triplets\x86-windows-static.cmake
   - echo set(VCPKG_CRT_LINKAGE dynamic) >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
   - echo set(VCPKG_LIBRARY_LINKAGE static) >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
 
-  - C:\Tools\vcpkg\vcpkg install boost-timer:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install boost-regex:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install boost-algorithm:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install boost-format:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install boost-tokenizer:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install nana:x86-windows-static
-  - C:\Tools\vcpkg\vcpkg install jsoncpp:x86-windows-static
- # - cd %APPVEYOR_BUILD_FOLDER%
+  - .\vcpkg install boost-timer:x86-windows-static
+  - .\vcpkg install boost-regex:x86-windows-static
+  - .\vcpkg install boost-algorithm:x86-windows-static
+  - .\vcpkg install boost-format:x86-windows-static
+  - .\vcpkg install boost-tokenizer:x86-windows-static
+  - .\vcpkg install nana:x86-windows-static
+  - .\vcpkg install jsoncpp:x86-windows-static
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - echo %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=x86-windows-static  # CMake generate
   - cmake --build build --target app --config %CONFIGURATION% --clean-first --verbose # CMake build
 
 after_build:
+  - tree
+  - echo %CONFIGURATION%
   - copy build\%CONFIGURATION%\app.dll app.dll
   - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
 
