@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 
 //数据结构
 #include <map>
@@ -105,7 +106,7 @@ public:
         case SEND_GROUP_END: //回复群
         {
             char ch[100] = {'\0'};
-            int t;
+            int16_t t;
             t = mycq::send_group_message(m_ReplyGroup, msg);
             if (t > 0)
                 sprintf(ch, "发送给QQ群%lld成功", m_ReplyGroup);
@@ -280,7 +281,7 @@ public:
         case SEND_QQ: //回复QQ
         {
             stringstream sendMsg;
-            int ret;
+            int16_t ret;
             ret = mycq::send_private_message(m_ReplyQQ, msg);
             if (ret > 0)
                 sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";

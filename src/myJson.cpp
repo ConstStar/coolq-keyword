@@ -1,12 +1,12 @@
 #include "myJson.h"
-#include <cqcppsdk/cqcppsdk.h>
+#include "mycq.hpp"
 
 // #include <Windows.h>
 #include <fstream>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
-#include <boost/tokenizer.hpp>
+// #include <boost/algorithm/string.hpp>
+// #include <boost/format.hpp>
+// #include <boost/tokenizer.hpp>
 
 using namespace std;
 
@@ -468,30 +468,30 @@ void MyJson::file2json() {
 void OperateLine::line_get_str(string str, unordered_set<string>& value) {
     value.clear();
 
-    unordered_set<string> temp_array;
-    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
+    // unordered_set<string> temp_array;
+    // boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
 
-    for (auto temp_str : temp_array) {
-        //过滤无效值
-        if (temp_str.empty()) continue;
+    // for (auto temp_str : temp_array) {
+    //     //过滤无效值
+    //     if (temp_str.empty()) continue;
 
-        value.insert(temp_str);
-    }
+    //     value.insert(temp_str);
+    // }
 }
 
 //获取 分割每行的uint json
 void OperateLine::line_get_ll(string str, unordered_set<long long>& value) {
     value.clear();
 
-    unordered_set<string> temp_array;
-    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
+    // unordered_set<string> temp_array;
+    // boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
 
-    for (auto temp_str : temp_array) {
-        long long num = atoll(temp_str.c_str());
+    // for (auto temp_str : temp_array) {
+    //     long long num = atoll(temp_str.c_str());
 
-        //过滤无效值
-        if (num == 0) continue;
+    //     //过滤无效值
+    //     if (num == 0) continue;
 
-        value.insert(num);
-    }
+    //     value.insert(num);
+    // }
 }

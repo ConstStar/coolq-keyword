@@ -132,7 +132,7 @@ public:
         //主人QQ
         auto line = text_admin.text_line_count();
         conf.admin.clear();
-        for (int i = 0; i < line; i++) {
+        for (size_t i = 0; i < line; i++) {
             string buf;
             text_admin.getline(i, buf);
             if (!buf.empty()) conf.admin.insert(atoll(buf.c_str()));
@@ -503,7 +503,7 @@ protected:
 
         //勾选已选的
         auto size = list_groupList.size_item(0);
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             string buf = list_groupList.at(0).at(i).text(1);
 
             if (find(conf.alone[conf_index].groupList.begin(),
@@ -550,7 +550,7 @@ public:
 
         //处理方式
         int dealType = 0;
-        for (int i = 0; i < check_deal.size(); i++) {
+        for (size_t i = 0; i < check_deal.size(); i++) {
             if (check_deal.at(i)->checked()) {
                 dealType = i;
                 break;
@@ -559,7 +559,7 @@ public:
         conf.alone[conf_index].dealType = dealType;
 
         //禁言时长
-        conf.alone[conf_index].banTimeLen = atoll(text_banTimeLen.text().c_str());
+        conf.alone[conf_index].banTimeLen = atoi(text_banTimeLen.text().c_str());
 
         //一些开关
         conf.alone[conf_index].deleteMsg = check_deleteMsg.checked();
@@ -648,7 +648,7 @@ private:
 
             //查找添加项并勾选
             auto size = list_groupList.size_item(0);
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 string buf = list_groupList.at(0).at(i).text(1);
 
                 if (buf == text_groupAdd.text()) {
@@ -667,7 +667,7 @@ private:
             isSave = false;
 
             auto size = list_groupList.size_item(0);
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 list_groupList.at(listbox::index_pair(0, i)).check(true);
             }
         });
@@ -678,7 +678,7 @@ private:
             isSave = false;
 
             auto size = list_groupList.size_item(0);
-            for (int i = 0; i < size; i++) {
+            for (size_t i = 0; i < size; i++) {
                 auto p = list_groupList.at(listbox::index_pair(0, i));
 
                 p.check(!p.checked());
@@ -701,7 +701,7 @@ private:
         groupStr.push_back(u8"禁言");
         groupStr.push_back(u8"踢出");
         groupStr.push_back(u8"拉黑并踢出");
-        for (int i = 0; i < groupStr.size(); i++) {
+        for (size_t i = 0; i < groupStr.size(); i++) {
             auto p = std::make_shared<checkbox>(group_deal);
             p->bgcolor(color_group);
             p->events().checked([this]() { isSave = false; });
@@ -868,7 +868,7 @@ public:
         // QQ特殊名单
         auto QQList_line = text_QQList.text_line_count();
         conf.alone[conf_index].QQList.clear();
-        for (int i = 0; i < QQList_line; i++) {
+        for (size_t i = 0; i < QQList_line; i++) {
             string buf;
             text_QQList.getline(i, buf);
             if (!buf.empty()) conf.alone[conf_index].QQList.insert(atoll(buf.c_str()));
@@ -877,7 +877,7 @@ public:
         //白名单关键词
         auto keyWrodWhite_line = text_keyWordWhite.text_line_count();
         conf.alone[conf_index].keyWordWhite.clear();
-        for (int i = 0; i < keyWrodWhite_line; i++) {
+        for (size_t i = 0; i < keyWrodWhite_line; i++) {
             string buf;
             text_keyWordWhite.getline(i, buf);
             if (!buf.empty()) conf.alone[conf_index].keyWordWhite.insert(buf.c_str());
@@ -885,7 +885,7 @@ public:
 
         //特殊名单类型  白名单||监控名单
         int listType = 0;
-        for (int i = 0; i < check_QQListType.size(); i++) {
+        for (size_t i = 0; i < check_QQListType.size(); i++) {
             if (check_QQListType.at(i)->checked()) {
                 listType = i;
                 break;
@@ -968,7 +968,7 @@ private:
         groupStr.push_back(u8"白名单");
         groupStr.push_back(u8"监控名单");
 
-        for (int i = 0; i < groupStr.size(); i++) {
+        for (size_t i = 0; i < groupStr.size(); i++) {
             auto p = std::make_shared<checkbox>(group_QQList);
             p->bgcolor(color_group);
             p->events().checked([this]() { isSave = false; });
@@ -1058,7 +1058,7 @@ public:
         //关键词
         auto keyWord_line = text_keyWord.text_line_count();
         conf.alone[conf_index].keyWord.clear();
-        for (int i = 0; i < keyWord_line; i++) {
+        for (size_t i = 0; i < keyWord_line; i++) {
             string buf;
             text_keyWord.getline(i, buf);
             if (!buf.empty()) conf.alone[conf_index].keyWord.insert(buf.c_str());
@@ -1067,7 +1067,7 @@ public:
         //正则表达式关键词
         auto keyWordRegex_line = text_keyWordRegex.text_line_count();
         conf.alone[conf_index].keyWordRegex.clear();
-        for (int i = 0; i < keyWordRegex_line; i++) {
+        for (size_t i = 0; i < keyWordRegex_line; i++) {
             string buf;
             text_keyWordRegex.getline(i, buf);
             if (!buf.empty()) conf.alone[conf_index].keyWordRegex.insert(buf.c_str());
@@ -1390,7 +1390,7 @@ protected:
 
         //勾选已选的
         auto size = list_groupList.size_item(0);
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             string buf = list_groupList.at(0).at(i).text(1);
 
             if (find(conf.alone[conf_index].relayGroupList.begin(),
@@ -1636,7 +1636,7 @@ protected:
 
         //勾选已选的
         auto size = list_aloneList.size_item(0);
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             string buf = list_aloneList.at(0).at(i).text(0);
             int id = atoi(buf.c_str());
 
@@ -1663,7 +1663,7 @@ private:
 
     void writeList() {
         auto size = list_aloneList.size_item(0);
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             string buf = list_aloneList.at(0).at(i).text(0);
             int id = atoi(buf.c_str());
 
