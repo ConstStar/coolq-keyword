@@ -750,7 +750,7 @@ private:
 
         check_streng.create(group_switch);
         check_streng.bgcolor(color_group);
-        check_streng.caption(u8"关键词强力检测");
+        check_streng.caption(u8"强力检测关键词");
         check_streng.events().checked([this]() { isSave = false; });
         group_switch["check_switch"] << check_streng;
 

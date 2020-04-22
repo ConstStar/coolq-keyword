@@ -500,14 +500,14 @@ public:
             conf.alone[0].streng = true;
             conf.alone2json();
             conf.json2file();
-            mycq::send_private_message(m_fromQQ, "已开启 强力检测");
+            mycq::send_private_message(m_fromQQ, "已开启 强力检测关键词");
 
             m_index = NONE;
         } else if (!std::string(prefix + "关闭强力检测").compare(msg)) {
             conf.alone[0].streng = false;
             conf.alone2json();
             conf.json2file();
-            mycq::send_private_message(m_fromQQ, "已关闭 强力检测");
+            mycq::send_private_message(m_fromQQ, "已关闭 强力检测关键词");
 
             m_index = NONE;
         } else if (!std::string(prefix + "开启提醒主人").compare(msg)) {
@@ -552,14 +552,14 @@ public:
             mycq::send_private_message(m_fromQQ, "已关闭 触发关键词后发送私聊提醒");
 
             m_index = NONE;
-        } else if (!std::string(prefix + "开启撤回消息").compare(msg)) {
+        } else if (!std::string(prefix + "开启撤回消息").compare(msg)||!std::string(prefix + "开启消息撤回").compare(msg)) {
             conf.alone[0].deleteMsg = true;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 撤回触发关键词消息（需Pro）");
 
             m_index = NONE;
-        } else if (!std::string(prefix + "关闭撤回消息").compare(msg)) {
+        } else if (!std::string(prefix + "关闭撤回消息").compare(msg)||!std::string(prefix + "关闭消息撤回").compare(msg)) {
             conf.alone[0].deleteMsg = false;
             conf.alone2json();
             conf.json2file();
