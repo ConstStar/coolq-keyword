@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "appInf.h"
 
 class Update {
 public:
@@ -11,7 +11,7 @@ public:
         error, //错误
     };
 
-    updateType check(int version_id, std::string &inf);
+    updateType check(std::string &inf, int version_id = APP_VERSION_ID);
     bool getUpdate(std::string &inf);
 
 private:

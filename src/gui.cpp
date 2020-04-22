@@ -244,7 +244,7 @@ private:
         button_update.events().click([this] {
             Update up;
             string inf;
-            Update::updateType type = up.check(VERSION_ID, inf);
+            Update::updateType type = up.check(inf);
 
             //更新
             auto update = [&]() {

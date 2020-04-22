@@ -13,7 +13,7 @@ using namespace std;
 #define PORT 80
 #define PATH_UPDATE_CHECK "/api/version"
 
-Update::updateType Update::check(int version_id, string &inf) {
+Update::updateType Update::check(string &inf, int version_id) {
     try {
         httplib::Client cli(HOST, PORT);
         auto res = cli.Get(PATH_UPDATE_CHECK);

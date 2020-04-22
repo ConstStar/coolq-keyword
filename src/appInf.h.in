@@ -1,0 +1,6 @@
+#pragma once
+
+#define APP_VERSION_ID @app_version_id@
+#define APP_AME "@app_name@"
+#define APP_VERSION "@app_version@"
+#define APP_AUTHOR "@app_author@"

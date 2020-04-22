@@ -19,7 +19,7 @@ void init() try {
 
     Update up;
     string inf;
-    Update::updateType type = up.check(VERSION_ID, inf);
+    Update::updateType type = up.check(inf);
 
     auto sendAdmin = [](string msg) {
         for (auto id : conf.admin) {

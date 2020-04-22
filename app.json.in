@@ -1,0 +1,88 @@
+{
+    "$schema": "https://awesome.cqp.moe/schema/app/v9/app-schema.json",
+    "ret": 1,
+    "apiver": 9,
+    "name": "@app_name@",
+    "version": "@app_version@",
+    "version_id": @app_version_id@,
+    "author": "@app_author@",
+    "description": "发送 菜单 查看本插件命令\r\n欢迎加入插件内测群:839067703\r\n进群优先体验新功能",
+    "event": [ // 可以修改 priority 来调整插件的优先级, 其它字段不可修改, 否则将无法使用
+        {
+            "id": 1003,
+            "type": 1003,
+            "name": "插件启用",
+            "priority": 30000,
+            "function": "cq_event_enable"
+        },
+        {
+            "id": 1004,
+            "type": 1004,
+            "name": "插件停用",
+            "priority": 30000,
+            "function": "cq_event_disable"
+        },
+        {
+            "id": 1001,
+            "type": 1001,
+            "name": "酷Q启动",
+            "priority": 30000,
+            "function": "cq_event_coolq_start"
+        },
+        {
+            "id": 1002,
+            "type": 1002,
+            "name": "酷Q退出",
+            "priority": 30000,
+            "function": "cq_event_coolq_exit"
+        },
+        {
+            "id": 1,
+            "type": 21,
+            "name": "私聊消息",
+            "function": "cq_event_private_message",
+            "priority": 10000
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "群消息",
+            "function": "cq_event_group_message",
+            "priority": 10000
+        }
+    ],
+    "menu": [ // name 字段为显示在酷Q应用菜单中的文字, function 字段对应 CQ_MENU 宏调用的参数
+        {
+            "name": "设置",
+            "function": "menu"
+        }
+    ],
+    "status": [],
+    "auth": [ // 需要根据 API 调用情况来注释或取消注释这里的项
+        // 20, // get_cookies / get_csrf_token
+        // 30, // get_record
+        101, // send_group_message
+        103, // send_discuss_message
+        106, // send_private_message
+        // 110, // send_like
+        120, // set_group_kick
+        121, // set_group_ban
+        // 122, // set_group_admin
+        // 123, // set_group_whole_ban
+        124, // set_group_anonymous_ban
+        // 125, // set_group_anonymous
+        // 126, // set_group_card
+        // 127, // set_group_leave
+        // 128, // set_group_special_title
+        130, // get_group_member_info
+        131, // get_stranger_info
+        132, // get_group_info
+        // 140, // set_discuss_leave
+        150, // set_friend_request
+        151, // set_group_request
+        160, // get_group_member_list
+        161, // get_group_list
+        //162, // get_friend_list
+        180 // delete_message
+    ]
+}

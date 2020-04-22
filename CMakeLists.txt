@@ -16,6 +16,16 @@ file(READ "app_id.txt" APP_ID)
 string(STRIP "${APP_ID}" APP_ID)
 cq_set_app_id(${APP_ID}) # 设置 app id, 必须
 
+
+# app
+set(app_version_id 27)
+set(app_version 2.2.1)
+set(app_name 关键词触发器)
+set(app_author 布吉岛)
+configure_file(${PROJECT_SOURCE_DIR}/app.json.in ${PROJECT_SOURCE_DIR}/app.json)
+configure_file(${PROJECT_SOURCE_DIR}/src/appInf.h.in ${PROJECT_SOURCE_DIR}/src/appInf.h)
+
+
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.hpp src/*.h) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
 
 if (CQ_CAN_BUILD_STD_MODE)

@@ -1,7 +1,7 @@
 #include <cqcppsdk/cqcppsdk.h>
+#include "appInf.h"
 #pragma once
 #define APPNAME "群关键词监控"
-#define VERSION_ID 27
 
 class mycq {
 public:
