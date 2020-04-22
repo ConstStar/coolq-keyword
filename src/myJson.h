@@ -11,12 +11,6 @@
 
 using namespace std;
 
-#ifdef _DEBUG
-#pragma comment(lib, "jsoncpp_v142_Debug_MDd_x86.lib")
-#else
-#pragma comment(lib, "jsoncpp_v142_Release_MD_x86.lib")
-#endif // _DEBUG
-
 //字符串处理
 class OperateStr {
 public:

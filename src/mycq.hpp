@@ -2,34 +2,6 @@
 #pragma once
 #define APPNAME "群关键词监控"
 #define VERSION_ID 27
-// namespace mycq::logging {
-//     void info(std::string word) {
-//         cq::logging::info(APPNAME, word);
-//     }
-
-//     void info(std::string title, std::string word) {
-//         cq::logging::info(title, word);
-//     }
-
-//     void error(std::string word) {
-//         cq::logging::error(APPNAME, word);
-//     }
-
-//     void error(std::string title, std::string word) {
-//         cq::logging::error(title, word);
-//     }
-
-//     void warning(std::string word) {
-//         cq::logging::warning(APPNAME, word);
-//     }
-
-//     void warning(std::string title, std::string word) {
-//         cq::logging::warning(title, word);
-//     }
-
-//     void test() {
-//     }
-// } // namespace mycq::logging
 
 class mycq {
 public:
