@@ -6,7 +6,8 @@
 #include "myJson.h"
 #include "mynetwork.h"
 
-#include <boost/regex.hpp>
+#include <regex>
+// #include <boost/regex.hpp>
 
 #include <nana/gui.hpp>
 #include <nana/gui/widgets/button.hpp>
@@ -120,7 +121,7 @@ protected:
 
 public:
     bool save() {
-        bool ok = boost::regex_match(text_admin.text(), boost::regex("[\\n\\d\\r]*"));
+        bool ok = regex_match(text_admin.text(), regex("[\\n\\d\\r]*"));
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
@@ -372,7 +373,7 @@ protected:
 public:
     bool save() {
         string priority_temp = text_priority.text();
-        bool ok = boost::regex_match(priority_temp, boost::regex("[0-9]+"));
+        bool ok = regex_match(priority_temp, regex("[0-9]+"));
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
@@ -531,7 +532,7 @@ protected:
 
 public:
     bool save() {
-        bool ok = boost::regex_match(text_banTimeLen.text(), boost::regex("[0-9]*"));
+        bool ok = regex_match(text_banTimeLen.text(), regex("[0-9]*"));
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
@@ -635,7 +636,7 @@ private:
         button_groupAdd.events().click([this] {
             isSave = false;
 
-            bool ok = boost::regex_match(text_groupAdd.text(), boost::regex("[1-9][0-9]*"));
+            bool ok = regex_match(text_groupAdd.text(), regex("[1-9][0-9]*"));
             if (!ok) {
                 msgbox m_error{*this, u8"错误"};
                 m_error.icon(msgbox::icon_error);
@@ -856,7 +857,7 @@ protected:
 
 public:
     bool save() {
-        bool ok = boost::regex_match(text_QQList.text(), boost::regex("[\\n\\d\\r]*"));
+        bool ok = regex_match(text_QQList.text(), regex("[\\n\\d\\r]*"));
         if (!ok) {
             msgbox m_error{*this, u8"错误"};
             m_error.icon(msgbox::icon_error);
@@ -1413,9 +1414,9 @@ protected:
 public:
     bool save() {
         bool ok_text_relayGroupMsg_trimFront =
-            boost::regex_match(text_relayGroupMsg_trimFront.text(), boost::regex("[0-9]*"));
+            regex_match(text_relayGroupMsg_trimFront.text(), regex("[0-9]*"));
         bool ok_text_relayGroupMsg_trimBack =
-            boost::regex_match(text_relayGroupMsg_trimBack.text(), boost::regex("[0-9]*"));
+            regex_match(text_relayGroupMsg_trimBack.text(), regex("[0-9]*"));
 
         if (!ok_text_relayGroupMsg_trimFront || !ok_text_relayGroupMsg_trimBack) {
             msgbox m_error{*this, u8"错误"};
