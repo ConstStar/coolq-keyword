@@ -15,7 +15,7 @@
 #include <thread>
 
 #include <boost/regex.hpp>
-#include <boost/timer.hpp>
+// #include <boost/timer.hpp>
 
 #include "myJson.h"
 
@@ -553,14 +553,16 @@ public:
             mycq::send_private_message(m_fromQQ, "已关闭 触发关键词后发送私聊提醒");
 
             m_index = NONE;
-        } else if (!std::string(prefix + "开启撤回消息").compare(msg)||!std::string(prefix + "开启消息撤回").compare(msg)) {
+        } else if (!std::string(prefix + "开启撤回消息").compare(msg)
+                   || !std::string(prefix + "开启消息撤回").compare(msg)) {
             conf.alone[0].deleteMsg = true;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 撤回触发关键词消息（需Pro）");
 
             m_index = NONE;
-        } else if (!std::string(prefix + "关闭撤回消息").compare(msg)||!std::string(prefix + "关闭消息撤回").compare(msg)) {
+        } else if (!std::string(prefix + "关闭撤回消息").compare(msg)
+                   || !std::string(prefix + "关闭消息撤回").compare(msg)) {
             conf.alone[0].deleteMsg = false;
             conf.alone2json();
             conf.json2file();
@@ -917,7 +919,7 @@ public:
 
         msg << "触发了关键词：" << keyWord << endl;
         msg << "处理方式：" << dealTypeStr << endl;
-        msg << "本次处理总耗时：" << m_time.elapsed() << "秒" << endl;
+        msg << "本次处理总耗时：" << timerElapsed() << "秒" << endl;
         msg << "(回复请发送：回复群" << m_fromGroup << ")";
 
         return msg.str();
@@ -1323,7 +1325,8 @@ public:
 
     //内容处理
     void MsgFun() {
-        m_time.restart();
+        // m_time.restart();
+        m_startTime = clock(); //计时开始k
         for (auto temp : conf.alone) {
             //全局设置最后检测
             if (temp.first == 0) continue;
@@ -1336,6 +1339,10 @@ public:
         }
 
         indexFun(0);
+    }
+
+    double timerElapsed() {
+        return static_cast<double>(clock() - m_startTime);
     }
 
     OperateMsg(cq::GroupMessageEvent evet) : evet(evet) {
@@ -1358,7 +1365,8 @@ private:
     cq::Anonymous m_fromAnonymous; //来源的匿名信息
     string m_msg; //消息内容
     int64_t m_msgId; //消息id
-    boost::timer m_time; //计算程序流失的时间
+    clock_t m_startTime; //计算程序流失的时间
+    // timer m_time; //计算程序流失的时间
 
     wstring m_wmsg; //宽字节消息内容
     wstring m_wmsg_delCQ; //删除CQ码
