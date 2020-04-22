@@ -17,13 +17,14 @@ configuration:
 install:
   - git submodule update --init --recursive # 下载子模块
   - set /p APP_ID=<app_id.txt # 如果你没有使用 app_id.txt 存放 app id，需在此手动设置
-  - type C:\Tools\vcpkg\triplets\x86-windows-static.cmake
-  - echo "set(VCPKG_TARGET_ARCHITECTURE x86)" > C:\Tools\vcpkg\triplets\x86-windows-static.cmake
-  - echo "set(VCPKG_CRT_LINKAGE dynamic)" >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
-  - echo "set(VCPKG_LIBRARY_LINKAGE static)" >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
   - cd C:\Tools\vcpkg
   - git pull
   - .\bootstrap-vcpkg.bat
+
+  - echo "set(VCPKG_TARGET_ARCHITECTURE x86)" > C:\Tools\vcpkg\triplets\x86-windows-static.cmake
+  - echo "set(VCPKG_CRT_LINKAGE dynamic)" >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
+  - echo "set(VCPKG_LIBRARY_LINKAGE static)" >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
+  
   - vcpkg install boost-timer:x86-windows-static
   - vcpkg install boost-regex:x86-windows-static
   - vcpkg install boost-algorithm:x86-windows-static
