@@ -44,8 +44,9 @@ build_script:
 
 after_build:
   - dir build\%CONFIGURATION%
-  - PowerShell copy build\%CONFIGURATION%\app.dll app.dll
+  - copy build\%CONFIGURATION%\app.dll app.dll
   - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
 
 artifacts:
   - path: build\%CONFIGURATION%\%APP_ID%.zip
+    name: usmooth_client_%CONFIGURATION%-v%APPVEYOR_BUILD_VERSION%
