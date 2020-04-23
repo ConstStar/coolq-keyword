@@ -39,7 +39,7 @@ install:
   - cd %APPVEYOR_BUILD_FOLDER%
 
 build_script:
-  - cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=x86-windows-static  # CMake generate
+  - cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=x86-windows-static  # CMake generate
   - cmake --build build --target app --config %CONFIGURATION% --clean-first --verbose # CMake build
 
 after_build:
