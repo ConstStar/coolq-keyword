@@ -16,6 +16,7 @@
 * 兼容docker
 
 <img style="width:50px;height:50px" src="/img/gui.gif"/>
+<img style="width:50px;height:50px" src="/img/msg.gif"/>
 <!-- ![image](/img/gui.gif) 
 ![image](/img/msg.gif) -->
 
