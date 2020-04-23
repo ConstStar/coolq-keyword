@@ -53,7 +53,7 @@ try {
     } else if (type == Update::updateType::mustUpdate) {
         update();
         string sendStr = "《关键词触发器》\r\n";
-        sendStr += inf + "\r\n\r\n更新执行完成";
+        sendStr += inf + "\r\n\r\n更新执行完成，请重启酷Q";
         sendAdmin(sendStr);
     } else {
         string sendStr = "《关键词触发器》已开启";
