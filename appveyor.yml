@@ -50,7 +50,7 @@ after_build:
   - tree
   - dir build\%CONFIGURATION%
   # - echo %CONFIGURATION%
-  - copy build\%CONFIGURATION%\app.dll app.dll
+  - PowerShell copy build\%CONFIGURATION%\app.dll app.dll
   - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
 
 artifacts:
