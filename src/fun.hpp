@@ -452,13 +452,13 @@ public:
     }
 
     //指令检测
-    int instruct(const char* msg) {
+    void instruct(const char* msg) {
         string& prefix = conf.prefix;
 
         //检测是否有为处理完的指令对话
         if (m_index != NONE) {
             funcute(msg);
-            return 0;
+            return;
         }
 
         //功能菜单
@@ -504,7 +504,7 @@ public:
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 强力检测关键词");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "关闭强力检测").compare(msg)) {
             conf.alone[0].streng = false;
             conf.alone2json();
@@ -518,35 +518,35 @@ public:
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 触发关键词提醒主人");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "关闭提醒主人").compare(msg)) {
             conf.alone[0].keyWordSendAdmin = false;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已关闭 触发关键词提醒主人");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "开启群内提醒").compare(msg)) {
             conf.alone[0].keyWordGroupWarn = true;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 触发关键词后发送群消息提醒");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "关闭群内提醒").compare(msg)) {
             conf.alone[0].keyWordGroupWarn = false;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已关闭 触发关键词后发送群消息提醒");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "开启私聊提醒").compare(msg)) {
             conf.alone[0].keyWordPrivateWarn = true;
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 触发关键词后发送私聊提醒");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "关闭私聊提醒").compare(msg)) {
             conf.alone[0].keyWordPrivateWarn = false;
             conf.alone2json();
@@ -561,7 +561,7 @@ public:
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已开启 撤回触发关键词消息（需Pro）");
 
-            m_index = NONE;
+            return;
         } else if (!std::string(prefix + "关闭撤回消息").compare(msg)
                    || !std::string(prefix + "关闭消息撤回").compare(msg)) {
             conf.alone[0].deleteMsg = false;
@@ -569,7 +569,7 @@ public:
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已关闭 撤回触发关键词消息（需Pro）");
 
-            m_index = NONE;
+            return;
         }
 
         //回复类
@@ -580,11 +580,8 @@ public:
             m_ReplyGroup = atoll(msg + std::string(prefix + "回复群").length());
 
             if (m_ReplyGroup == 0) {
-                sscanf(msg, "回复群＋%lld", &m_ReplyGroup);
-                if (m_ReplyGroup == 0) {
-                    mycq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
-                    return -1;
-                }
+                mycq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
+                return;
             }
             mycq::send_private_message(m_fromQQ, "请发送回复内容");
             m_index = SEND_GROUP_END;
@@ -738,7 +735,7 @@ public:
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
-                return 0;
+                return;
             }
 
             mycq::send_private_message(m_fromQQ, "请发送添加的监控名单QQ(可批量添加，每行一个)");
@@ -747,7 +744,7 @@ public:
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
-                return 0;
+                return;
             }
             std::string SendMsg = "全局默认 监控名单：\n";
 
@@ -763,7 +760,7 @@ public:
             if (conf.alone[0].QQListType == 0) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为白名单，与您的指令不符，请在先界面中设置为监控名单模式");
-                return 0;
+                return;
             }
             std::string SendMsg = "全局默认 监控名单：\n";
 
@@ -780,7 +777,7 @@ public:
             if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
-                return 0;
+                return;
             }
 
             mycq::send_private_message(m_fromQQ, "请发送添加的白名单(可批量添加，每行一个)");
@@ -789,7 +786,7 @@ public:
             if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
-                return 0;
+                return;
             }
             std::string SendMsg = "全局默认 白名单：\n";
 
@@ -805,7 +802,7 @@ public:
             if (conf.alone[0].QQListType == 1) {
                 mycq::send_private_message(m_fromQQ,
                                            "当前特殊名单模式为监控名单，与您的指令不符，请在先界面中设置为白名单模式");
-                return 0;
+                return;
             }
             std::string SendMsg = "全局默认 白名单：\n";
 
@@ -818,8 +815,6 @@ public:
 
             m_index = NONE;
         }
-
-        return m_index;
     }
 
 private:
