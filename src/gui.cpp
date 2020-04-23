@@ -49,7 +49,7 @@ protected:
     void showText(string title, string word) {
         form fm_temp;
         fm_temp.caption(title);
-        //fm_temp.bgcolor(color_rgb(BG_COLOE));
+        // fm_temp.bgcolor(color_rgb(BG_COLOE));
 
         textbox text{fm_temp};
         text.caption(word);
@@ -65,7 +65,7 @@ protected:
 
 public:
     tab_father(window wd) : panel<false>(wd), isSave(true) {
-        color_group=color_rgb(GROUP_COLOE);
+        color_group = color_rgb(GROUP_COLOE);
         // this->bgcolor(color_rgb(BG_COLOE));
     }
 
@@ -105,10 +105,11 @@ protected:
         conf.json2all();
 
         //主人QQ
-        text_admin.reset();
+        string admin;
         for (auto id : conf.admin) {
-            text_admin.append(to_string(id) + "\n", true);
+            admin += to_string(id) + "\n";
         }
+        text_admin.reset(admin);
 
         //指令前缀
         text_prefix.reset(conf.prefix);
@@ -657,6 +658,10 @@ private:
                     break;
                 }
             }
+
+            //
+            list_groupList.scroll(true);
+            text_groupAdd.caption(u8"");
         });
         group_list["button_groupAdd"] << button_groupAdd;
 
@@ -831,16 +836,18 @@ protected:
         conf.json2all();
 
         // QQ列表
-        text_QQList.reset();
+        string QQList;
         for (auto id : conf.alone[conf_index].QQList) {
-            text_QQList.append(to_string(id) + "\n", true);
+            QQList += to_string(id) + "\n";
         }
+        text_QQList.reset(QQList, false);
 
         //白名单关键词
-        text_keyWordWhite.reset();
+        string keyWordWhite;
         for (auto keyword : conf.alone[conf_index].keyWordWhite) {
-            text_keyWordWhite.append(keyword.keyWord + "\n", true);
+            keyWordWhite += keyword.keyWord + "\n";
         }
+        text_keyWordWhite.reset(keyWordWhite, false);
 
         //特殊名单类型
         check_QQListType.at(conf.alone[conf_index].QQListType)->check(true);
@@ -1040,16 +1047,18 @@ protected:
         conf.json2all();
 
         //普通关键词
-        text_keyWord.reset();
+        string keyWord;
         for (auto keyword : conf.alone[conf_index].keyWord) {
-            text_keyWord.append(keyword.keyWord + "\n", true);
+            keyWord += keyword.keyWord + "\n";
         }
+        text_keyWord.reset(keyWord);
 
         //正则表达式关键词
-        text_keyWordRegex.reset();
+        string keyWordRegex;
         for (auto keyword : conf.alone[conf_index].keyWordRegex) {
-            text_keyWordRegex.append(keyword.keyWord + "\n", true);
+            keyWordRegex += keyword.keyWord + "\n";
         }
+        text_keyWordRegex.reset(keyWordRegex);
 
         isSave = true;
     }
