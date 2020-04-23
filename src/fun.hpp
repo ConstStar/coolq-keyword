@@ -1342,8 +1342,9 @@ public:
         indexFun(0);
     }
 
+    //获取耗时
     double timerElapsed() {
-        return static_cast<double>(clock() - m_startTime);
+        return static_cast<double>(clock() - m_startTime) / CLOCKS_PER_SEC;
     }
 
     OperateMsg(cq::GroupMessageEvent evet) : evet(evet) {
