@@ -15,8 +15,9 @@
 * 支持正则表达式
 * 兼容docker
 
-![image](/img/gui.gif){:height="100" width="100"}
-![image](/img/msg.gif){:height="100" width="100"}
+<img style="width:50px;height:50px" src="/img/gui.gif"/>
+<!-- ![image](/img/gui.gif) 
+![image](/img/msg.gif) -->
 
 ## 依赖
 
