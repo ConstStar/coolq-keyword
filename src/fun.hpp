@@ -1023,15 +1023,19 @@ public:
             temp_msg[afterLine] = 0;
             temp_msg = temp_msg.c_str() + frontLine;
 
-            //检测消息格式是否错误
+            //检测消息修剪后内容为空
             if (temp_msg.empty()) {
-                string sendMsg;
-                sendMsg = "解析后消息格式错误\n消息内容:\n\n";
-                sendMsg += m_msg;
-                sendMsg += "\n\n请查看转发到群格式中删除行是否有误";
+                stringstream sendMsg;
+                sendMsg << "转发到群错误" << endl;
+                sendMsg << "原因：消息修剪后内容为空" << endl;
+                sendMsg << "消息内容：" << endl << endl;
+                sendMsg << m_msg << endl << endl;
+                sendMsg << "删除前面行数：" << conf.alone[conf_index].relayGroupMsg_trimFront << "行" << endl;
+                sendMsg << "删除后面行数：" << conf.alone[conf_index].relayGroupMsg_trimBack << "行" << endl;
+                sendMsg << "请查看转发到群中消息修剪是否有误";
 
                 for (auto temp : conf.admin) {
-                    mycq::send_private_message(temp, sendMsg);
+                    mycq::send_private_message(temp, sendMsg.str());
                 }
                 str = "";
 
