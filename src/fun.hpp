@@ -112,10 +112,10 @@ public:
 
             auto groupInf = mycq::get_group_list_map();
             if (res == 0)
-                sendMsg << "发送给QQ群" << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ")"
+                sendMsg << "发送给QQ群 " << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ") "
                         << "成功";
             else
-                sendMsg << "发送给QQ群" << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ")"
+                sendMsg << "发送给QQ群 " << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ") "
                         << "失败" << endl
                         << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
@@ -292,10 +292,10 @@ public:
 
             auto QQInf = mycq::get_stranger_info(m_ReplyQQ);
             if (res == 0)
-                sendMsg << "发送给 " << QQInf.nickname << "(" << m_ReplyQQ << ")"
+                sendMsg << "发送给QQ " << QQInf.nickname << "(" << m_ReplyQQ << ")"
                         << " 成功";
             else
-                sendMsg << "发送给 " << QQInf.nickname << "(" << m_ReplyQQ << ")"
+                sendMsg << "发送给QQ " << QQInf.nickname << "(" << m_ReplyQQ << ")"
                         << " 失败" << endl
                         << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
@@ -590,7 +590,7 @@ public:
             m_ReplyGroup = atoll(msg + std::string(prefix + "回复群").length());
 
             if (m_ReplyGroup == 0) {
-                mycq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
+                mycq::send_private_message(m_fromQQ, "格式有误，请按照格式重新发送");
                 return;
             }
             mycq::send_private_message(m_fromQQ, "请发送回复内容");
@@ -601,7 +601,7 @@ public:
                 mycq::send_private_message(m_fromQQ, "请发送要回复的消息");
                 m_index = SEND_QQ;
             } else {
-                mycq::send_private_message(m_fromQQ, "输入有误，请发送 回复+QQ号");
+                mycq::send_private_message(m_fromQQ, "格式有误，请发送 回复+QQ号");
                 m_index = NONE;
             }
 
