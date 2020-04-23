@@ -45,10 +45,10 @@ install:
 build_script:
   - cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=x86-windows-static  # CMake generate
   - cmake --build build --target app --config %CONFIGURATION% --clean-first --verbose # CMake build
-  - dir build\%CONFIGURATION%
 
 after_build:
-  #- tree
+  - tree
+  - dir build\%CONFIGURATION%
   # - echo %CONFIGURATION%
   - copy build\%CONFIGURATION%\app.dll app.dll
   - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
