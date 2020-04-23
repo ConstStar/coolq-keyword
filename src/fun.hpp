@@ -992,6 +992,10 @@ public:
 
     //基本变量
     void variableBasic(std::string& str, int conf_index) {
+
+        //触发的关键词
+        MyUtils::replace_all_distinct(str, "{msg}", m_msg);
+
         //触发的关键词
         MyUtils::replace_all_distinct(str, "{关键词}", keyWord);
 

@@ -1266,6 +1266,8 @@ private:
         button_groupVariable.caption(u8"可用变量");
         button_groupVariable.events().click([this] {
             string variable(
+                u8"{at}\t\t艾特\r\n"
+                u8"{msg}\t\t消息内容\r\n"
                 u8"{日期}\t\t当前日期\r\n"
                 u8"{时间}\t\t当前时间\r\n"
                 u8"{星期}\t\t当前星期\r\n"
@@ -1308,7 +1310,7 @@ private:
         button_privateVariable.caption(u8"可用变量");
         button_privateVariable.events().click([this] {
             string variable(
-                u8"{at}\t\t艾特\r\n"
+                u8"{msg}\t\t消息内容\r\n"
                 u8"{日期}\t\t当前日期\r\n"
                 u8"{时间}\t\t当前时间\r\n"
                 u8"{星期}\t\t当前星期\r\n"
@@ -1514,11 +1516,12 @@ private:
         button_variable.caption(u8"可用变量");
         button_variable.events().click([this] {
             string variable(
-                u8"{msg}\t\t触发关键词的消息内容\r\n"
+                u8"{msg}\t\t消息内容\r\n"
                 u8"{日期}\t\t当前日期\r\n"
                 u8"{时间}\t\t当前时间\r\n"
                 u8"{星期}\t\t当前星期\r\n"
                 u8"{关键词}\t\t触发的关键词\r\n"
+                u8"{处理方式}\t触发后处理方式\r\n"
                 u8"{QQ号码}\t触发关键词的QQ号码\r\n"
                 u8"{QQ名称}\t触发关键词的QQ名称\r\n"
                 u8"{QQ名片}\t触发关键词的QQ名片\r\n"
