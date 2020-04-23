@@ -31,9 +31,9 @@ install:
 
   - .\vcpkg install boost-regex:x86-windows-static
   # - .\vcpkg install boost-timer:x86-windows-static
-  - .\vcpkg install boost-algorithm:x86-windows-static
-  - .\vcpkg install boost-format:x86-windows-static
-  - .\vcpkg install boost-tokenizer:x86-windows-static
+  # - .\vcpkg install boost-algorithm:x86-windows-static
+  # - .\vcpkg install boost-format:x86-windows-static
+  # - .\vcpkg install boost-tokenizer:x86-windows-static
   - .\vcpkg install nana:x86-windows-static
   - .\vcpkg install jsoncpp:x86-windows-static
   - cd %APPVEYOR_BUILD_FOLDER%
