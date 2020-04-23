@@ -9,7 +9,7 @@ include_directories(src) # 设置 src 目录为包含目录, 可根据实际情�
 
 find_package(unofficial-nana CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS regex)
+# find_package(Boost REQUIRED COMPONENTS regex)
 
 # 从 app_id.txt 文件读取 app id, 也可以直接设置
 file(READ "app_id.txt" APP_ID)
@@ -34,8 +34,8 @@ cq_add_std_app(${SOURCE_FILES}) # 添加 std 模式的动态链接库构建目�
 target_link_libraries(app unofficial::nana::nana)
 target_link_libraries(app jsoncpp_lib)
 
-target_include_directories(app PUBLIC ${Boost_INCLUDE_DIRS})
-target_link_libraries(app ${Boost_LIBRARIES})
+# target_include_directories(app PUBLIC ${Boost_INCLUDE_DIRS})
+# target_link_libraries(app ${Boost_LIBRARIES})
 endif ()
 
 # 添加 dev 模式的可执行文件构建目标
