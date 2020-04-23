@@ -13,10 +13,13 @@ using MessageSegment = cq::message::MessageSegment;
 long long itime = 0;
 map<int64_t, Private> insQQ;
 
-void init() try {
+void init() 
+try {
     conf.file2json();
     conf.json2all();
 
+    //检查更新
+    
     Update up;
     string inf;
     Update::updateType type = up.check(inf);

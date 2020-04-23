@@ -7,14 +7,26 @@
 
 class mycq {
 public:
+public:
     //获取匿名信息
-    static cq::User get_stranger_info(const int64_t user_id, const bool no_cache = true) {
+    static cq::User get_stranger_info(const int64_t user_id, const bool no_cache = false) {
         try {
             return cq::get_stranger_info(user_id, no_cache);
         } catch (cq::ApiError &e) {
             cq::logging::info(APPNAME, e.what());
         }
         return cq::User();
+    }
+
+    //获取群列表 map
+    static cq::Group get_group_info(const int64_t group_id, const bool no_cache = false) {
+        try {
+            return cq::get_group_info(group_id, no_cache);
+        } catch (cq::ApiError &e) {
+            cq::logging::info(APPNAME, e.what());
+        }
+
+        return cq::Group();
     }
 
     //获取群列表 map
@@ -41,7 +53,7 @@ public:
 
     //获取群成员信息
     static cq::GroupMember get_group_member_info(const int64_t group_id, const int64_t user_id,
-                                                 const bool no_cache = true) {
+                                                 const bool no_cache = false) {
         try {
             return cq::get_group_member_info(group_id, user_id, no_cache);
         } catch (cq::ApiError &e) {
@@ -65,7 +77,7 @@ public:
     }
 
     //发送私聊消息  正确返回 0  异常返回code
-    static const int  send_private_message(const int64_t user_id, const std::string &message) {
+    static const int send_private_message(const int64_t user_id, const std::string &message) {
         try {
             cq::send_private_message(user_id, message);
             return 0;

@@ -110,12 +110,13 @@ public:
             int res;
             res = mycq::send_group_message(m_ReplyGroup, msg);
 
-            auto groupInf = mycq::get_group_list_map();
+            //auto groupInf = mycq::get_group_list_map();
+            auto groupInf = mycq::get_group_info(m_ReplyGroup);
             if (res == 0)
-                sendMsg << "发送给QQ群 " << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ") "
+                sendMsg << "发送给QQ群 " << groupInf.group_name << "(" << m_ReplyGroup << ") "
                         << "成功";
             else
-                sendMsg << "发送给QQ群 " << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ") "
+                sendMsg << "发送给QQ群 " << groupInf.group_name << "(" << m_ReplyGroup << ") "
                         << "失败" << endl
                         << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
@@ -897,7 +898,9 @@ public:
         stringstream msg;
 
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        auto groupList = mycq::get_group_list_map();
+        // auto groupList = mycq::get_group_list_map();
+        auto groupInf = mycq::get_group_info(m_fromGroup);
+
         string name;
         string card;
         string QQid_str;
@@ -913,7 +916,7 @@ public:
         }
 
         msg << "群号码：" << m_fromGroup << endl;
-        msg << "群名称：" << groupList[m_fromGroup].group_name << endl;
+        msg << "群名称：" << groupInf.group_name << endl;
         msg << "QQ号码：" << QQid_str << endl;
         msg << "QQ名称：" << name << "\n";
         msg << "QQ群名片：" << card << "\n";
@@ -1079,7 +1082,8 @@ public:
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        auto groupList = mycq::get_group_list_map();
+        // auto groupList = mycq::get_group_list_map();
+        auto groupInf = mycq::get_group_info(m_fromGroup);
 
         string name;
         string card;
@@ -1102,7 +1106,8 @@ public:
         str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
 
         //触发的群名称
-        str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
+        // str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
+        str = OperateStr::replace_all_distinct(str, "{群名称}", groupInf.group_name);
     }
 
     //自定义触发关键词提醒 变量
@@ -1142,7 +1147,8 @@ public:
         str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
 
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        auto groupList = mycq::get_group_list_map();
+        // auto groupList = mycq::get_group_list_map();
+        auto groupInf = mycq::get_group_info(m_fromGroup);
 
         string name;
         string card;
@@ -1165,7 +1171,8 @@ public:
         str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
 
         //触发的群名称
-        str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
+        // str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
+        str = OperateStr::replace_all_distinct(str, "{群名称}", groupInf.group_name);
     }
 
     //白名单关键词检测
