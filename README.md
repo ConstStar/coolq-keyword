@@ -2,6 +2,7 @@
 
 [![QQ 群](https://img.shields.io/badge/qq%E7%BE%A4-839067703-orange.svg)](https://jq.qq.com/?_wv=1027&k=5mfe8TR)
 [![酷Q帖子](https://img.shields.io/badge/%E9%85%B7Q%E5%B8%96%E5%AD%90-blue.svg)](https://cqp.cc/t/40793)
+[https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
 
 ## 简单介绍
 
