@@ -27,7 +27,7 @@ MyJson conf;
 
 /*私聊指令*/
 class Private {
-    enum Private_index {
+    enum PrivateIndex {
         NONE,
 
         SEND_GROUP_GETID,
@@ -828,7 +828,7 @@ public:
     }
 
 private:
-    Private_index m_index; //指令位置
+    PrivateIndex m_index; //指令位置
 
     int64_t m_ReplyGroup; //需要回复的群号码
     int64_t m_ReplyQQ; //需要回复的QQ号码
