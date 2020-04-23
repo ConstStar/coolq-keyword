@@ -15,8 +15,8 @@
 * 支持正则表达式
 * 兼容docker
 
-![image](/gui.gif)
-![image](/msg.gif)
+![image](/img/gui.gif)
+![image](/img/msg.gif)
 
 ## 依赖
 
