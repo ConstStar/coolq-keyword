@@ -30,7 +30,7 @@ class Private {
     enum Private_index {
         NONE,
 
-        SEND_GROUP_1,
+        SEND_GROUP_GETID,
         SEND_GROUP_END,
         SEND_QQ,
 
@@ -57,7 +57,7 @@ public:
     Private(long long fromQQ = 0) : m_fromQQ(fromQQ), m_index(NONE), m_ReplyGroup(0), m_ReplyQQ(0) {
     }
 
-    void put_fromQQ(long long fromQQ) {
+    void init(int64_t fromQQ) {
         m_fromQQ = fromQQ;
     }
 
@@ -97,7 +97,7 @@ public:
     //指令对话
     void funcute(const char* msg) {
         switch (m_index) {
-        case SEND_GROUP_1: //回复群
+        case SEND_GROUP_GETID: //回复群
         {
             m_ReplyGroup = atoll(msg);
             mycq::send_private_message(m_fromQQ, "请发送回复内容");
@@ -109,10 +109,15 @@ public:
             stringstream sendMsg;
             int res;
             res = mycq::send_group_message(m_ReplyGroup, msg);
+
+            auto groupInf = mycq::get_group_list_map();
             if (res == 0)
-                sendMsg << "发送给QQ群" << m_ReplyGroup << "成功";
+                sendMsg << "发送给QQ群" << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ")"
+                        << "成功";
             else
-                sendMsg << "发送给QQ群" << m_ReplyGroup << "失败" << endl << "错误代码：" << res;
+                sendMsg << "发送给QQ群" << groupInf[m_ReplyGroup].group_name << "(" << m_ReplyGroup << ")"
+                        << "失败" << endl
+                        << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyGroup = 0;
             m_index = NONE;
@@ -284,10 +289,15 @@ public:
             stringstream sendMsg;
             int res;
             res = mycq::send_private_message(m_ReplyQQ, msg);
+
+            auto QQInf = mycq::get_stranger_info(m_ReplyQQ);
             if (res == 0)
-                sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";
+                sendMsg << "发送给 " << QQInf.nickname << "(" << m_ReplyQQ << ")"
+                        << " 成功";
             else
-                sendMsg << "发送给 QQ" << m_ReplyQQ << " 失败" << endl << "错误代码：" << res;
+                sendMsg << "发送给 " << QQInf.nickname << "(" << m_ReplyQQ << ")"
+                        << " 失败" << endl
+                        << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyQQ = 0;
             m_index = NONE;
@@ -575,7 +585,7 @@ public:
         //回复类
         else if (!std::string(prefix + "回复群").compare(msg)) {
             mycq::send_private_message(m_fromQQ, "请发送要回复的QQ群号");
-            m_index = SEND_GROUP_1;
+            m_index = SEND_GROUP_GETID;
         } else if (std::string(msg).find(prefix + "回复群") != string::npos) {
             m_ReplyGroup = atoll(msg + std::string(prefix + "回复群").length());
 
