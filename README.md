@@ -15,6 +15,9 @@
 * 支持正则表达式
 * 兼容docker
 
+![image](/gui.gif)
+![image](/msg.gif)
+
 ## 依赖
 
 * [jsoncpp](https://github.com/open-source-parsers/jsoncpp)(v1.9.2) 作为配置项读写
