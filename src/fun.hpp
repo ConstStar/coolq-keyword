@@ -106,14 +106,14 @@ public:
         }
         case SEND_GROUP_END: //回复群
         {
-            char ch[100] = {'\0'};
-            int16_t t;
+            stringstream sendMsg;
+            int64_t t;
             t = mycq::send_group_message(m_ReplyGroup, msg);
             if (t > 0)
-                sprintf(ch, "发送给QQ群%lld成功", m_ReplyGroup);
+                sendMsg << "发送给QQ群" << m_ReplyGroup << "成功";
             else
-                sprintf(ch, "发送给QQ群%lld失败\n错误代码：%d", m_ReplyGroup, t);
-            mycq::send_private_message(m_fromQQ, ch);
+                sendMsg << "发送给QQ群" << m_ReplyGroup << "失败" << endl << "错误代码：" << t;
+            mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyGroup = 0;
             m_index = NONE;
             break;
@@ -282,7 +282,7 @@ public:
         case SEND_QQ: //回复QQ
         {
             stringstream sendMsg;
-            int16_t ret;
+            int64_t ret;
             ret = mycq::send_private_message(m_ReplyQQ, msg);
             if (ret > 0)
                 sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";
@@ -580,7 +580,7 @@ public:
             m_ReplyGroup = atoll(msg + std::string(prefix + "回复群").length());
 
             if (m_ReplyGroup == 0) {
-                sscanf(msg, "回复群＋%lld", m_ReplyGroup);
+                sscanf(msg, "回复群＋%lld", &m_ReplyGroup);
                 if (m_ReplyGroup == 0) {
                     mycq::send_private_message(m_fromQQ, "输入有误，请按照格式重新发送");
                     return -1;
@@ -825,9 +825,9 @@ public:
 private:
     Private_index m_index; //指令位置
 
-    long long m_ReplyGroup; //需要回复的群号码
-    long long m_ReplyQQ; //需要回复的QQ号码
-    long long m_fromQQ; //消息来自的QQ号码
+    int64_t m_ReplyGroup; //需要回复的群号码
+    int64_t m_ReplyQQ; //需要回复的QQ号码
+    int64_t m_fromQQ; //消息来自的QQ号码
 };
 
 /*关键词触发*/
@@ -1054,9 +1054,9 @@ public:
         char Week[20];
         char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
 
-        sprintf(date, "%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, "%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
-        sprintf(Week, "星期%s", weekStr[sys.wDayOfWeek]);
+        sprintf(date, u8"%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
+        sprintf(time, u8"%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
+        sprintf(Week, u8"星期%s", weekStr[sys.wDayOfWeek]);
 
         //日期
         str = OperateStr::replace_all_distinct(str, "{日期}", date);
@@ -1114,9 +1114,9 @@ public:
         char Week[20];
         char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
 
-        sprintf(date, "%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, "%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
-        sprintf(Week, "星期%s", weekStr[sys.wDayOfWeek]);
+        sprintf(date, u8"%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
+        sprintf(time, u8"%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
+        sprintf(Week, u8"星期%s", weekStr[sys.wDayOfWeek]);
 
         //日期
         str = OperateStr::replace_all_distinct(str, "{日期}", date);
