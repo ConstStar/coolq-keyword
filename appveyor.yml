@@ -15,9 +15,6 @@ configuration:
   # - RelWithDebInfo # 优化速度 - 包括调试信息
 
 install:
-  - PowerShell copy src\appInf.h appInf.h
-  - dir
-
   - git submodule update --init --recursive # 下载子模块
   - set /p APP_ID=<app_id.txt # 如果你没有使用 app_id.txt 存放 app id，需在此手动设置
 
