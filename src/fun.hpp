@@ -127,10 +127,10 @@ public:
         case ADD_KEYWORD: //添加关键词
         {
             //支持批量添加 解析每行数据
-            unordered_set<string> temp_vector;
-            MyUtils::line_get_str(msg, temp_vector);
+            unordered_set<string> temp_array;
+            temp_array = MyUtils::line_get_str(msg);
 
-            for (auto temp_keyword : temp_vector) {
+            for (auto temp_keyword : temp_array) {
                 WKEYWORD temp_add(temp_keyword);
                 conf.alone[0].keyWord.insert(temp_add);
             }
@@ -176,10 +176,10 @@ public:
         case ADD_QQLIST: //添加名单
         {
             //支持批量添加 解析每行数据
-            unordered_set<long long> temp_vector;
-            MyUtils::line_get_ll(msg, temp_vector);
+            unordered_set<long long> temp_array;
+            temp_array = MyUtils::line_get_ll(msg);
 
-            for (auto temp_longlong : temp_vector) {
+            for (auto temp_longlong : temp_array) {
                 conf.alone[0].QQList.insert(temp_longlong);
             }
 
@@ -233,10 +233,10 @@ public:
         case ADD_GROUPLIST: //添加监控群
         {
             //支持批量添加 解析每行数据
-            unordered_set<long long> temp_vector;
-            MyUtils::line_get_ll(msg, temp_vector);
+            unordered_set<long long> temp_array;
+            temp_array = MyUtils::line_get_ll(msg);
 
-            for (auto temp_longlong : temp_vector) {
+            for (auto temp_longlong : temp_array) {
                 conf.alone[0].groupList.insert(temp_longlong);
             }
 
@@ -308,10 +308,10 @@ public:
         case ADD_KEYWORD_WHITE: //添加白名单关键词
         {
             //支持批量添加 解析每行数据
-            unordered_set<string> temp_vector;
-            MyUtils::line_get_str(msg, temp_vector);
+            unordered_set<string> temp_array;
+            temp_array = MyUtils::line_get_str(msg);
 
-            for (auto temp_keyword : temp_vector) {
+            for (auto temp_keyword : temp_array) {
                 WKEYWORD temp_add(temp_keyword);
                 conf.alone[0].keyWordWhite.insert(temp_add);
             }
@@ -357,10 +357,10 @@ public:
         case ADD_KEYWORD_RE: //添加正则表达式关键词
         {
             //支持批量添加 解析每行数据
-            unordered_set<string> temp_vector;
-            MyUtils::line_get_str(msg, temp_vector);
+            unordered_set<string> temp_array;
+            temp_array = MyUtils::line_get_str(msg);
 
-            for (auto temp_keyword : temp_vector) {
+            for (auto temp_keyword : temp_array) {
                 WKEYWORD temp_add(temp_keyword);
                 conf.alone[0].keyWordRegex.insert(temp_add);
             }
@@ -405,10 +405,10 @@ public:
         case ADD_GROUPLIST_SEND: //添加转发到群号码
         {
             //支持批量添加 解析每行数据
-            unordered_set<long long> temp_vector;
-            MyUtils::line_get_ll(msg, temp_vector);
+            unordered_set<long long> temp_array;
+            temp_array = MyUtils::line_get_ll(msg);
 
-            for (auto temp_longlong : temp_vector) {
+            for (auto temp_longlong : temp_array) {
                 conf.alone[0].relayGroupList.insert(temp_longlong);
             }
 
@@ -992,7 +992,6 @@ public:
 
     //基本变量
     void variableBasic(std::string& str, int conf_index) {
-
         //触发的关键词
         MyUtils::replace_all_distinct(str, "{msg}", m_msg);
 

@@ -1,11 +1,6 @@
 #include "MyUtils.h"
 #include <mycq.hpp>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
-#include <boost/tokenizer.hpp>
-
-
 wstring MyUtils::string2wstring(string str) {
     // wstring result;
     // //获取缓冲区大小，并申请空间，缓冲区大小按字符计算
@@ -68,27 +63,27 @@ string MyUtils::ansi(string& str) {
 }
 
 //获取 分割每行的字符串 json
-void MyUtils::line_get_str(string str, std::unordered_set<string>& value) {
-    value.clear();
+std::unordered_set<string> MyUtils::line_get_str(string str) {
+    std::unordered_set<string> value;
 
-    std::unordered_set<string> temp_array;
-    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
-
+    string_erase_all(str, '\r');
+    auto temp_array = split(str, "\n");
     for (auto temp_str : temp_array) {
         //过滤无效值
         if (temp_str.empty()) continue;
 
         value.insert(temp_str);
     }
+
+    return value;
 }
 
 //获取 分割每行的uint json
-void MyUtils::line_get_ll(string str, std::unordered_set<long long>& value) {
-    value.clear();
+std::unordered_set<long long> MyUtils::line_get_ll(string str) {
+    std::unordered_set<long long> value;
 
-    std::unordered_set<string> temp_array;
-    boost::split(temp_array, str, boost::is_any_of(L"\r\n"));
-
+    string_erase_all(str, '\r');
+    auto temp_array = split(str, "\n");
     for (auto temp_str : temp_array) {
         long long num = atoll(temp_str.c_str());
 
@@ -96,5 +91,35 @@ void MyUtils::line_get_ll(string str, std::unordered_set<long long>& value) {
         if (num == 0) continue;
 
         value.insert(num);
+    }
+
+    return value;
+}
+
+//字符串分割函数
+std::vector<std::string> MyUtils::split(std::string& str, std::string pattern) {
+    std::string::size_type pos;
+    std::vector<std::string> result;
+    str += pattern; //扩展字符串以方便操作
+    size_t size = str.size();
+    for (size_t i = 0; i < size; i++) {
+        pos = str.find(pattern, i);
+        if (pos < size) {
+            std::string s = str.substr(i, pos - i);
+            result.push_back(s);
+            i = pos + pattern.size() - 1;
+        }
+    }
+    return result;
+}
+
+//删除所有指定字符
+void MyUtils::string_erase_all(std::string& str, char c) {
+    for (auto it = str.begin(); it != str.end();) {
+        if (*it == c) {
+            str.erase(it);
+        } else {
+            it++;
+        }
     }
 }

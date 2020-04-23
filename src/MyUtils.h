@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <unordered_set>
 
 using string = std::string;
@@ -22,8 +23,14 @@ public:
     static string ansi(string& str);
 
     //获取 分割每行的字符串 json
-    static void line_get_str(string str, std::unordered_set<string>& value);
+    static std::unordered_set<string> line_get_str(string str);
 
     //获取 分割每行的uint json
-    static void line_get_ll(string str, std::unordered_set<long long>& value);
+    static std::unordered_set<long long> line_get_ll(string str);
+
+    //字符串分割函数
+    static std::vector<std::string> MyUtils::split(std::string& str, std::string pattern);
+
+    //删除所有指定字符
+    static void string_erase_all(std::string& str, char c);
 };
