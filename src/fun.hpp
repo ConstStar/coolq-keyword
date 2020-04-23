@@ -112,7 +112,7 @@ public:
             if (res == 0)
                 sendMsg << "发送给QQ群" << m_ReplyGroup << "成功";
             else
-                sendMsg << "发送给QQ群" << m_ReplyGroup << "失败" << endl << "错误代码：" << t;
+                sendMsg << "发送给QQ群" << m_ReplyGroup << "失败" << endl << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyGroup = 0;
             m_index = NONE;
@@ -287,7 +287,7 @@ public:
             if (res == 0)
                 sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";
             else
-                sendMsg << "发送给 QQ" << m_ReplyQQ << " 失败\n错误代码：" << ret;
+                sendMsg << "发送给 QQ" << m_ReplyQQ << " 失败" << endl << "错误代码：" << res;
             mycq::send_private_message(m_fromQQ, sendMsg.str());
             m_ReplyQQ = 0;
             m_index = NONE;
