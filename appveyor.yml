@@ -14,39 +14,36 @@ configuration:
   # - MinSizeRel # 优化最小二进制大小 - 排除调试信息
   # - RelWithDebInfo # 优化速度 - 包括调试信息
 
+environment:
+  VCPKG_ROOT: C:\tools\vcpkg\
+
 install:
   - git submodule update --init --recursive # 下载子模块
   - set /p APP_ID=<app_id.txt # 如果你没有使用 app_id.txt 存放 app id，需在此手动设置
 
-  - cd C:\Tools\vcpkg
+  - cd ${VCPKG_ROOT}
   - git pull
   - .\bootstrap-vcpkg.bat
 
-  - echo set(VCPKG_TARGET_ARCHITECTURE x86) > C:\Tools\vcpkg\triplets\x86-windows-static.cmake
-  - echo set(VCPKG_CRT_LINKAGE dynamic) >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
-  - echo set(VCPKG_LIBRARY_LINKAGE static) >> C:\Tools\vcpkg\triplets\x86-windows-static.cmake
+  - echo set(VCPKG_TARGET_ARCHITECTURE x86) > ${VCPKG_ROOT}triplets\x86-windows-static.cmake
+  - echo set(VCPKG_CRT_LINKAGE dynamic) >> ${VCPKG_ROOT}triplets\x86-windows-static.cmake
+  - echo set(VCPKG_LIBRARY_LINKAGE static) >> ${VCPKG_ROOT}triplets\x86-windows-static.cmake
 
-  # - .\vcpkg install boost-regex:x86-windows-static
+  - .\vcpkg install boost-regex:x86-windows-static
   # - .\vcpkg install boost-timer:x86-windows-static
-  # - .\vcpkg install boost-algorithm:x86-windows-static
-  # - .\vcpkg install boost-format:x86-windows-static
-  # - .\vcpkg install boost-tokenizer:x86-windows-static
+  - .\vcpkg install boost-algorithm:x86-windows-static
+  - .\vcpkg install boost-format:x86-windows-static
+  - .\vcpkg install boost-tokenizer:x86-windows-static
   - .\vcpkg install nana:x86-windows-static
   - .\vcpkg install jsoncpp:x86-windows-static
   - cd %APPVEYOR_BUILD_FOLDER%
-  - echo %APPVEYOR_BUILD_FOLDER%
-  
-  - dir src
-  - tree
 
 build_script:
   - cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=x86-windows-static  # CMake generate
   - cmake --build build --target app --config %CONFIGURATION% --clean-first --verbose # CMake build
 
 after_build:
-  - tree
   - dir build\%CONFIGURATION%
-  # - echo %CONFIGURATION%
   - PowerShell copy build\%CONFIGURATION%\app.dll app.dll
   - 7z a build\%CONFIGURATION%\%APP_ID%.zip app.json app.dll # 打包 app.dll 和 app.json
 

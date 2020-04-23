@@ -14,8 +14,8 @@
 #include <fstream>
 #include <thread>
 
-#include <regex>
-// #include <boost/regex.hpp>
+//#include <regex>
+#include <boost/regex.hpp>
 // #include <boost/timer.hpp>
 
 #include "myJson.h"
@@ -975,8 +975,8 @@ public:
     //删除cq码
     std::wstring DelCQ(std::wstring msg) {
         if (msg.find(L"[CQ:") != wstring::npos) {
-            wregex e1(L"\\[CQ:.*\\]");
-            msg = regex_replace(msg, e1, L"");
+            boost::wregex e1(L"\\[CQ:.*\\]");
+            msg = boost::regex_replace(msg, e1, L"");
         }
 
         return msg;
@@ -1249,10 +1249,10 @@ public:
 
         for (WKEYWORD aloneRegex : conf.alone[conf_index].keyWordRegex) {
             try {
-                wregex re(aloneRegex.wkeyWrod);
-                wsmatch RE;
+                boost::wregex re(aloneRegex.wkeyWrod);
+                boost::wsmatch RE;
 
-                bool rec = regex_search(wmsg, RE, re);
+                bool rec = boost::regex_search(wmsg, RE, re);
 
                 if (rec) {
                     keyWord = OperateStr::wstring2string(RE.str());
