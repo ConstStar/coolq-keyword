@@ -107,9 +107,9 @@ public:
         case SEND_GROUP_END: //回复群
         {
             stringstream sendMsg;
-            int64_t t;
-            t = mycq::send_group_message(m_ReplyGroup, msg);
-            if (t > 0)
+            int res;
+            res = mycq::send_group_message(m_ReplyGroup, msg);
+            if (res == 0)
                 sendMsg << "发送给QQ群" << m_ReplyGroup << "成功";
             else
                 sendMsg << "发送给QQ群" << m_ReplyGroup << "失败" << endl << "错误代码：" << t;
@@ -282,9 +282,9 @@ public:
         case SEND_QQ: //回复QQ
         {
             stringstream sendMsg;
-            int64_t ret;
-            ret = mycq::send_private_message(m_ReplyQQ, msg);
-            if (ret > 0)
+            int res;
+            res = mycq::send_private_message(m_ReplyQQ, msg);
+            if (res == 0)
                 sendMsg << "发送给 QQ" << m_ReplyQQ << " 成功";
             else
                 sendMsg << "发送给 QQ" << m_ReplyQQ << " 失败\n错误代码：" << ret;

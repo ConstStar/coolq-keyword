@@ -51,26 +51,30 @@ public:
         return cq::GroupMember();
     }
 
-    //发送群消息
-    static int64_t send_group_message(const int64_t group_id, const std::string &message) {
+    //发送群消息 正确返回 0  异常返回code
+    static const int send_group_message(const int64_t group_id, const std::string &message) {
         try {
-            return cq::send_group_message(group_id, message);
+            cq::send_group_message(group_id, message);
+            return 0;
         } catch (cq::ApiError &e) {
             cq::logging::info(APPNAME, e.what());
+            return e.code;
         }
 
-        return 0;
+        return -1;
     }
 
-    //发送私聊消息
-    static int64_t send_private_message(const int64_t user_id, const std::string &message) {
+    //发送私聊消息  正确返回 0  异常返回code
+    static const int  send_private_message(const int64_t user_id, const std::string &message) {
         try {
-            return cq::send_private_message(user_id, message);
+            cq::send_private_message(user_id, message);
+            return 0;
         } catch (cq::ApiError &e) {
             cq::logging::info(APPNAME, e.what());
+            return e.code;
         }
 
-        return 0;
+        return -1;
     }
 
     //踢出
