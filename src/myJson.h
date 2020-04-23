@@ -8,30 +8,15 @@
 #include <json/json.h>
 #include <functional>
 #include <iostream>
+#include "MyUtils.h"
 
 using namespace std;
 
-//字符串处理
-class OperateStr {
-public:
-    //
-    static string& replace_all(string& str, const string& old_value, const string& new_value);
-
-    //字符串全部替换
-    static string replace_all_distinct(string& str, string old_value, string new_value);
-
-    //将string转成wstring
-    static wstring string2wstring(string str);
-
-    //将wstring转换成string
-    static string wstring2string(wstring wstr);
-};
-
 struct WKEYWORD {
-    WKEYWORD(string& str) : keyWord(str), wkeyWrod(OperateStr::string2wstring(str)) {
+    WKEYWORD(string& str) : keyWord(str), wkeyWrod(MyUtils::string2wstring(str)) {
     }
 
-    WKEYWORD(const char* str) : keyWord(str), wkeyWrod(OperateStr::string2wstring(string(str))) {
+    WKEYWORD(const char* str) : keyWord(str), wkeyWrod(MyUtils::string2wstring(string(str))) {
     }
 
     string keyWord;
@@ -185,13 +170,4 @@ public:
 
     // Json
     Json::Value conf_json;
-};
-
-class OperateLine {
-public:
-    //获取 分割每行的字符串 json
-    static void line_get_str(string str, unordered_set<string>& value);
-
-    //获取 分割每行的uint json
-    static void line_get_ll(string str, unordered_set<long long>& value);
 };

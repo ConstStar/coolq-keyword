@@ -1,12 +1,12 @@
+#include "mynetwork.h"
 #include "mycq.hpp"
+#include "MyUtils.h"
 
 #include "httplib.h"
-
 #include <json/json.h>
 #include <fstream>
 #include <string>
 
-#include "mynetwork.h"
 using namespace std;
 
 #define HOST "keyword.xiaoxiaoge.cn"
@@ -73,7 +73,7 @@ bool Update::getUpdate(string &inf) {
             throw exception("插件下载失败 网络异常");
         }
 
-        string appPath = cq::utils::ansi(cq::dir::root()) + "app\\" + cq::utils::ansi(appName);
+        string appPath = MyUtils::ansi(cq::dir::root()) + "app\\" + MyUtils::ansi(appName);
         ofstream file(appPath, ios::out | ios::binary | ios::trunc);
         if (!file.good()) throw exception(("文件打开失败: " + appPath).c_str());
         file << ret->body;

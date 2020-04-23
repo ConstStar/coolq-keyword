@@ -110,7 +110,7 @@ public:
             int res;
             res = mycq::send_group_message(m_ReplyGroup, msg);
 
-            //auto groupInf = mycq::get_group_list_map();
+            // auto groupInf = mycq::get_group_list_map();
             auto groupInf = mycq::get_group_info(m_ReplyGroup);
             if (res == 0)
                 sendMsg << "发送给QQ群 " << groupInf.group_name << "(" << m_ReplyGroup << ") "
@@ -128,7 +128,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<string> temp_vector;
-            OperateLine::line_get_str(msg, temp_vector);
+            MyUtils::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
@@ -177,7 +177,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<long long> temp_vector;
-            OperateLine::line_get_ll(msg, temp_vector);
+            MyUtils::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
                 conf.alone[0].QQList.insert(temp_longlong);
@@ -234,7 +234,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<long long> temp_vector;
-            OperateLine::line_get_ll(msg, temp_vector);
+            MyUtils::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
                 conf.alone[0].groupList.insert(temp_longlong);
@@ -309,7 +309,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<string> temp_vector;
-            OperateLine::line_get_str(msg, temp_vector);
+            MyUtils::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
@@ -358,7 +358,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<string> temp_vector;
-            OperateLine::line_get_str(msg, temp_vector);
+            MyUtils::line_get_str(msg, temp_vector);
 
             for (auto temp_keyword : temp_vector) {
                 WKEYWORD temp_add(temp_keyword);
@@ -406,7 +406,7 @@ public:
         {
             //支持批量添加 解析每行数据
             unordered_set<long long> temp_vector;
-            OperateLine::line_get_ll(msg, temp_vector);
+            MyUtils::line_get_ll(msg, temp_vector);
 
             for (auto temp_longlong : temp_vector) {
                 conf.alone[0].relayGroupList.insert(temp_longlong);
@@ -941,8 +941,8 @@ public:
 
         //转发到群
         string relayGroupMsg(conf.alone[conf_index].relayGroupWord);
-        //变量
-        relayGroupMsgWord(relayGroupMsg, conf_index);
+        //转发到群变量
+        variableRelayGroup(relayGroupMsg, conf_index);
         //发送
         for (long long GroupId : conf.alone[conf_index].relayGroupList) {
             mycq::send_group_message(GroupId, relayGroupMsg);
@@ -956,7 +956,7 @@ public:
             {
                 sendMsg = "{at} 触发关键词，处理方式:{处理方式}";
             }
-            KeyWordWarnMsg(sendMsg, conf_index); //变量
+            variableKeyWordWarn(sendMsg, conf_index); //变量
             mycq::send_group_message(m_fromGroup, sendMsg);
         }
 
@@ -965,7 +965,7 @@ public:
             if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
                 string sendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
                 //解析变量
-                KeyWordWarnMsg(sendMsg, conf_index);
+                variableKeyWordWarn(sendMsg, conf_index);
                 mycq::send_private_message(m_fromQQ, sendMsg);
             }
         }
@@ -990,8 +990,78 @@ public:
         return msg;
     }
 
+    //基本变量
+    void variableBasic(std::string& str, int conf_index) {
+        //触发的关键词
+        MyUtils::replace_all_distinct(str, "{关键词}", keyWord);
+
+        //触发的QQ号码
+        MyUtils::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
+
+        //触发的群号码
+        MyUtils::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
+
+        //处理方式
+        MyUtils::replace_all_distinct(str, "{处理方式}", dealTypeStr);
+
+        //消息内容
+
+        //系统时间
+        if (str.find("{日期}") != str.npos || str.find("{时间}") != str.npos || str.find("{星期}") != str.npos) {
+            //获取当前时间
+            SYSTEMTIME sys;
+            GetLocalTime(&sys);
+
+            char date[20];
+            char time[20];
+            char Week[20];
+            char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
+
+            sprintf(date, u8"%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
+            sprintf(time, u8"%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
+            sprintf(Week, u8"星期%s", weekStr[sys.wDayOfWeek]);
+
+            //日期
+            MyUtils::replace_all_distinct(str, "{日期}", date);
+
+            //时间
+            MyUtils::replace_all_distinct(str, "{时间}", time);
+
+            //星期
+            MyUtils::replace_all_distinct(str, "{星期}", Week);
+        }
+
+        // QQ资料
+        if (str.find("{QQ名称}") != str.npos || str.find("{QQ名片}") != str.npos) {
+            auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
+
+            string name;
+            string card;
+            if (evet.is_anonymous()) {
+                name = "匿名（" + evet.anonymous.name + "）";
+                card = name;
+            } else {
+                name = QQInf.nickname;
+                card = QQInf.card;
+            }
+
+            //触发的QQ名称
+            MyUtils::replace_all_distinct(str, "{QQ名称}", name);
+            //触发的QQ名片
+            MyUtils::replace_all_distinct(str, "{QQ名片}", card);
+        }
+
+        //群资料
+        if (str.find("{群名称}") != str.npos) {
+            auto groupInf = mycq::get_group_info(m_fromGroup);
+
+            //触发的群名称
+            MyUtils::replace_all_distinct(str, "{群名称}", groupInf.group_name);
+        }
+    }
+
     //转发到群格式
-    void relayGroupMsgWord(std::string& str, int conf_index) {
+    void variableRelayGroup(std::string& str, int conf_index) {
         //默认内容为msg
         if (str.empty()) {
             str = "{msg}";
@@ -1050,129 +1120,18 @@ public:
                 return;
             }
 
-            str = OperateStr::replace_all_distinct(str, "{msg}", temp_msg);
+            MyUtils::replace_all_distinct(str, "{msg}", temp_msg);
         }
 
-        //获取当前时间
-        SYSTEMTIME sys;
-        GetLocalTime(&sys);
-
-        char date[20];
-        char time[20];
-        char Week[20];
-        char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
-
-        sprintf(date, u8"%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, u8"%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
-        sprintf(Week, u8"星期%s", weekStr[sys.wDayOfWeek]);
-
-        //日期
-        str = OperateStr::replace_all_distinct(str, "{日期}", date);
-
-        //时间
-        str = OperateStr::replace_all_distinct(str, "{时间}", time);
-
-        //星期
-        str = OperateStr::replace_all_distinct(str, "{星期}", Week);
-
-        //触发的关键词
-        str = OperateStr::replace_all_distinct(str, "{关键词}", keyWord);
-
-        //触发的QQ号码
-        str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
-
-        auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        // auto groupList = mycq::get_group_list_map();
-        auto groupInf = mycq::get_group_info(m_fromGroup);
-
-        string name;
-        string card;
-
-        if (evet.is_anonymous()) {
-            name = "匿名（" + evet.anonymous.name + "）";
-            card = name;
-        } else {
-            name = QQInf.nickname;
-            card = QQInf.card;
-        }
-
-        //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{QQ名称}", name);
-
-        //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{QQ名片}", card);
-
-        //触发的群号码
-        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
-
-        //触发的群名称
-        // str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
-        str = OperateStr::replace_all_distinct(str, "{群名称}", groupInf.group_name);
+        variableBasic(str, conf_index);
     }
 
     //自定义触发关键词提醒 变量
-    void KeyWordWarnMsg(std::string& str, int conf_index) {
+    void variableKeyWordWarn(std::string& str, int conf_index) {
         //艾特
-        str = OperateStr::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
+        MyUtils::replace_all_distinct(str, "{at}", "[CQ:at,qq=" + std::to_string(m_fromQQ) + "]");
 
-        //获取当前时间
-        SYSTEMTIME sys;
-        GetLocalTime(&sys);
-
-        char date[20];
-        char time[20];
-        char Week[20];
-        char weekStr[8][4] = {"天", "一", "二", "三", "四", "五", "六"};
-
-        sprintf(date, u8"%4d年%02d月%02d日", sys.wYear, sys.wMonth, sys.wDay);
-        sprintf(time, u8"%02d:%02d:%02d", sys.wHour, sys.wMinute, sys.wSecond);
-        sprintf(Week, u8"星期%s", weekStr[sys.wDayOfWeek]);
-
-        //日期
-        str = OperateStr::replace_all_distinct(str, "{日期}", date);
-
-        //时间
-        str = OperateStr::replace_all_distinct(str, "{时间}", time);
-
-        //星期
-        str = OperateStr::replace_all_distinct(str, "{星期}", Week);
-
-        //处理方式
-        str = OperateStr::replace_all_distinct(str, "{处理方式}", dealTypeStr);
-
-        //触发的关键词
-        str = OperateStr::replace_all_distinct(str, "{关键词}", keyWord);
-
-        //触发的QQ号码
-        str = OperateStr::replace_all_distinct(str, "{QQ号码}", to_string(m_fromQQ));
-
-        auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
-        // auto groupList = mycq::get_group_list_map();
-        auto groupInf = mycq::get_group_info(m_fromGroup);
-
-        string name;
-        string card;
-
-        if (evet.is_anonymous()) {
-            name = "匿名（" + evet.anonymous.name + "）";
-            card = name;
-        } else {
-            name = QQInf.nickname;
-            card = QQInf.card;
-        }
-
-        //触发的QQ名称
-        str = OperateStr::replace_all_distinct(str, "{QQ名称}", name);
-
-        //触发的QQ名片
-        str = OperateStr::replace_all_distinct(str, "{QQ名片}", card);
-
-        //触发的群号码
-        str = OperateStr::replace_all_distinct(str, "{群号码}", to_string(m_fromGroup));
-
-        //触发的群名称
-        // str = OperateStr::replace_all_distinct(str, "{群名称}", groupList[m_fromGroup].group_name);
-        str = OperateStr::replace_all_distinct(str, "{群名称}", groupInf.group_name);
+        variableBasic(str, conf_index);
     }
 
     //白名单关键词检测
@@ -1271,7 +1230,7 @@ public:
                 bool rec = boost::regex_search(wmsg, RE, re);
 
                 if (rec) {
-                    keyWord = OperateStr::wstring2string(RE.str());
+                    keyWord = MyUtils::wstring2string(RE.str());
                     keyWordRegex = aloneRegex.keyWord;
                     return true;
                 }
@@ -1371,7 +1330,7 @@ public:
         m_msgId = evet.message_id;
 
         //将消息的宽字符串格式存放到对象中
-        m_wmsg = OperateStr::string2wstring(evet.message);
+        m_wmsg = MyUtils::string2wstring(evet.message);
 
         m_wmsg_delCQ = DelCQ(m_wmsg);
     }
