@@ -26,7 +26,7 @@
 
 ## 构造
 
-构造前请先学习[cqcppsdk](https://cqcppsdk.cqp.moe/)的使用，编译好[依赖项](#依赖项)，设置好[依赖项](#依赖项)路径，开始编译
+构造前请先学习[cqcppsdk](https://cqcppsdk.cqp.moe/)的使用，编译好[依赖项](#依赖项)（建议使用vcpkg），设置好[依赖项](#依赖项)路径，开始编译
 
 ## url
 
