@@ -1,10 +1,10 @@
-#include "gui.h"
+#include "Gui.h"
 #include "mycq.hpp"
 
 #include <Windows.h>
 
-#include "myJson.h"
-#include "mynetwork.h"
+#include "MyJson.h"
+#include "Update.h"
 
 //#include <regex>
 #include <boost/regex.hpp>
@@ -116,6 +116,8 @@ protected:
 
         //私聊消息转发给主人
         check_relayPrivateMsg.check(conf.relayPrivateMsg);
+        //多线程
+        check_async.check(conf.async);
 
         isSave = true;
     }
@@ -145,6 +147,8 @@ public:
 
         //收到的私聊消息转发给主人
         conf.relayPrivateMsg = check_relayPrivateMsg.checked();
+        //多线程
+        conf.async = check_async.checked();
 
         //写入配置
         writeConf();
@@ -210,7 +214,7 @@ private:
             //"<weight=10>"
 
             //开关
-            "<vert <><check><>>"
+            "<vert check>"
 
             //使用教程 //在线更新 //反馈
             "<<button_document> <button_update> <button_feedback>>"
@@ -235,6 +239,13 @@ private:
         check_relayPrivateMsg.caption(u8"收到的私聊消息转发给主人");
         check_relayPrivateMsg.events().click([this]() { isSave = false; });
         group_other["check"] << check_relayPrivateMsg;
+
+        //多线程
+        check_async.create(group_other);
+        check_async.bgcolor(color_group);
+        check_async.caption(u8"开启多线程处理");
+        check_async.events().click([this]() { isSave = false; });
+        group_other["check"] << check_async;
 
         button_document.create(group_other);
         button_document.caption(u8"使用教程 待开发");
@@ -343,6 +354,8 @@ private:
 
     //收到的私聊消息转发主人
     checkbox check_relayPrivateMsg;
+    //多线程
+    checkbox check_async;
 
     // //使用秘钥
     // label lab_usingKey;

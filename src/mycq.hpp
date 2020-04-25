@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cqcppsdk/cqcppsdk.h>
+#include <thread>
 #include "appInf.h"
 #pragma once
 #define APPNAME "群关键词监控"
@@ -63,6 +64,16 @@ public:
         return cq::GroupMember();
     }
 
+    //异步发送群消息
+    static void send_group_message_async(const int64_t group_id, const std::string &message, bool async = true) {
+        if (async) {
+            std::thread th(send_group_message, group_id, message);
+            th.detach();
+        } else {
+            send_group_message(group_id, message);
+        }
+    }
+
     //发送群消息 正确返回 0  异常返回code
     static const int send_group_message(const int64_t group_id, const std::string &message) {
         try {
@@ -74,6 +85,16 @@ public:
         }
 
         return -1;
+    }
+
+    //异步发送私聊消息
+    static void send_private_message_async(const int64_t user_id, const std::string &message, bool async = true) {
+        if (async) {
+            std::thread th(send_private_message, user_id, message);
+            th.detach();
+        } else {
+            send_private_message(user_id, message);
+        }
     }
 
     //发送私聊消息  正确返回 0  异常返回code

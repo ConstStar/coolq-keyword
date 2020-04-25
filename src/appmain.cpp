@@ -1,6 +1,6 @@
 #include "fun.hpp"
-#include "gui.h"
-#include "mynetwork.h"
+#include "Gui.h"
+#include "Update.h"
 
 #include <iostream>
 #include <set>
@@ -96,7 +96,7 @@ CQ_INIT {
 
     cq::on_group_message([](const cq::GroupMessageEvent &event) {
         // try {
-        OperateMsg a(event);
+        GroupKeyWord a(event);
         a.MsgFun();
         // } catch (ApiError &e) {
         //     cq::logging::info("错误",e.what());

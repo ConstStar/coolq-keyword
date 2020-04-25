@@ -166,7 +166,8 @@ public:
     map<int, ConfAlone, CmpByKeySize> alone; //单独设置
     unordered_set<long long> admin; //主人QQ
     string prefix; //指令消息前缀
-    bool relayPrivateMsg; //消息转发
+    bool relayPrivateMsg = false; //私聊消息转发给主人
+    bool async = true; //多线程
 
     // Json
     Json::Value conf_json;

@@ -1,8 +1,7 @@
-#include "myJson.h"
+#include "MyJson.h"
 #include "mycq.hpp"
 
 #include <fstream>
-
 
 using namespace std;
 extern string appDir;
@@ -217,7 +216,8 @@ bool MyJson::json2admin() {
 
 //读取主要配置json到内存中
 bool MyJson::json2mainSwitch() {
-    relayPrivateMsg = get<bool>({"main", "relayPrivateMsg"});
+    relayPrivateMsg = get<bool>({"main", "relayPrivateMsg"}, false);
+    async = get<bool>({"main", "async"}, true);
     prefix = get<string>({"main", "prefix"});
 
     return true;
@@ -226,7 +226,7 @@ bool MyJson::json2mainSwitch() {
 //从内存主要配置中放置到json
 bool MyJson::mainSwitch2json() {
     put<bool>({"main", "relayPrivateMsg"}, relayPrivateMsg);
-
+    put<bool>({"main", "async"}, async);
     put<string>({"main", "prefix"}, prefix);
 
     return true;

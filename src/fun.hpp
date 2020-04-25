@@ -16,9 +16,9 @@
 
 //#include <regex>
 #include <boost/regex.hpp>
-// #include <boost/timer.hpp>
+//#include <boost/timer.hpp>
 
-#include "myJson.h"
+#include "MyJson.h"
 
 using namespace std;
 
@@ -61,6 +61,13 @@ public:
         m_fromQQ = fromQQ;
     }
 
+    //发送给所有主人
+    void sendAdminMsg(string& SendMsg) {
+        for (long long root : conf.admin) {
+            mycq::send_private_message_async(root, SendMsg, conf.async);
+        }
+    }
+
     //私聊消息处理
     void funthing(const char* msg) {
         auto iter = find(conf.admin.begin(), conf.admin.end(), m_fromQQ);
@@ -77,20 +84,18 @@ public:
     //消息转发
     void MsgRelayFun(const char* msg) {
         if (conf.relayPrivateMsg) {
-            std::string SendMsg;
+            std::ostringstream SendMsg;
 
             //获取QQ资料
             auto QQInf = mycq::get_stranger_info(m_fromQQ, true);
 
             //构造消息
-            SendMsg = "来自" + QQInf.nickname + "(" + std::to_string(m_fromQQ) + ")的私聊消息:\n\n";
-            SendMsg += msg;
-            SendMsg += "\n\n(回复请发送 回复" + std::to_string(m_fromQQ) + ")";
+            SendMsg << "来自" << QQInf.nickname << "(" + std::to_string(m_fromQQ) << ")的私聊消息:" << endl << endl;
+            SendMsg << msg << endl << endl;
+            SendMsg << "(回复请发送 回复" << std::to_string(m_fromQQ) << ")";
 
             //发送给主人
-            for (long long root : conf.admin) {
-                mycq::send_private_message(root, SendMsg);
-            }
+            sendAdminMsg(SendMsg.str());
         }
     }
 
@@ -106,7 +111,7 @@ public:
         }
         case SEND_GROUP_END: //回复群
         {
-            stringstream sendMsg;
+            ostringstream sendMsg;
             int res;
             res = mycq::send_group_message(m_ReplyGroup, msg);
 
@@ -287,7 +292,7 @@ public:
         }
         case SEND_QQ: //回复QQ
         {
-            stringstream sendMsg;
+            ostringstream sendMsg;
             int res;
             res = mycq::send_private_message(m_ReplyQQ, msg);
 
@@ -838,7 +843,7 @@ private:
 
 /*关键词触发*/
 
-class OperateMsg {
+class GroupKeyWord {
 public:
     //处理
     void dealFun(int conf_index) {
@@ -893,10 +898,17 @@ public:
         }
     }
 
+    //发送给所有主人
+    void sendAdminMsg(string& SendMsg) {
+        for (long long root : conf.admin) {
+            mycq::send_private_message_async(root, SendMsg, conf.async);
+        }
+    }
+
     //构造提醒主人消息
     string keyWordSendAdminFun(int conf_index) {
-        stringstream msg;
-
+        ostringstream msg;
+        
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
         // auto groupList = mycq::get_group_list_map();
         auto groupInf = mycq::get_group_info(m_fromGroup);
@@ -935,49 +947,67 @@ public:
     }
 
     //触发关键词操作
-    void KeyWrodWarn(int conf_index) {
+    void KeyWrodEvent(int conf_index) {
         //处理
         dealFun(conf_index);
 
         //转发到群
-        string relayGroupMsg(conf.alone[conf_index].relayGroupWord);
-        //转发到群变量
-        variableRelayGroup(relayGroupMsg, conf_index);
-        //发送
-        for (long long GroupId : conf.alone[conf_index].relayGroupList) {
-            mycq::send_group_message(GroupId, relayGroupMsg);
-        }
+        auto relayGroupList([=] {
+            if (!conf.alone[conf_index].relayGroupList.empty()) {
+                string relayGroupMsg(conf.alone[conf_index].relayGroupWord);
+                //转发到群变量
+                variableRelayGroup(relayGroupMsg, conf_index);
+                //发送
+                for (long long GroupId : conf.alone[conf_index].relayGroupList) {
+                    mycq::send_group_message_async(GroupId, relayGroupMsg, conf.async);
+                }
+            }
+        });
 
         //群内警告（回复群内容消息）
-        if (conf.alone[conf_index].keyWordGroupWarn) //群内回复是否开启
-        {
-            string sendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
-            if (conf.alone[conf_index].keyWordGroupWarnWord.empty()) //自定义内容为空时使用默认提示
+        auto keyWordGroupWarn([=] {
+            if (conf.alone[conf_index].keyWordGroupWarn) //群内回复是否开启
             {
-                sendMsg = "{at} 触发关键词，处理方式:{处理方式}";
+                string sendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
+                if (conf.alone[conf_index].keyWordGroupWarnWord.empty()) //自定义内容为空时使用默认提示
+                {
+                    sendMsg = "{at} 触发关键词，处理方式:{处理方式}";
+                }
+                variableKeyWordWarn(sendMsg, conf_index); //变量
+                mycq::send_group_message_async(m_fromGroup, sendMsg, conf.async);
             }
-            variableKeyWordWarn(sendMsg, conf_index); //变量
-            mycq::send_group_message(m_fromGroup, sendMsg);
-        }
+        });
 
         //触发后回复私聊消息
-        if (conf.alone[conf_index].keyWordPrivateWarn) {
-            if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
-                string sendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
-                //解析变量
-                variableKeyWordWarn(sendMsg, conf_index);
-                mycq::send_private_message(m_fromQQ, sendMsg);
+        auto keyWordPrivateWarn([=] {
+            if (conf.alone[conf_index].keyWordPrivateWarn) {
+                if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
+                    string sendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
+                    //解析变量
+                    variableKeyWordWarn(sendMsg, conf_index);
+                    mycq::send_private_message_async(m_fromQQ, sendMsg, conf.async);
+                }
             }
-        }
+        });
 
         //提醒主人
-        if (conf.alone[conf_index].keyWordSendAdmin) //触发后提醒主人是否开启
-        {
-            string sendAdminMsg = keyWordSendAdminFun(conf_index);
-            for (long long root : conf.admin) {
-                mycq::send_private_message(root, sendAdminMsg);
+        auto keyWordSendAdmin([=] {
+            if (conf.alone[conf_index].keyWordSendAdmin) //触发后提醒主人是否开启
+            {
+                string sendMsg = keyWordSendAdminFun(conf_index);
+                sendAdminMsg(sendMsg);
             }
-        }
+        });
+
+        thread th_relayGroupList(relayGroupList);
+        thread th_keyWordGroupWarn(keyWordGroupWarn);
+        thread th_keyWordPrivateWarn(keyWordPrivateWarn);
+        th_relayGroupList.join();
+        th_keyWordGroupWarn.join();
+        th_keyWordPrivateWarn.join();
+
+        thread th_keyWordSendAdmin(keyWordSendAdmin);
+        th_keyWordSendAdmin.join();
     }
 
     //删除cq码
@@ -1106,7 +1136,8 @@ public:
 
             //检测消息修剪后内容为空
             if (temp_msg.empty()) {
-                stringstream sendMsg;
+                
+                ostringstream sendMsg;
                 sendMsg << "转发到群错误" << endl;
                 sendMsg << "原因：消息修剪后内容为空" << endl;
                 sendMsg << "消息内容：" << endl << endl;
@@ -1115,9 +1146,7 @@ public:
                 sendMsg << "删除后面行数：" << conf.alone[conf_index].relayGroupMsg_trimBack << "行" << endl;
                 sendMsg << "请查看转发到群中消息修剪是否有误";
 
-                for (auto temp : conf.admin) {
-                    mycq::send_private_message(temp, sendMsg.str());
-                }
+                sendAdminMsg(sendMsg.str());
                 str = "";
 
                 return;
@@ -1239,18 +1268,16 @@ public:
                 }
 
             } catch (exception& e) {
-                stringstream SendMsg;
-                SendMsg << "正则表达式崩溃" << endl;
-                SendMsg << "表达式:";
-                SendMsg << aloneRegex.keyWord << endl;
-                SendMsg << "崩溃消息:" << endl << endl;
-                SendMsg << m_msg << endl << endl;
-                SendMsg << "返回的错误消息:" << endl;
-                SendMsg << e.what();
+                ostringstream sendMsg;
+                sendMsg << "正则表达式崩溃" << endl;
+                sendMsg << "表达式:";
+                sendMsg << aloneRegex.keyWord << endl;
+                sendMsg << "崩溃消息:" << endl << endl;
+                sendMsg << m_msg << endl << endl;
+                sendMsg << "返回的错误消息:" << endl;
+                sendMsg << e.what();
 
-                for (long long root : conf.admin) {
-                    mycq::send_private_message(root, SendMsg.str());
-                }
+                sendAdminMsg(sendMsg.str());
             }
         }
         return false;
@@ -1289,13 +1316,13 @@ public:
 
         //如果触发了关键词
         if (KeyWordFun(conf_index)) {
-            KeyWrodWarn(conf_index);
+            KeyWrodEvent(conf_index);
             return true;
         }
 
         //如果触发了正则表达式关键词
         if (KeyKordRegexFun(conf_index)) {
-            KeyWrodWarn(conf_index);
+            KeyWrodEvent(conf_index);
             return true;
         }
 
@@ -1305,7 +1332,7 @@ public:
     //内容处理
     void MsgFun() {
         // m_time.restart();
-        m_startTime = clock(); //计时开始k
+        m_startTime = clock(); //开始检测的时间
         for (auto temp : conf.alone) {
             //全局设置最后检测
             if (temp.first == 0) continue;
@@ -1325,7 +1352,7 @@ public:
         return static_cast<double>(clock() - m_startTime) / CLOCKS_PER_SEC;
     }
 
-    OperateMsg(cq::GroupMessageEvent evet) : evet(evet) {
+    GroupKeyWord(cq::GroupMessageEvent evet) : evet(evet) {
         m_fromQQ = evet.user_id;
         m_fromGroup = evet.group_id;
         m_fromAnonymous = evet.anonymous;
