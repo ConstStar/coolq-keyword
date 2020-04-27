@@ -1270,6 +1270,8 @@ public:
                 keyWord += "）";
 
                 return true;
+            } else if (res == -1) {
+                cq::logging::error(u8"关键词触发器-云端检测错误", inf);
             }
         }
 

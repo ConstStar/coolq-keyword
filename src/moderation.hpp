@@ -24,7 +24,8 @@ protected:
     }
 
 public:
-    virtual void init(const string& userName, const string& domainName, const string& passWord, const string& projectName) {
+    virtual void init(const string& userName, const string& domainName, const string& passWord,
+                      const string& projectName) {
     }
 
     virtual int text(const string& msg, string& inf) {
@@ -67,22 +68,29 @@ public:
             string body =
                 u8"{\"categories\":[\"politics\",\"porn\",\"ad\",\"abuse\",\"contraband\"],\"items\":[{\"text\": \""
                 + msg + "\"}]}";
-            if (time(NULL) - m_updataTime > 23 * 60) m_token = getToken();
+            if (time(NULL) - m_updataTime > 23 * 60) {
+                m_token = getToken();
+
+                // Token 为空
+                if (m_token.empty()) {
+                    m_updataTime = 0;
+                    throw exception("获取Token失败，请检查填写信息是否正确");
+                }
+            }
 
             auto r =
                 cpr::Post(cpr::Url{"https://moderation." + m_projectName + ".myhuaweicloud.com/v1.0/moderation/text"},
                           cpr::Body{body},
                           cpr::Header{{"Content-Type", "application/json"}, {"X-Auth-Token", m_token}});
 
-            if (r.status_code != 200) {
-                inf = "状态码异常" + to_string(r.status_code);
-                return -1;
-            }
-
             Json::Value root;
             read_json(r.text, root);
-            string suggestion = root["result"]["suggestion"].asString();
 
+            if (!root["error_msg"].isNull()) {
+                throw exception(root["error_msg"].asCString());
+            }
+
+            string suggestion = root["result"]["suggestion"].asString();
             if (suggestion == "pass") {
                 inf = "检测通过";
                 return 0;
@@ -125,7 +133,7 @@ public:
             }
 
         } catch (exception& e) {
-            inf = "异常";
+            inf = "华为云：";
             inf += e.what();
             return -1;
         }
