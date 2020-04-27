@@ -96,6 +96,192 @@ protected:
     color color_group;
 };
 
+//云端接口
+class tab_page_moderation : public tab_father {
+protected:
+    //读取配置
+    void readConf() {
+        conf.file2json();
+        conf.json2all();
+
+        check_huawei.check(conf.alone[conf_index].huaweiApiSwitch);
+        text_huaweiDomainName.reset(conf.alone[conf_index].huaweiDomainName);
+        text_huaweiPassWord.reset(conf.alone[conf_index].huaweiPassWord);
+        text_huaweiProjectName.reset(conf.alone[conf_index].huaweiProjectName);
+        text_huaweiUserName.reset(conf.alone[conf_index].huaweiUserName);
+
+        isSave = true;
+    }
+
+public:
+    bool save() {
+        conf.alone[conf_index].huaweiApiSwitch = check_huawei.checked();
+        conf.alone[conf_index].huaweiDomainName = text_huaweiUserName.text();
+        conf.alone[conf_index].huaweiPassWord = text_huaweiPassWord.text();
+        conf.alone[conf_index].huaweiProjectName = text_huaweiProjectName.text();
+        conf.alone[conf_index].huaweiUserName = text_huaweiUserName.text();
+        conf.initModeration();
+
+        writeConf();
+
+        msgbox m_save{*this, u8"成功"};
+        m_save << u8"保存成功";
+        m_save.show();
+
+        //重新载入配置
+        readConf();
+
+        isSave = true;
+        return true;
+    }
+
+private:
+    //初始化
+    void init() {
+        place_.bind(*this);
+        place_.div(
+
+            //整体边距
+            "margin = [15,15,15,15] "
+
+            "<vert"
+
+            "<weight=80% "
+
+            //华为云
+            "<group_huawei>"
+
+            ">"
+
+            //保存
+            "<<> <button_save> <>>"
+
+            ">");
+
+        //华为云
+        group_huawei.create(*this);
+        group_huawei.bgcolor(color_group);
+        group_huawei.caption(u8"华为云:");
+        group_huawei.div(
+            "<vert margin = [5,5]"
+
+            //华为云接口开关
+            "<weight=25 check_huawei>"
+
+            //华为云 IAM用户名
+            "<weight=25 <weight=75 lab_huaweiUserName><weight=150 text_huaweiUserName>>"
+            "<weight=10>"
+
+            //华为云 账号名
+            "<weight=25 <weight=75 lab_huaweiDomainName><weight=150 text_huaweiDomainName>>"
+            "<weight=10>"
+
+            //华为云 项目名
+            "<weight=25 <weight=75 lab_huaweiProjectName><weight=150 text_huaweiProjectName>>"
+            "<weight=10>"
+
+            //华为云 密码
+            "<weight=25 <weight=75 lab_huaweiPassWord><weight=150 text_huaweiPassWord>>"
+            "<weight=10>"
+            ">");
+        place_.field("group_huawei") << group_huawei;
+
+        //华为云
+        check_huawei.create(group_huawei);
+        check_huawei.bgcolor(color_group);
+        check_huawei.caption(u8"华为云接口开关");
+        group_huawei["check_huawei"] << check_huawei;
+
+        // IAM用户名
+        lab_huaweiUserName.create(group_huawei);
+        lab_huaweiUserName.bgcolor(color_group);
+        lab_huaweiUserName.caption(u8"IAM用户名：");
+        group_huawei["lab_huaweiUserName"] << lab_huaweiUserName;
+
+        text_huaweiUserName.create(group_huawei);
+        text_huaweiUserName.line_wrapped(false);
+        text_huaweiUserName.multi_lines(false);
+        text_huaweiUserName.events().text_changed([this]() { isSave = false; });
+        group_huawei["text_huaweiUserName"] << text_huaweiUserName;
+
+        //账号名
+        lab_huaweiDomainName.create(group_huawei);
+        lab_huaweiDomainName.bgcolor(color_group);
+        lab_huaweiDomainName.caption(u8"账号名：");
+        group_huawei["lab_huaweiDomainName"] << lab_huaweiDomainName;
+
+        text_huaweiDomainName.create(group_huawei);
+        text_huaweiDomainName.line_wrapped(false);
+        text_huaweiDomainName.multi_lines(false);
+        text_huaweiDomainName.events().text_changed([this]() { isSave = false; });
+        group_huawei["text_huaweiDomainName"] << text_huaweiDomainName;
+
+        //项目名
+        lab_huaweiProjectName.create(group_huawei);
+        lab_huaweiProjectName.bgcolor(color_group);
+        lab_huaweiProjectName.caption(u8"设置名称：");
+        group_huawei["lab_huaweiProjectName"] << lab_huaweiProjectName;
+
+        text_huaweiProjectName.create(group_huawei);
+        text_huaweiProjectName.line_wrapped(false);
+        text_huaweiProjectName.multi_lines(false);
+        text_huaweiProjectName.events().text_changed([this]() { isSave = false; });
+        group_huawei["text_huaweiProjectName"] << text_huaweiProjectName;
+
+        //密码
+        lab_huaweiPassWord.create(group_huawei);
+        lab_huaweiPassWord.bgcolor(color_group);
+        lab_huaweiPassWord.caption(u8"密码：");
+        group_huawei["lab_huaweiPassWord"] << lab_huaweiPassWord;
+
+        text_huaweiPassWord.create(group_huawei);
+        text_huaweiPassWord.line_wrapped(false);
+        text_huaweiPassWord.multi_lines(false);
+        text_huaweiPassWord.events().text_changed([this]() { isSave = false; });
+        group_huawei["text_huaweiPassWord"] << text_huaweiPassWord;
+
+        //保存按钮
+        btn_save.create(*this);
+        btn_save.caption(u8"保存");
+        btn_save.events().click([this] { save(); });
+        place_.field("button_save") << btn_save;
+
+        readConf();
+    }
+
+public:
+    tab_page_moderation(window wd, int index = 0) : tab_father(wd), conf_index(index) {
+        init();
+    }
+
+private:
+    place place_;
+    int conf_index;
+
+    //华为云
+    group group_huawei;
+    checkbox check_huawei;
+
+    // IAM用户名
+    label lab_huaweiUserName;
+    textbox text_huaweiUserName;
+
+    //账号名
+    label lab_huaweiDomainName;
+    textbox text_huaweiDomainName;
+
+    //项目名
+    label lab_huaweiProjectName;
+    textbox text_huaweiProjectName;
+
+    //密码
+    label lab_huaweiPassWord;
+    textbox text_huaweiPassWord;
+
+    //保存
+    button btn_save;
+};
+
 //主要设置
 class tab_page_main : public tab_father {
 protected:
@@ -1955,6 +2141,8 @@ void Gui::openMain() {
     tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm));
     tabbar_.push_back(u8"转发到群");
     tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm));
+    tabbar_.push_back(u8"云端检测");
+    tabpages.push_back(std::make_shared<tab_page_moderation>(fm));
     tabbar_.push_back(u8"单独设置");
     tabpages.push_back(std::make_shared<tab_page_alone>(fm));
 

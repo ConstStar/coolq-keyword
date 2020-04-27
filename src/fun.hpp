@@ -19,6 +19,7 @@
 //#include <boost/timer.hpp>
 
 #include "MyJson.h"
+#include "moderation.hpp"
 
 using namespace std;
 
@@ -908,7 +909,7 @@ public:
     //构造提醒主人消息
     string keyWordSendAdminFun(int conf_index) {
         ostringstream msg;
-        
+
         auto QQInf = mycq::get_group_member_info(m_fromGroup, m_fromQQ, true);
         // auto groupList = mycq::get_group_list_map();
         auto groupInf = mycq::get_group_info(m_fromGroup);
@@ -952,7 +953,7 @@ public:
         dealFun(conf_index);
 
         //转发到群
-        auto relayGroupList([=] {
+        auto relayGroupList([conf_index, this] {
             if (!conf.alone[conf_index].relayGroupList.empty()) {
                 string relayGroupMsg(conf.alone[conf_index].relayGroupWord);
                 //转发到群变量
@@ -965,7 +966,7 @@ public:
         });
 
         //群内警告（回复群内容消息）
-        auto keyWordGroupWarn([=] {
+        auto keyWordGroupWarn([conf_index, this] {
             if (conf.alone[conf_index].keyWordGroupWarn) //群内回复是否开启
             {
                 string sendMsg(conf.alone[conf_index].keyWordGroupWarnWord);
@@ -979,7 +980,7 @@ public:
         });
 
         //触发后回复私聊消息
-        auto keyWordPrivateWarn([=] {
+        auto keyWordPrivateWarn([conf_index, this] {
             if (conf.alone[conf_index].keyWordPrivateWarn) {
                 if (!conf.alone[conf_index].keyWordPrivateWarnWord.empty()) {
                     string sendMsg(conf.alone[conf_index].keyWordPrivateWarnWord);
@@ -991,7 +992,7 @@ public:
         });
 
         //提醒主人
-        auto keyWordSendAdmin([=] {
+        auto keyWordSendAdmin([conf_index, this] {
             if (conf.alone[conf_index].keyWordSendAdmin) //触发后提醒主人是否开启
             {
                 string sendMsg = keyWordSendAdminFun(conf_index);
@@ -999,15 +1000,21 @@ public:
             }
         });
 
-        thread th_relayGroupList(relayGroupList);
-        thread th_keyWordGroupWarn(keyWordGroupWarn);
-        thread th_keyWordPrivateWarn(keyWordPrivateWarn);
-        th_relayGroupList.join();
-        th_keyWordGroupWarn.join();
-        th_keyWordPrivateWarn.join();
+        if (conf.async) {
+            thread th_relayGroupList(relayGroupList);
+            thread th_keyWordGroupWarn(keyWordGroupWarn);
+            thread th_keyWordPrivateWarn(keyWordPrivateWarn);
+            th_relayGroupList.join();
+            th_keyWordGroupWarn.join();
+            th_keyWordPrivateWarn.join();
 
-        thread th_keyWordSendAdmin(keyWordSendAdmin);
-        th_keyWordSendAdmin.join();
+            keyWordSendAdmin();
+        } else {
+            relayGroupList();
+            keyWordGroupWarn();
+            keyWordPrivateWarn();
+            keyWordSendAdmin();
+        }
     }
 
     //删除cq码
@@ -1015,6 +1022,16 @@ public:
         if (msg.find(L"[CQ:") != wstring::npos) {
             boost::wregex e1(L"\\[CQ:.*\\]");
             msg = boost::regex_replace(msg, e1, L"");
+        }
+
+        return msg;
+    }
+
+    //删除cq码
+    std::string DelCQ(std::string msg) {
+        if (msg.find("[CQ:") != string::npos) {
+            boost::regex e1("\\[CQ:.*\\]");
+            msg = boost::regex_replace(msg, e1, "");
         }
 
         return msg;
@@ -1136,7 +1153,6 @@ public:
 
             //检测消息修剪后内容为空
             if (temp_msg.empty()) {
-                
                 ostringstream sendMsg;
                 sendMsg << "转发到群错误" << endl;
                 sendMsg << "原因：消息修剪后内容为空" << endl;
@@ -1239,6 +1255,21 @@ public:
 
                     return true;
                 }
+            }
+        }
+
+        //云端关键词检测
+        for (auto& api : conf.alone[conf_index].moderationApi) {
+            string inf;
+            string delcq_msg = DelCQ(m_msg);
+            int res = api->text(delcq_msg, inf);
+            if (res == 1) {
+                cq::logging::info(u8"关键词触发器-云端检测", inf);
+                keyWord = "云端检测（";
+                keyWord += inf;
+                keyWord += "）";
+
+                return true;
             }
         }
 

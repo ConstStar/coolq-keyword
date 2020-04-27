@@ -30,6 +30,7 @@ install:
   - echo set(VCPKG_LIBRARY_LINKAGE static) >> %VCPKG_ROOT%triplets\x86-windows-static.cmake
 
   - .\vcpkg install boost-regex:x86-windows-static
+  - .\vcpkg install cpr:x86-windows-static
   # - .\vcpkg install boost-timer:x86-windows-static
   # - .\vcpkg install boost-algorithm:x86-windows-static
   # - .\vcpkg install boost-format:x86-windows-static

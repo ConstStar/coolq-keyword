@@ -8,7 +8,7 @@ extern string appDir;
 
 //写入json
 bool MyJson::write_json(string path, Json::Value& root) {
-    path = cq::utils::ansi(path);
+    path = MyUtils::ansi(path);
     ofstream file;
     file.open(path);
     if (!file.good()) {
@@ -29,7 +29,7 @@ bool MyJson::write_json(string path, Json::Value& root) {
 
 //读取json
 bool MyJson::read_json(string path, Json::Value& root) {
-    path = cq::utils::ansi(path);
+    path = MyUtils::ansi(path);
     ifstream file;
     file.open(path);
     if (!file.good()) {
@@ -293,6 +293,13 @@ bool MyJson::json2alone() {
             aloneTemp.relayGroupWord = get<string>({"alone", temp_key, "relayGroupWord"}, "");
             aloneTemp.keyWordGroupWarnWord = get<string>({"alone", temp_key, "keyWordGroupWarnWord"}, "");
             aloneTemp.keyWordPrivateWarnWord = get<string>({"alone", temp_key, "keyWordPrivateWarnWord"}, "");
+
+            //华为云 接口信息
+            aloneTemp.huaweiApiSwitch = get<bool>({"alone", temp_key, "huaweiApiSwitch"}, false);
+            aloneTemp.huaweiUserName = get<string>({"alone", temp_key, "huaweiUserName"}, "");
+            aloneTemp.huaweiDomainName = get<string>({"alone", temp_key, "huaweiDomainName"}, "");
+            aloneTemp.huaweiPassWord = get<string>({"alone", temp_key, "huaweiPassWord"}, "");
+            aloneTemp.huaweiProjectName = get<string>({"alone", temp_key, "huaweiProjectName"}, "");
         }
     } catch (exception& e) {
         cout << e.what() << endl;
@@ -361,6 +368,13 @@ bool MyJson::alone2json() {
             put<string>({"alone", temp_key, "relayGroupWord"}, aloneTemp.relayGroupWord);
             put<string>({"alone", temp_key, "keyWordGroupWarnWord"}, aloneTemp.keyWordGroupWarnWord);
             put<string>({"alone", temp_key, "keyWordPrivateWarnWord"}, aloneTemp.keyWordPrivateWarnWord);
+
+            //华为云 接口信息
+            put<bool>({"alone", temp_key, "huaweiApiSwitch"}, aloneTemp.huaweiApiSwitch);
+            put<string>({"alone", temp_key, "huaweiUserName"}, aloneTemp.huaweiUserName);
+            put<string>({"alone", temp_key, "huaweiDomainName"}, aloneTemp.huaweiDomainName);
+            put<string>({"alone", temp_key, "huaweiPassWord"}, aloneTemp.huaweiPassWord);
+            put<string>({"alone", temp_key, "huaweiProjectName"}, aloneTemp.huaweiProjectName);
         }
     } catch (exception& e) {
         cout << e.what() << endl;
@@ -382,6 +396,7 @@ void MyJson::json2all() {
     json2mainSwitch();
     json2admin();
     json2alone();
+    initModeration();
 }
 
 //将json写到文件里
@@ -399,5 +414,23 @@ void MyJson::file2json() {
         read_json((appDir + "conf.json"), conf_json);
     } catch (exception& e) {
         cout << e.what() << endl;
+    }
+}
+
+//初始化云端检测
+void MyJson::initModeration() {
+    for (auto& temp : alone) {
+        auto& aloneTemp = temp.second;
+        aloneTemp.moderationApi.clear();
+
+        //华为云 接口
+        if (aloneTemp.huaweiApiSwitch) {
+            auto huaweiApi = std::make_shared<moderationHuaWei>();
+            huaweiApi->init(aloneTemp.huaweiUserName,
+                            aloneTemp.huaweiDomainName,
+                            aloneTemp.huaweiPassWord,
+                            aloneTemp.huaweiProjectName);
+            aloneTemp.moderationApi.push_back(huaweiApi);
+        }
     }
 }

@@ -9,6 +9,7 @@
 #include <functional>
 #include <iostream>
 #include "MyUtils.h"
+#include "moderation.hpp"
 
 using namespace std;
 
@@ -60,7 +61,13 @@ struct ConfAlone {
           relayGroupMsg_trimFront(0),
           relayGroupMsg_trimBack(0),
           keyWordGroupWarnWord(),
-          keyWordPrivateWarnWord() {
+          keyWordPrivateWarnWord(),
+          huaweiApiSwitch(false),
+          huaweiUserName(),
+          huaweiDomainName(),
+          huaweiPassWord(),
+          huaweiProjectName(),
+          moderationApi() {
     }
 
     bool use; //开关
@@ -90,6 +97,16 @@ struct ConfAlone {
 
     string keyWordGroupWarnWord; //触发关键词群内警告
     string keyWordPrivateWarnWord; //触发关键词私聊警告
+
+    //华为接口信息
+    bool huaweiApiSwitch;
+    string huaweiUserName;
+    string huaweiDomainName;
+    string huaweiPassWord;
+    string huaweiProjectName;
+
+    //云端处理接口
+    std::vector<std::shared_ptr<moderation>> moderationApi;
 };
 
 // map排序
@@ -160,6 +177,9 @@ public:
 
     //文件中json读取出来
     void file2json();
+
+    //初始化云端检测
+    void initModeration();
 
 public:
     //设置
