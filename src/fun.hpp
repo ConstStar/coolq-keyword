@@ -498,6 +498,7 @@ public:
                 "开启/关闭撤回消息\n"
                 "开启/关闭群内提醒\n"
                 "开启/关闭私聊提醒\n"
+                "开启/关闭华为云接口\n"
                 "\n"
 
                 "******回复类******\n"
@@ -585,6 +586,28 @@ public:
             conf.alone2json();
             conf.json2file();
             mycq::send_private_message(m_fromQQ, "已关闭 撤回触发关键词消息（需Pro）");
+
+            return;
+        } else if (!std::string(prefix + "开启华为云接口").compare(msg)) {
+            conf.alone[0].huaweiApiSwitch = true;
+
+            if (conf.alone[0].huaweiDomainName.empty() || conf.alone[0].huaweiPassWord.empty()
+                || conf.alone[0].huaweiProjectName.empty() || conf.alone[0].huaweiUserName.empty()) {
+                mycq::send_private_message(m_fromQQ, "开启华为云接口失败，原因:未在界面添加华为云的必要设置");
+                return;
+            }
+            conf.initModeration();
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已开启 华为云接口");
+
+            return;
+        } else if (!std::string(prefix + "关闭华为云接口").compare(msg)) {
+            conf.alone[0].huaweiApiSwitch = false;
+            conf.initModeration();
+            conf.alone2json();
+            conf.json2file();
+            mycq::send_private_message(m_fromQQ, "已关闭 华为云接口");
 
             return;
         }
