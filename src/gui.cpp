@@ -190,6 +190,7 @@ private:
         check_huawei.create(group_huawei);
         check_huawei.bgcolor(color_group);
         check_huawei.caption(u8"华为云接口开关");
+        check_huawei.events().click([this]() { isSave = false; });
         group_huawei["check_huawei"] << check_huawei;
 
         // IAM用户名
@@ -1909,6 +1910,8 @@ private:
         tabpages.push_back(std::make_shared<tab_page_list>(fm, conf_index));
         tabbar_.push_back(u8"触发回复");
         tabpages.push_back(std::make_shared<tab_page_groupWarnWord>(fm, conf_index));
+        tabbar_.push_back(u8"云端检测");
+        tabpages.push_back(std::make_shared<tab_page_moderation>(fm, conf_index));
         tabbar_.push_back(u8"转发到群");
         tabpages.push_back(std::make_shared<tab_page_relayGroupMsg>(fm, conf_index));
 

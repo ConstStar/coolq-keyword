@@ -19,8 +19,8 @@ cq_set_app_id(${APP_ID}) # 设置 app id, 必须
 
 
 # appInf
-set(app_version_id 28)
-set(app_version 2.2.3)
+set(app_version_id 30)
+set(app_version 2.2.4)
 set(app_name 关键词触发器)
 set(app_author 布吉岛)
 configure_file(${PROJECT_SOURCE_DIR}/app.json.in ${PROJECT_SOURCE_DIR}/app.json)
