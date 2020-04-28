@@ -23,6 +23,7 @@
 * [jsoncpp](https://github.com/open-source-parsers/jsoncpp)(v1.9.2) 作为配置项读写
 * [nana](http://nanapro.org/)(v1.7.3) 作为界面
 * [boost](https://www.boost.org/)(v1.72.0) 作为一些基本操作
+* [cpr](https://github.com/whoshuu/cpr)(v1.3.0) 作为HTTP请求
 
 ## 构造
 
@@ -38,6 +39,7 @@
   >> `nana`: http://nanapro.org/  
   >> `JsonCpp`: https://github.com/open-source-parsers/jsoncpp  
   >> `boost`: https://www.boost.org/  
+  >> `cpr`: https://github.com/whoshuu/cpr
 
 > ### 酷Q
   >> 本插件帖子: https://cqp.cc/t/40793  
