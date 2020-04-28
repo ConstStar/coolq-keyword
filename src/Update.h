@@ -18,7 +18,5 @@ private:
     std::string newVersion;
 
     std::string appName;
-    std::string path;
-    std::string host;
-    int port;
+    std::string url;
 };

@@ -1,27 +1,26 @@
 #include "Update.h"
-#include "mycq.hpp"
 #include "MyUtils.h"
+#include "mycq.hpp"
 
-#include "httplib.h"
+#include <cpr/cpr.h>
 #include <json/json.h>
+
 #include <fstream>
 #include <string>
 
 using namespace std;
 
-#define HOST "keyword.xiaoxiaoge.cn"
-#define PORT 80
-#define PATH_UPDATE_CHECK "/api/version"
+#define URL_UPDATE_CHECK "http://keyword.xiaoxiaoge.cn/api/version"
+
 
 Update::updateType Update::check(string &inf, int version_id) {
     try {
-        httplib::Client cli(HOST, PORT);
-        auto res = cli.Get(PATH_UPDATE_CHECK);
-
-        if (!res || res->status != 200) {
+        auto r = cpr::Get(cpr::Url(URL_UPDATE_CHECK));
+        if (r.status_code != 200) {
             throw exception("获取数据失败 网络异常");
         }
-        string json = res->body;
+
+        string json = r.text;
 
         Json::Value root;
         Json::Reader reader;
@@ -31,9 +30,7 @@ Update::updateType Update::check(string &inf, int version_id) {
         int getVersion_id = root["version_id"].asInt();
         if (getVersion_id > version_id) {
             newVersion = root["version"].asString();
-            host = root["host"].asString();
-            path = root["path"].asString();
-            port = root["port"].asInt();
+            url = root["url"].asString();
             appName = root["file_name"].asString();
 
             int must = root["must_version_id"].asInt();
@@ -60,23 +57,21 @@ Update::updateType Update::check(string &inf, int version_id) {
 }
 
 bool Update::getUpdate(string &inf) {
-    if (host.empty() || path.empty()) {
+ 
+    if (url.empty()) {
         inf = u8"更新链接为空";
         return false;
     }
 
     try {
-        httplib::Client client(host, port);
-
-        auto ret = client.Get(path.c_str());
-        if (!ret || ret->status != 200) {
+        auto r = cpr::Get(cpr::Url(url));
+        if (r.status_code != 200) {
             throw exception("插件下载失败 网络异常");
         }
-
         string appPath = MyUtils::ansi(cq::dir::root()) + "app\\" + MyUtils::ansi(appName);
         ofstream file(appPath, ios::out | ios::binary | ios::trunc);
         if (!file.good()) throw exception(("文件打开失败: " + appPath).c_str());
-        file << ret->body;
+        file << r.text;
         file.close();
         inf = "更新完成，请重启酷Q载入新版本";
         return true;
